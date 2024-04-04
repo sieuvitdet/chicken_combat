@@ -47,7 +47,11 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   @override
   void initState() {
     super.initState();
-    _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
+    if (_isTomato) {
+      _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
+    } else {
+      _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
+    }
     _configAnimation();
     _configWaterShotAnimation();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -169,7 +173,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   Path drawPathLeftToRight() {
     Path path = Path();
     path.moveTo(16 + AppSizes.maxWidth * 0.18, _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot,
+    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
         AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
     return path;
   }
@@ -186,7 +190,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     Path path = Path();
     path.moveTo(
         AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot,
+    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
         16 + AppSizes.maxWidth * 0.18, _topWaterShot);
     return path;
   }
@@ -570,7 +574,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         yellowColor: i == 2,
         redBlurColor: i == 3,
         child:
-            Text("Đáp án", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text("Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: ontap,
       ),
     );

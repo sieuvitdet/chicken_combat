@@ -30,6 +30,11 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
 
   late AnimationController _controllerFirst;
   late Animation<double> _animationFirst;
+
+  late AnimationController _controllerGun;
+  late Animation<double> _animationGun;
+
+
   int _currentEnemyBlood = 10;
   int _currentMyBlood = 10;
   late Timer _timer;
@@ -38,20 +43,39 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
   double _topWaterShot = 0.0;
   bool? isEnemyWin = null;
   bool? waterShotLeftToRight = null;
-  bool _isTomato = false;
+  bool _isTomato = true;
+  bool _startDelayed = false;
   // int currentVolume = 5;
   // int currentNote = 5;
 
   @override
   void initState() {
     super.initState();
-    _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
+    if (_isTomato) {
+      _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
+    } else {
+      _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
+    }
     _configAnimation();
     _configWaterShotAnimation();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _startTimer();
     });
   }
+
+
+@override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+    _controllerFirst.dispose();
+    _controllerGun.dispose();
+    _controllerWaterLeftToRight.dispose();
+    _controllerWaterRightToLeft.dispose();
+  }
+
+
+  
 
   _configAnimation() {
     _controllerFirst = AnimationController(
@@ -106,6 +130,28 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
         });
       }
     });
+
+    _controllerGun = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+    _animationGun = Tween<double>(begin: 0.0, end: -30.0).animate(_controllerGun)
+      ..addListener(() {
+        setState(() {
+          // Rebuild the widget when animation value changes
+        });
+      });
+
+    _controllerGun.addStatusListener((status) async {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          _controllerGun.reset();
+
+        });
+      }
+    });
+
+    
   }
 
   void _configWaterShotAnimation() {
@@ -153,7 +199,21 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
     _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
+        if (_startDelayed && _start == 0) {
+          // Delay the restart by 3 seconds
+          Future.delayed(Duration(seconds: 3), () {
+            setState(() {
+              _startDelayed = false; // Reset the flag
+              _start = 30; // Reset the timer value
+            });
+            _startTimer(); // Start the timer again
+          });
+          return;
+        }
         if (_start == 0) {
+          setState(() {
+            _startDelayed = true;
+          });
           _timer.cancel();
         } else {
           setState(() {
@@ -167,7 +227,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
   Path drawPathLeftToRight() {
     Path path = Path();
     path.moveTo(16 + AppSizes.maxWidth * 0.18, _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot,
+    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
         AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
     return path;
   }
@@ -184,7 +244,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
     Path path = Path();
     path.moveTo(
         AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot,
+    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
         16 + AppSizes.maxWidth * 0.18, _topWaterShot);
     return path;
   }
@@ -273,12 +333,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
                 ),
               ),
             ),
-            Row(
+             if (_start > 0) Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ImageIcon(
-                  AssetImage(Assets.ic_boom),
-                ),
+                Image.asset((Assets.ic_boom),width: 24),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
@@ -300,6 +358,14 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
             right: 0,
             child: Image(
               image: AssetImage(Assets.img_line_table),
+            )),
+
+            if (_start == 0) Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Image(
+              image: AssetImage(Assets.gif_boom),height: 100,
             ))
       ],
     );
@@ -313,79 +379,101 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         (isEnemyWin != null && isEnemyWin!)
-            ? Row(
+            ? Stack(
               children: [
-                Transform.rotate(
-                angle: _animationFirst.value *
-                    3.1415926535 /
-                    120, // Convert degrees to radians
-                origin:
-                    Offset(0, 20), // Set the origin to BottomLeft coordinate
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(pi),
-                  child: ShakeWidget(
-                    duration: const Duration(seconds: 10),
-                    shakeConstant: ShakeDefaultConstant1(),
-                    autoPlay: true,
-                    child: Image.asset(
-                      Assets.img_chicken_fall,
-                      fit: BoxFit.contain,
-                      width: AppSizes.maxWidth * 0.08,
-                    ),
-                  ),
-                )), 
-                Transform.rotate(
-                angle: _animationFirst.value *
-                    3.1415926535 /
-                    360, // Convert degrees to radians
-                origin:
-                    Offset(0, 20), // Set the origin to BottomLeft coordinate
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(pi),
-                  child: ShakeWidget(
-                    duration: const Duration(seconds: 10),
-                    shakeConstant: ShakeDefaultConstant1(),
-                    autoPlay: true,
-                    child: Image.asset(
-                      Assets.img_chicken_fall,
-                      fit: BoxFit.contain,
-                      width: AppSizes.maxWidth * 0.1,
-                    ),
-                  ),
-                ))
+                Row(
+                  children: [
+                    Transform.rotate(
+                    angle: _animationFirst.value *
+                        3.1415926535 /
+                        120, // Convert degrees to radians
+                    origin:
+                        Offset(0, 20), // Set the origin to BottomLeft coordinate
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(pi),
+                      child: ShakeWidget(
+                        duration: const Duration(seconds: 10),
+                        shakeConstant: ShakeDefaultConstant1(),
+                        autoPlay: true,
+                        child: Image.asset(
+                          Assets.img_chicken_fall,
+                          fit: BoxFit.contain,
+                          width: AppSizes.maxWidth * 0.08,
+                        ),
+                      ),
+                    )), 
+                    Transform.rotate(
+                    angle: _animationFirst.value *
+                        3.1415926535 /
+                        360, // Convert degrees to radians
+                    origin:
+                        Offset(0, 20), // Set the origin to BottomLeft coordinate
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(pi),
+                      child: ShakeWidget(
+                        duration: const Duration(seconds: 10),
+                        shakeConstant: ShakeDefaultConstant1(),
+                        autoPlay: true,
+                        child: Image.asset(
+                          Assets.img_chicken_fall,
+                          fit: BoxFit.contain,
+                          width: AppSizes.maxWidth * 0.1,
+                        ),
+                      ),
+                    ))
+                  ],
+                ),
+                
               ],
             )
-            : Row(
+            : Stack(
               children: [
-                Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(0),
-                child: ShakeWidget(
-                  duration: const Duration(seconds: 10),
-                  shakeConstant: ShakeDefaultConstant1(),
-                  autoPlay: true,
-                  child: Image.asset(
-                    Assets.img_chicken_black,
-                    fit: BoxFit.contain,
-                    width: AppSizes.maxWidth * 0.09,
+                Row(
+                  children: [
+                    Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(0),
+                    child: ShakeWidget(
+                      duration: const Duration(seconds: 10),
+                      shakeConstant: ShakeDefaultConstant1(),
+                      autoPlay: true,
+                      child: Image.asset(
+                        Assets.img_chicken_black,
+                        fit: BoxFit.contain,
+                        width: AppSizes.maxWidth * 0.09,
+                      ),
+                    ),
+                  ),Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(0),
+                    child: ShakeWidget(
+                      duration: const Duration(seconds: 10),
+                      shakeConstant: ShakeDefaultConstant1(),
+                      autoPlay: true,
+                      child: Image.asset(
+                        Assets.img_chicken_black,
+                        fit: BoxFit.contain,
+                        width: AppSizes.maxWidth * 0.1,
+                      ),
+                    ),
                   ),
+                  ],
                 ),
-              ),Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(0),
-                child: ShakeWidget(
-                  duration: const Duration(seconds: 10),
-                  shakeConstant: ShakeDefaultConstant1(),
-                  autoPlay: true,
-                  child: Image.asset(
-                    Assets.img_chicken_black,
-                    fit: BoxFit.contain,
-                    width: AppSizes.maxWidth * 0.1,
-                  ),
-                ),
-              )
+                // if ((waterShotLeftToRight != null && waterShotLeftToRight!)) Transform.rotate(
+                //     angle: _animationGun.value *
+                //         3.1415926535 /
+                //         120,
+                //     child: Transform.rotate(
+                //       angle: 70,
+                //       child: Image.asset(
+                //         Assets.ic_gun,
+                //         fit: BoxFit.contain,
+                //         width: 50,
+                //         height: 50,
+                //       ),
+                //     ))
               ],
             ),
         Container(
@@ -586,6 +674,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
                 print(_currentEnemyBlood);
                 waterShotLeftToRight = true;
                 _controllerWaterLeftToRight.forward();
+                // _controllerGun.forward();
               });
             }
           case 1:
@@ -645,7 +734,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
         yellowColor: i == 2,
         redBlurColor: i == 3,
         child:
-            Text("Đáp án", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text("Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: ontap,
       ),
     );

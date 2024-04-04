@@ -60,6 +60,9 @@ class Assets {
   static final String img_bg_color_shop = "assets/images/img_bg_color_shop.png";
   static final String img_bg_money_shop = "assets/images/img_bg_money_shop.png";
   static final String img_bg_skin_shop = "assets/images/img_bg_skin_shop.png";
+  static final String img_chicken_brown = "assets/images/img_chicken_brown.png";
+  static final String img_tomato_broken = "assets/images/img_tomato_broken.png";
+
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";
   static final String ic_block = "assets/icons/ic_block.png";
@@ -82,6 +85,8 @@ class Assets {
   static final String ic_playing_listening = "assets/icons/ic_playing_listening.png";
   static final String ic_down = "assets/icons/ic_down.png";
   static final String ic_stt_redblur = "assets/icons/ic_stt_redblur.png";
+  static final String ic_gun = "assets/icons/ic_gun.png";
+
 
 
   //gif
@@ -90,4 +95,5 @@ class Assets {
   static final String gif_pk = "assets/images/gif_pk.gif"; 
   static final String gif_background_solo = "assets/images/gif_background_solo.gif"; 
   static final String gif_background_sea = "assets/images/gif_background_sea.gif";
+  static final String gif_boom = "assets/images/gif_boom.gif";
 }
