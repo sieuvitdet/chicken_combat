@@ -32,6 +32,7 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
   late AnimationController _controllerChicken3;
   late Animation _animationChicken3;
   late Path _pathChicken3;
+  ////
 
   late AnimationController _controllerChicken4;
   late Animation _animationChicken4;
