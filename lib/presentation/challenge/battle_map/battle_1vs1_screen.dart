@@ -558,6 +558,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                     ..pop()
                     ..pop()
                     ..pop();
+                    /////
                 },
               );
             },
