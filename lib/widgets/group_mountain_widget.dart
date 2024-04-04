@@ -18,6 +18,7 @@ class Group_Mountain extends StatelessWidget {
   final bool isFarmer;
   final bool isStorehouse;
   final bool isTruck;
+  final double heightMountain;
 
   Group_Mountain(
       {this.isLeft = false,
@@ -34,7 +35,8 @@ class Group_Mountain extends StatelessWidget {
       this.isWoodBlack = false,
       this.isFarmer = false,
       this.isStorehouse = false,
-      this.isTruck = false});
+      this.isTruck = false,
+      this.heightMountain = 0.0});
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,8 @@ class Group_Mountain extends StatelessWidget {
                         image: AssetImage(Assets.img_mountain_map),
                         width: AppSizes.maxWidth * 0.42,
                         height: AppSizes.maxHeight * 0.132,
+                        // width: AppSizes.maxHeight > 800 ? 174 : 158,
+                        // height: heightMountain,
                       ),
                     ),
                   ),
@@ -103,7 +107,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _chicken() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         left: 0,
         right: 0,
         child: Container(
@@ -118,7 +122,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _cactus() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         left: AppSizes.maxWidth * 0.4 / 3,
         child: Container(
           child: Image(
@@ -132,7 +136,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _start() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.015,
+        bottom: heightMountain - AppSizes.maxHeight * 0.015,
         right: AppSizes.maxWidth * 0.15 * 1.8,
         child: Container(
           child: Image(
@@ -146,7 +150,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _chickenLovely() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         left: 0,
         right: 0,
         child: Container(
@@ -161,7 +165,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _moreWood() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.025,
+        bottom: heightMountain - AppSizes.maxHeight * 0.025,
         left: 20,
         child: Container(
           child: Image(
@@ -175,7 +179,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _moreCactus() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         right: AppSizes.maxWidth * 0.15 * 1.6,
         child: Container(
           child: Image(
@@ -189,7 +193,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _wood() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.015,
+        bottom: heightMountain - AppSizes.maxHeight * 0.015,
         left: AppSizes.maxWidth * 0.25,
         child: Container(
           child: Image(
@@ -203,7 +207,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _woodBlack() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         left: AppSizes.maxWidth * 0.255,
         child: Container(
           child: Image(
@@ -217,7 +221,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _farmer() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.022,
+        bottom: heightMountain - AppSizes.maxHeight * 0.022,
         left: AppSizes.maxWidth * 0.15,
         child: Container(
           child: Image(
@@ -231,7 +235,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _storehouse() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         right: AppSizes.maxWidth * 0.18,
         child: Container(
           child: Image(
@@ -245,7 +249,7 @@ class Group_Mountain extends StatelessWidget {
 
   Widget _truck() {
     return Positioned(
-        bottom: AppSizes.maxHeight * 0.132 - AppSizes.maxHeight * 0.012,
+        bottom: heightMountain - AppSizes.maxHeight * 0.012,
         left: AppSizes.maxWidth * 0.25,
         child: Container(
           child: Image(

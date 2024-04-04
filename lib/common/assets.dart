@@ -1,38 +1,93 @@
 class Assets {
-  static final String img_cactus = "assets/images/cactus.png";
-  static final String img_chicken = "assets/images/chicken.png";
-  static final String img_farmer = "assets/images/farmer.png";
-  static final String img_mountain_left = "assets/images/mountain_left.png";
-  static final String img_mountain_map = "assets/images/mountain_map.png";
-  static final String img_cactusmountain_right =
-      "assets/images/mountain_right.png";
-  static final String img_storehouse = "assets/images/storehouse.png";
-  static final String img_truck = "assets/images/truck.png";
-  static final String img_wood = "assets/images/wood.png";
-  static final String img_avatar = "assets/images/avatar.png";
-  static final String img_start = "assets/images/start.png";
-  static final String img_cactus_flower = "assets/images/cactus_flower.png";
-  static final String img_more_wood = "assets/images/more_wood.png";
-  static final String img_mountain_green = "assets/images/mountain_green.png";
-  static final String img_straw = "assets/images/straw.png";
-  static final String img_tree = "assets/images/tree.png";
-  static final String img_store = "assets/images/store.png";
-  static final String img_farm = "assets/images/farm.png";
-  static final String img_imgBackGround = "assets/images/imgBackGround.png";
-  static final String img_chicken_lovely = "assets/images/chicken_lovely.png";
-  static final String img_more_cactus = "assets/images/more_cactus.png";
-  static final String img_wood_black = "assets/images/wood_black.png";
-  static final String img_truck_small = "assets/images/truck_small.png";
-  static final String img_farmer_water_the_tree =
-      "assets/images/farmer_water_the_tree.png";
-  static final String img_backgound_yellow =
-      "assets/images/img_backgound_yellow.png";
-  static final String img_background_blue =
-      "assets/images/img_background_blue.png";
-  static final String img_bottom_mountain_green =
-      "assets/images/img_bottom_mountain_green.png";
-  static final String img_bush =
-      "assets/images/bush.png";
-      static final String img_cloud_big = "assets/images/cloud_big.png";
-      static final String img_cloud_small = "assets/images/cloud_small.png";
+  //image
+  static final String img_cactus = "assets/images/img_cactus.png";
+  static final String img_chicken = "assets/images/img_chicken.png";
+  static final String img_farmer = "assets/images/img_farmer.png";
+  static final String img_mountain_left = "assets/images/img_mountain_left.png";
+  static final String img_mountain_map = "assets/images/img_mountain_map.png";
+  static final String img_cactusmountain_right = "assets/images/img_mountain_right.png";
+  static final String img_storehouse = "assets/images/img_storehouse.png";
+  static final String img_truck = "assets/images/img_truck.png";
+  static final String img_wood = "assets/images/img_wood.png";
+  static final String img_avatar = "assets/images/img_avatar.png";
+  static final String img_start = "assets/images/img_start.png";
+  static final String img_cactus_flower = "assets/images/img_cactus_flower.png";
+  static final String img_more_wood = "assets/images/img_more_wood.png";
+  static final String img_mountain_green = "assets/images/img_mountain_green.png";
+  static final String img_straw = "assets/images/img_straw.png";
+  static final String img_tree = "assets/images/img_tree.png";
+  static final String img_store = "assets/images/img_store.png";
+  static final String img_farm = "assets/images/img_farm.png";
+  static final String img_imgBackGround = "assets/images/img_background.png";
+  static final String img_chicken_lovely = "assets/images/img_chicken_lovely.png";
+  static final String img_more_cactus = "assets/images/img_more_cactus.png";
+  static final String img_wood_black = "assets/images/img_wood_black.png";
+  static final String img_truck_small = "assets/images/img_truck_small.png";
+  static final String img_farmer_water_the_tree = "assets/images/img_farmer_water_the_tree.png";
+  static final String img_backgound_yellow = "assets/images/img_backgound_yellow.png";
+  static final String img_background_blue = "assets/images/img_background_blue.png";
+  static final String img_bottom_mountain_green = "assets/images/img_bottom_mountain_green.png";
+  static final String img_bush = "assets/images/img_bush.png";
+  static final String img_cloud_big = "assets/images/img_cloud_big.png";
+  static final String img_cloud_small = "assets/images/img_cloud_small.png";
+  static final String img_line_table = "assets/images/img_line_table.png";
+  static final String img_pk = "assets/images/img_pk.png";
+  static final String img_mountain_sea = "assets/images/img_mountain_sea.png";
+  static final String img_chicken_blue = "assets/images/img_chicken_blue.png";
+  static final String img_chicken_white = "assets/images/img_chicken_white.png";
+  static final String img_chicken_black = "assets/images/img_chicken_black.png";
+  static final String img_chicken_green = "assets/images/img_chicken_green.png";
+  static final String img_chicken_red = "assets/images/img_chicken_red.png";
+  static final String img_chicken_fall = "assets/images/img_chicken_fall.png";
+  static final String img_water_shot = "assets/images/img_water_shot.png";
+  static final String img_tomato = "assets/images/img_tomato.png";
+  static final String img_gun = "assets/images/img_gun.png";
+  static final String img_solo_button = "assets/images/img_solo_button.png";
+  static final String img_1vs1_button = "assets/images/img_1vs1_button.png";
+  static final String img_login_button = "assets/images/img_login_button.png";
+  static final String img_button_blue = "assets/images/img_button_blue.png";
+  static final String img_button_green = "assets/images/img_button_green.png";
+  static final String img_button_orange = "assets/images/img_button_orange.png";
+  static final String img_button_red_blur = "assets/images/img_button_red_blur.png";
+  static final String img_button_red = "assets/images/img_button_red.png";
+  static final String img_button_yellow = "assets/images/img_button_yellow.png";
+  static final String img_button_grey = "assets/images/img_button_grey.png";
+  static final String img_background_popup = "assets/images/img_background_popup.png";
+  static final String img_bg_dialog_congratulation = "assets/images/img_bg_dialog_congratulation.png";
+  static final String img_star = "assets/images/img_star.png";
+  static final String img_chicken_learning = "assets/images/img_chicken_learning.png";
+  static final String img_frame_textfield = "assets/images/img_frame_textfield.png";
+  static final String img_bg_color_shop = "assets/images/img_bg_color_shop.png";
+  static final String img_bg_money_shop = "assets/images/img_bg_money_shop.png";
+  static final String img_bg_skin_shop = "assets/images/img_bg_skin_shop.png";
+  //icon
+  static final String ic_boom = "assets/icons/ic_boom.png";
+  static final String ic_block = "assets/icons/ic_block.png";
+  static final String ic_diamond = "assets/icons/ic_diamond.png";
+  static final String ic_shop = "assets/icons/ic_shop.png";
+  static final String ic_coin = "assets/icons/ic_coin.png";
+  static final String ic_back = "assets/icons/ic_back.png";
+  static final String ic_menu = "assets/icons/ic_menu.png";
+  static final String ic_volume_popup = "assets/icons/ic_volume_popup.png";
+  static final String ic_note_music_popup = "assets/icons/ic_note_music_popup.png";
+  static final String ic_close_popup = "assets/icons/ic_close_popup.png";
+  static final String ic_exit_popup = "assets/icons/ic_exit_popup.png";
+  static final String ic_playagain_popup = "assets/icons/ic_playagain_popup.png";
+  static final String ic_playgame_popup = "assets/icons/ic_playgame_popup.png";
+  static final String ic_minus = "assets/icons/ic_minus.png";
+  static final String ic_plus = "assets/icons/ic_plus.png";
+  static final String ic_mic = "assets/icons/ic_mic.png";
+  static final String ic_mic_recording = "assets/icons/ic_mic_recording.png";
+  static final String ic_notplay_listening = "assets/icons/ic_notplay_listening.png";
+  static final String ic_playing_listening = "assets/icons/ic_playing_listening.png";
+  static final String ic_down = "assets/icons/ic_down.png";
+  static final String ic_stt_redblur = "assets/icons/ic_stt_redblur.png";
+
+
+  //gif
+  static final String chicken_flapping_swing_gif = "assets/images/chicken_gif.gif";
+  static final String gif_chicken_swimming = "assets/images/gif_chicken_swimming.gif";
+  static final String gif_pk = "assets/images/gif_pk.gif"; 
+  static final String gif_background_solo = "assets/images/gif_background_solo.gif"; 
+  static final String gif_background_sea = "assets/images/gif_background_sea.gif";
 }

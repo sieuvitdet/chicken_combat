@@ -2,17 +2,22 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Map1Screen extends StatefulWidget {
+  final String? type;
+  Map1Screen({this.type});
   @override
   State<Map1Screen> createState() => _Map1ScreenState();
 }
 
-class _Map1ScreenState extends State<Map1Screen>
-    with TickerProviderStateMixin {
+class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController(keepScrollOffset: true);
   bool enableScroll = true;
   final random = Random();
@@ -37,7 +42,7 @@ class _Map1ScreenState extends State<Map1Screen>
   void initState() {
     super.initState();
     _configUI();
-    _configChickkenDance();
+    _configChickenDance();
     _configMapShake();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
@@ -51,7 +56,7 @@ class _Map1ScreenState extends State<Map1Screen>
     location = 0;
   }
 
-  void _configChickkenDance() {
+  void _configChickenDance() {
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
@@ -93,13 +98,15 @@ class _Map1ScreenState extends State<Map1Screen>
   @override
   void dispose() {
     _scrollController.dispose();
+    _controller1.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   Widget _buildBottom() {
     return Container(
       height: heightContent,
-      child: Image.asset(Assets.img_backgound_yellow, fit: BoxFit.contain),
+      child: Image.asset(Assets.img_backgound_yellow, fit: BoxFit.cover),
     );
   }
 
@@ -109,7 +116,7 @@ class _Map1ScreenState extends State<Map1Screen>
       height: heightContent,
       child: Stack(
         children: [
-          _mountaninBottom(),
+          _mountainBottom(),
           ...(_buildItemList()).map((e) => e).toList(),
           Positioned(
             top: calculate(_animation.value).dy,
@@ -120,28 +127,27 @@ class _Map1ScreenState extends State<Map1Screen>
                   ? Matrix4.rotationY(0)
                   : Matrix4.rotationY(pi),
               child: AnimatedBuilder(
-                  animation: _animation1,
-                  builder: (context, child) {
-                    return Transform.translate(
-                      offset:
-                          _animation1.value * 100, // Adjust the curve radius here
-                      child: child,
-                    );
-                  },
-                  child: Container(
-                  width: AppSizes.maxWidth * 0.15,
-                  height: AppSizes.maxWidth * 0.12,
-                  child: Image.asset(Assets.img_chicken, fit: BoxFit.contain),
-                ),
-                    ),
-            ),
+                animation: _animation1,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset:
+                        _animation1.value * 200, // Adjust the curve radius here
+                    child: child,
+                  );
+                },
+                child: Image.asset(Assets.chicken_flapping_swing_gif,
+                    fit: BoxFit.contain,
+                    width: AppSizes.maxWidth * 0.18,
+                    height: AppSizes.maxHeight * 0.11,
+              ),
+            )),
           ),
         ],
       ),
     );
   }
 
-  Widget _mountaninBottom() {
+  Widget _mountainBottom() {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -182,48 +188,67 @@ class _Map1ScreenState extends State<Map1Screen>
     return Positioned(
         bottom: i * AppSizes.maxHeight * multiple + bottom,
         child: AnimatedBuilder(
-                animation: _animation1,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset:
-                        _animation1.value * 100, // Adjust the curve radius here
-                    child: child,
-                  );
-                },
-                child: Group_Mountain(
-                isLeft: i % 2 == 0,
-                horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
-                count: i + 1,
-                onTap: () => {
-                  if (i < numberMountain)
-                    {
-                      currentPadding = _listPadding[i + 1],
-                      nextPadding =
-                          i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2],
-                      _scrollToTop(maxScroll -
-                          (i * (distance + 60) * AppSizes.maxHeight / 896)),
-                      _controller.forward(),
-                    }
-                },
-                isCactus: i == 0,
-                // isChicken: i == 0,
-                isStart: i == 0,
-                isWood: i == 1,
-                isMoreWood: i == 2,
-                isWoodBlack: i == 3,
-                isFarmer: i == 3,
-                isMoreCactus: i == 4,
-                isStorehouse: i == 5,
-                isTruck: i == 5,
-              ),
-        )
+          animation: _animation1,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: _animation1.value * 200, // Adjust the curve radius here
+              child: child,
             );
+          },
+          child: Group_Mountain(
+            heightMountain: AppSizes.maxHeight*0.132,
+            isLeft: i % 2 == 0,
+            horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
+            count: i + 1,
+            onTap: () async {
+              if (i > location) {
+                return;
+              }
+              bool? result = null;
+              if (widget.type != "" && widget.type == "reading") {
+                result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapReadingExaminationScreen()));
+              } else if (widget.type != "" && widget.type == "listening") {
+                result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapListeningExaminationScreen()));
+              } else if (widget.type != "" && widget.type == "speaking") {
+               result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapSpeakingExaminationScreen()));
+              }  else if (widget.type != "" && widget.type == "writing") {
+               result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapWritingExaminationScreen()));
+              }
+
+              if (result != null && result == true && i == location) {
+                if (i < numberMountain) {
+                  currentPadding = _listPadding[i + 1];
+                  nextPadding =
+                      i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
+                  _scrollToTop(maxScroll -
+                      (location * (distance + 60) * AppSizes.maxHeight / 896));
+                  _controller.forward();
+                }
+              }
+              
+            },
+            isCactus: i == 0,
+            // isChicken: i == 0,
+            isStart: i == 0,
+            isWood: i == 1,
+            isMoreWood: i == 2,
+            isWoodBlack: i == 3,
+            isFarmer: i == 3,
+            isMoreCactus: i == 4,
+            isStorehouse: i == 5,
+            isTruck: i == 5,
+          ),
+        ));
   }
 
   List<Widget> _buildItemList() {
     List<Widget> itemList = [];
     for (int i = 0; i < numberMountain; i++) {
-      itemList.add(_item(i, 15));
+      itemList.add(_item(i, 15 * AppSizes.maxHeight / 896));
     }
 
     return itemList;
@@ -248,12 +273,13 @@ class _Map1ScreenState extends State<Map1Screen>
 
   Path drawPath() {
     Path path = Path();
-    double bottom = heightContent - 85 - AppSizes.maxHeight * multiple;
-
-    print("dcm $bottom");
+    double bottomChicken = AppSizes.maxHeight < 800 ? AppSizes.maxHeight*0.14 : AppSizes.maxHeight*0.12;
+    heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
+    double bottom =
+        heightContent - bottomChicken - AppSizes.maxHeight * multiple;
     double left = currentPadding * AppSizes.maxWidth / 414;
     double nextleft = nextPadding * AppSizes.maxWidth / 414;
-    double width = AppSizes.maxWidth * 0.42;
+    double width = AppSizes.maxWidth*0.42;
     double maxWidth = AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     if (location == 0) {
@@ -348,19 +374,30 @@ class _Map1ScreenState extends State<Map1Screen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: Scaffold(
-        // appBar: AppBar(centerTitle: true, title: Text("Đức")),
-        backgroundColor: Color(0xffFFF0AB),
-        body: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              children: [_buildBottom(), _buildContent()],
-            )),
-      ),
+    return Scaffold(
+      backgroundColor: Color(0xffFFF0AB),
+      body: Responsive(
+        mobile: SingleChildScrollView(
+          controller: _scrollController,
+          physics: ClampingScrollPhysics(),
+          child: Stack(
+            children: [_buildBottom(), _buildContent()],
+          )),
+          tablet: SingleChildScrollView(
+          controller: _scrollController,
+          physics: ClampingScrollPhysics(),
+          child: Stack(
+            children: [_buildBottom(), _buildContent()],
+          )),
+          desktop: SingleChildScrollView(
+          controller: _scrollController,
+          physics: ClampingScrollPhysics(),
+          child: Stack(
+            children: [_buildBottom(), _buildContent()],
+          )),
+          
+      )
+       ,
     );
   }
 }

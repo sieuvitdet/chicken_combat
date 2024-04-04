@@ -2,6 +2,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,8 +14,9 @@ class FlashScreen extends StatefulWidget {
   State<FlashScreen> createState() => _FlashScreenState();
 }
 
-class _FlashScreenState extends State<FlashScreen> with TickerProviderStateMixin {
-  @override
+class _FlashScreenState extends State<FlashScreen>
+    with TickerProviderStateMixin {
+
 
   late AnimationController _controller1;
   late Animation<Offset> _animation1;
@@ -22,7 +24,7 @@ class _FlashScreenState extends State<FlashScreen> with TickerProviderStateMixin
   late AnimationController _controller2;
   late Animation<Offset> _animation2;
 
-@override
+  @override
   void dispose() {
     _controller1.dispose();
     _controller2.dispose();
@@ -31,7 +33,15 @@ class _FlashScreenState extends State<FlashScreen> with TickerProviderStateMixin
 
   void initState() {
     super.initState();
+    _configAnamation();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(Duration(seconds: 3));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+    });
+  }
 
+  void _configAnamation() {
     _controller1 = AnimationController(
       vsync: this,
       duration: Duration(seconds: 6),
@@ -48,91 +58,122 @@ class _FlashScreenState extends State<FlashScreen> with TickerProviderStateMixin
 
     _controller2 = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 6),
+      duration: Duration(seconds: 2),
     )..repeat(reverse: true);
     _animation2 = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(0.5, 0.5),
+      begin: Offset(0, 1),
+      end: Offset.zero,
     ).animate(
       CurvedAnimation(
         parent: _controller2,
         curve: Curves.easeInOut,
       ),
     );
-    
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(seconds: 3));
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        fit: StackFit.loose,
-        children: [
-          SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              child: _buildBottom()),
-          _buildContent(),
-        ],
-      ),
-    );
   }
 
   Widget _buildBottom() {
-    return Image.asset(Assets.img_imgBackGround, fit: BoxFit.contain);
+    return Container(
+      height: AppSizes.maxHeight,
+      width: AppSizes.maxWidth,
+      color: Color(0xFFFACA44),
+    );
   }
 
   Widget _buildContent() {
     return Stack(
       children: [
-
         Positioned(
-          top: 250,
-          left: 50,
+          top: AppSizes.maxHeight * 0.1,
+          left: 100,
           child: AnimatedBuilder(
-          animation: _animation1,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: _animation1.value * 200, // Adjust the curve radius here
-              child: child,
-            );
-          },
-          child: _smallCloud(),
-            ),
+            animation: _animation1,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _animation1.value * 100, // Adjust the curve radius here
+                child: child,
+              );
+            },
+            child: _smallCloud(),
+          ),
         ),
-
-       Positioned(
-        top: 200,
-         child: AnimatedBuilder(
-          animation: _animation2,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: _animation2.value * 200, // Adjust the curve radius here
-              child: child,
-            );
-          },
-          child: _cloud(),
-               ),
-       ),
-
-
-
-
+        Positioned(
+          top: AppSizes.maxHeight * 0.2,
+          left: 20,
+          child: AnimatedBuilder(
+            animation: _animation2,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _animation2.value * 50, // Adjust the curve radius here
+                child: child,
+              );
+            },
+            child: _cloud(),
+          ),
+        ),
+        Positioned(
+          top: AppSizes.maxHeight * 0.3,
+          right: 80,
+          child: AnimatedBuilder(
+            animation: _animation1,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _animation1.value * 70, // Adjust the curve radius here
+                child: child,
+              );
+            },
+            child: _mediumCloud(),
+          ),
+        ),
+        Positioned(
+          top: AppSizes.maxHeight * 0.6,
+          left: 60,
+          child: AnimatedBuilder(
+            animation: _animation1,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _animation1.value * 40, // Adjust the curve radius here
+                child: child,
+              );
+            },
+            child: _mediumCloud(),
+          ),
+        ),
+        Positioned(
+          top: AppSizes.maxHeight * 0.7,
+          right: 150,
+          child: AnimatedBuilder(
+            animation: _animation2,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _animation1.value * 50, // Adjust the curve radius here
+                child: child,
+              );
+            },
+            child: _smallCloud(),
+          ),
+        ),
+        Positioned(
+          top: AppSizes.maxHeight * 0.8,
+          left: 40,
+          child: AnimatedBuilder(
+            animation: _animation1,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _animation1.value * 60, // Adjust the curve radius here
+                child: child,
+              );
+            },
+            child: _mediumCloud(),
+          ),
+        ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 8.0),
-              child: Image(
-                fit: BoxFit.contain,
-                image: AssetImage("assets/images/chicken_dancing.gif"),
-                width: AppSizes.maxWidth * 0.3,
-                height: AppSizes.maxHeight * 0.18,
-              ),
+            Image(
+              fit: BoxFit.fitHeight,
+              image: AssetImage(Assets.chicken_flapping_swing_gif),
+              width: AppSizes.maxWidth * 0.3,
+              height: AppSizes.maxHeight * 0.18,
             ),
             Padding(
               padding: EdgeInsets.only(bottom: 16),
@@ -162,7 +203,6 @@ class _FlashScreenState extends State<FlashScreen> with TickerProviderStateMixin
     );
   }
 
-
   Widget _cloud() {
     return Container(
       child: Image(
@@ -182,6 +222,31 @@ class _FlashScreenState extends State<FlashScreen> with TickerProviderStateMixin
         width: AppSizes.maxWidth * 0.06,
         height: AppSizes.maxHeight * 0.04,
       ),
+    );
+  }
+
+  Widget _mediumCloud() {
+    return Container(
+      child: Image(
+        fit: BoxFit.contain,
+        image: AssetImage(Assets.img_cloud_small),
+        width: AppSizes.maxWidth * 0.1,
+        height: AppSizes.maxHeight * 0.08,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+          fit: StackFit.loose,
+          children: [
+            SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
+            _buildContent(),
+          ],
+        ),
     );
   }
 }
@@ -222,7 +287,6 @@ class _CountingAnimationState extends State<CountingAnimation>
       },
     );
   }
-
 
   @override
   void dispose() {

@@ -3,11 +3,17 @@ import 'dart:ui';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_green_widget.dart';
 import 'package:flutter/material.dart';
 
 class Map2Screen extends StatefulWidget {
-  const Map2Screen({super.key});
+  final String? type;
+  Map2Screen({this.type});
 
   @override
   State<Map2Screen> createState() => _Map2ScreenState();
@@ -36,11 +42,10 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     super.initState();
     currentPadding = _listPadding[0];
     nextPadding = _listPadding[1];
-    heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
+    heightContent = AppSizes.maxHeight * multiple * (numberMountain + 3);
     location = 0;
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    super.initState();
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
       ..addListener(() {
         setState(() {});
@@ -63,7 +68,6 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     _path = drawPath();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
-      print(_scrollController.offset);
     });
   }
 
@@ -87,7 +91,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
       height: heightContent,
       child: Stack(
         children: [
-          _mountaninBottom(),
+          _mountainBottom(),
           ...(_buildItemList()).map((e) => e).toList(),
           Positioned(
             top: calculate(_animation.value).dy,
@@ -97,11 +101,8 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
               transform: location % 2 == 0
                   ? Matrix4.rotationY(0)
                   : Matrix4.rotationY(pi),
-              child: Container(
-                width: AppSizes.maxWidth * 0.15,
-                height: AppSizes.maxWidth * 0.12,
-                child: Image.asset(Assets.img_chicken, fit: BoxFit.contain),
-              ),
+              child: Image.asset(Assets.chicken_flapping_swing_gif, fit: BoxFit.contain,width: AppSizes.maxWidth * 0.2 ,
+                height: AppSizes.maxHeight * 0.11),
             ),
           ),
           // Positioned(
@@ -115,7 +116,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _mountaninBottom() {
+  Widget _mountainBottom() {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -137,16 +138,36 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     return Positioned(
         bottom: i * AppSizes.maxHeight * multiple + bottom,
         child: Group_Mountain_Green(
+          heightMountain:AppSizes.maxHeight*0.15,
           isLeft: i % 2 == 0,
           horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
           count: i + 1,
-          onTap: () => {
-            if (i < numberMountain)
-              {
-                currentPadding = _listPadding[i + 1],
-                nextPadding = i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2],
-                _scrollToTop(maxScroll - (i * (distance + 60))),
-                _controller.forward(),
+          onTap: () async {
+            if (i > location) {
+                return;
+              }
+              bool? result = null;
+              if (widget.type != "" && widget.type == "reading") {
+                result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapReadingExaminationScreen()));
+              } else if (widget.type != "" && widget.type == "listening") {
+                result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapListeningExaminationScreen()));
+              } else if (widget.type != "" && widget.type == "speaking") {
+               result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapSpeakingExaminationScreen()));
+              }  else if (widget.type != "" && widget.type == "writing") {
+               result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapWritingExaminationScreen()));
+              }
+
+              if (result != null && result == true && i == location) {
+                if (i < numberMountain) {
+                  currentPadding = _listPadding[i + 1];
+                nextPadding = i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
+                _scrollToTop(maxScroll - (location * (distance + 60)));
+                _controller.forward();
+                }
               }
           },
 
@@ -191,9 +212,11 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
 
   Path drawPath() {
     Path path = Path();
+    double bottomChicken = AppSizes.maxHeight < 800 ? AppSizes.maxHeight*0.27 : AppSizes.maxHeight*0.25;
     double bottom = heightContent -
-        170*AppSizes.maxHeight/896 -
+        bottomChicken -
         AppSizes.maxHeight * multiple;
+        print(AppSizes.maxHeight);
     double left = currentPadding * AppSizes.maxWidth / 414;
     double nextleft = nextPadding * AppSizes.maxWidth / 414;
     double width = AppSizes.maxWidth * 0.42;
@@ -202,18 +225,18 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     if (location == 0) {
       path.moveTo(left + width / 3, bottom);
       path.quadraticBezierTo(left + width / 3, bottom - 2.4 * maxHeight * multiple,
-          maxWidth - nextleft - width / 1.5, bottom - maxHeight * multiple);
+          maxWidth - nextleft - width / 1.3, bottom - maxHeight * multiple);
     } else if (location == 1) {
-      path.moveTo(maxWidth - left - width / 1.5, bottom - maxHeight * multiple);
+      path.moveTo(maxWidth - left - width / 1.3, bottom - maxHeight * multiple);
       path.quadraticBezierTo(left + width / 3, bottom - 3.4 * maxHeight * multiple,
-          nextleft + width / 2, bottom - 2 * maxHeight * multiple);
+          nextleft + width / 3, bottom - 2 * maxHeight * multiple);
     } else if (location == 2) {
-      path.moveTo(left + width / 2, bottom - 2 * maxHeight * multiple);
+      path.moveTo(left + width / 3, bottom - 2 * maxHeight * multiple);
       path.quadraticBezierTo(left + width / 2, bottom - 3.4 * maxHeight * multiple,
-          maxWidth - nextleft - width / 1.5, bottom - 3 * maxHeight * multiple);
+          maxWidth - nextleft - width, bottom - 3 * maxHeight * multiple);
     } else if (location == 3) {
       path.moveTo(
-          maxWidth - left - width / 1.5, bottom - 3 * maxHeight * multiple);
+          maxWidth - left - width, bottom - 3 * maxHeight * multiple);
       path.quadraticBezierTo(left + width / 2, bottom - 5.4 * maxHeight * multiple,
           nextleft + width / 2, bottom - 4 * maxHeight * multiple);
     } else if (location == 4) {
@@ -248,13 +271,11 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
           bottom - 10 * maxHeight * multiple);
     }
 
-    print(left + width / 3);
-    print(left + width / bottom);
-
     return path;
   }
 
   Offset calculate(value) {
+    print("calculate $value");
     PathMetrics pathMetrics = _path.computeMetrics();
     PathMetric pathMetric = pathMetrics.elementAt(0);
     value = pathMetric.length * value;
@@ -268,12 +289,22 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
       top: false,
       bottom: false,
       child: Scaffold(
-        body: SingleChildScrollView(
+        body: Responsive(mobile: SingleChildScrollView(
             controller: _scrollController,
             physics: ClampingScrollPhysics(),
             child: Stack(
               children: [_buildBottom(), _buildContent()],
-            )),
+            )), tablet: SingleChildScrollView(
+            controller: _scrollController,
+            physics: ClampingScrollPhysics(),
+            child: Stack(
+              children: [_buildBottom(), _buildContent()],
+            )), desktop: SingleChildScrollView(
+            controller: _scrollController,
+            physics: ClampingScrollPhysics(),
+            child: Stack(
+              children: [_buildBottom(), _buildContent()],
+            ))),
       ),
     );
   }
