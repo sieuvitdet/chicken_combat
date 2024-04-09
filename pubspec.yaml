@@ -18,6 +18,8 @@ dependencies:
   carousel_slider: ^4.1.1
   flutter_shake_animated: ^0.0.5
   audio_manager: ^0.8.2
+  firebase_core: ^2.28.0
+  cloud_firestore: ^4.16.0
 
 dev_dependencies:
   flutter_test:
