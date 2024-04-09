@@ -381,18 +381,21 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
           controller: _scrollController,
           physics: ClampingScrollPhysics(),
           child: Stack(
+            alignment: Alignment.center,
             children: [_buildBottom(), _buildContent()],
           )),
           tablet: SingleChildScrollView(
           controller: _scrollController,
           physics: ClampingScrollPhysics(),
           child: Stack(
+            alignment: Alignment.center,
             children: [_buildBottom(), _buildContent()],
           )),
           desktop: SingleChildScrollView(
           controller: _scrollController,
           physics: ClampingScrollPhysics(),
           child: Stack(
+            alignment: Alignment.center,
             children: [_buildBottom(), _buildContent()],
           )),
           

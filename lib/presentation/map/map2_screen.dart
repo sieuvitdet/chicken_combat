@@ -43,7 +43,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     currentPadding = _listPadding[0];
     nextPadding = _listPadding[1];
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 3);
-    location = 0;
+    location = 3;
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
@@ -80,38 +80,40 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
   Widget _buildBottom() {
     return Container(
       height: heightContent,
-      width: AppSizes.maxWidth,
+      width:  AppSizes.maxWidthTablet > 0 ?  AppSizes.maxWidthTablet : AppSizes.maxWidth,
       child: Image.asset(Assets.img_background_blue, fit: BoxFit.cover),
     );
   }
 
   Widget _buildContent() {
-    return Container(
-      width: AppSizes.maxWidth,
-      height: heightContent,
-      child: Stack(
-        children: [
-          _mountainBottom(),
-          ...(_buildItemList()).map((e) => e).toList(),
-          Positioned(
-            top: calculate(_animation.value).dy,
-            left: calculate(_animation.value).dx,
-            child: Transform(
-              alignment: Alignment.center,
-              transform: location % 2 == 0
-                  ? Matrix4.rotationY(0)
-                  : Matrix4.rotationY(pi),
-              child: Image.asset(Assets.chicken_flapping_swing_gif, fit: BoxFit.contain,width: AppSizes.maxWidth * 0.2 ,
-                height: AppSizes.maxHeight * 0.11),
+    return Center(
+      child: Container(
+        width: AppSizes.maxWidth,
+        height: heightContent,
+        child: Stack(
+          children: [
+            _mountainBottom(),
+            ...(_buildItemList()).map((e) => e).toList(),
+            Positioned(
+              top: calculate(_animation.value).dy,
+              left: calculate(_animation.value).dx,
+              child: Transform(
+                alignment: Alignment.center,
+                transform: location % 2 == 0
+                    ? Matrix4.rotationY(0)
+                    : Matrix4.rotationY(pi),
+                child: Image.asset(Assets.chicken_flapping_swing_gif, fit: BoxFit.contain,width: AppSizes.maxWidth * 0.2 ,
+                  height: AppSizes.maxHeight * 0.11),
+              ),
             ),
-          ),
-          // Positioned(
-          //   top: 0,
-          //   child: CustomPaint(
-          //     painter: PathPainter(_path),
-          //   ),
-          // ),
-        ],
+            // Positioned(
+            //   top: 0,
+            //   child: CustomPaint(
+            //     painter: PathPainter(_path),
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }
@@ -143,6 +145,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
           horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
           count: i + 1,
           onTap: () async {
+            print(AppSizes.maxWidth);
             if (i > location) {
                 return;
               }
@@ -212,7 +215,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
 
   Path drawPath() {
     Path path = Path();
-    double bottomChicken = AppSizes.maxHeight < 800 ? AppSizes.maxHeight*0.27 : AppSizes.maxHeight*0.25;
+    double bottomChicken = AppSizes.maxHeight*0.25;
     double bottom = heightContent -
         bottomChicken -
         AppSizes.maxHeight * multiple;
@@ -289,20 +292,24 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
       top: false,
       bottom: false,
       child: Scaffold(
+        backgroundColor: Color(0xFf89E6F3),
         body: Responsive(mobile: SingleChildScrollView(
             controller: _scrollController,
             physics: ClampingScrollPhysics(),
             child: Stack(
+              alignment: Alignment.center,
               children: [_buildBottom(), _buildContent()],
             )), tablet: SingleChildScrollView(
             controller: _scrollController,
             physics: ClampingScrollPhysics(),
             child: Stack(
+              alignment: Alignment.center,
               children: [_buildBottom(), _buildContent()],
             )), desktop: SingleChildScrollView(
             controller: _scrollController,
             physics: ClampingScrollPhysics(),
             child: Stack(
+              alignment: Alignment.center,
               children: [_buildBottom(), _buildContent()],
             ))),
       ),

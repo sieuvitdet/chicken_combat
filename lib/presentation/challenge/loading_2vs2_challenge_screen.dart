@@ -30,7 +30,7 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
   late Path _pathChicken2;
 
   late AnimationController _controllerChicken3;
-  
+
   late Animation _animationChicken3;
   late Path _pathChicken3;
   //////////chao a duc///
@@ -45,6 +45,10 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
   void dispose() {
     _controller.dispose();
     _controllerChicken1.dispose();
+    _controllerChicken2.dispose();
+    _controllerChicken3.dispose();
+    _controllerChicken4.dispose();
+
     super.dispose();
   }
 
@@ -52,10 +56,12 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
     super.initState();
     _configAnamation();
     _configChickenFisrt();
-    _configChickenSecond();
-    _configChickenThird();
-    _configChickenFour();
+      _configChickenSecond();
+      _configChickenThird();
+      _configChickenFour();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+
       _controllerChicken1.forward();
       _controllerChicken2.forward();
       _controllerChicken3.forward();
@@ -394,29 +400,35 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
 
   Path drawPathChicken1() {
     Path path = Path();
-    double maxWidth = AppSizes.maxWidth;
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     path.moveTo(0, AppSizes.maxHeight / 4);
     path.quadraticBezierTo(maxWidth / 4, maxHeight / 4,
-        maxWidth / 2.55 - maxWidth * 0.2, maxHeight / 2.6);
+        AppSizes.maxWidthTablet > 0 ? maxWidth / 2 - maxWidth * 0.21 : maxWidth / 2.55 - maxWidth * 0.2, maxHeight / 2.6);
 
     return path;
   }
 
   Path drawPathChicken3() {
     Path path = Path();
-    double maxWidth = AppSizes.maxWidth;
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     path.moveTo(0, AppSizes.maxHeight / 4);
     path.quadraticBezierTo(maxWidth / 4, maxHeight / 4,
-        maxWidth / 2.3 - 2 * maxWidth * 0.205, maxHeight / 2.3);
+        AppSizes.maxWidthTablet > 0 ? maxWidth / 2 - 2 * maxWidth * 0.185 : maxWidth / 2.3 - 2 * maxWidth * 0.205, maxHeight / 2.3);
 
     return path;
   }
 
   Path drawPathChicken2() {
     Path path = Path();
-    double maxWidth = AppSizes.maxWidth;
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     path.moveTo(maxWidth, AppSizes.maxHeight / 4);
     path.quadraticBezierTo(maxWidth - maxWidth / 4, maxHeight / 4,
@@ -427,7 +439,9 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
 
   Path drawPathChicken4() {
     Path path = Path();
-    double maxWidth = AppSizes.maxWidth;
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     path.moveTo(maxWidth, AppSizes.maxHeight / 4);
     path.quadraticBezierTo(maxWidth - maxWidth / 4, maxHeight / 4,
@@ -471,15 +485,36 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop:false,
+      canPop: false,
       child: Scaffold(
-        body: Container(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              _buildBottom(),
-              _buildContent(),
-            ],
+        backgroundColor: Color(0xFFFACA44),
+        body: Responsive(
+          mobile: Container(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBottom(),
+                _buildContent(),
+              ],
+            ),
+          ),
+          tablet: Container(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBottom(),
+                _buildContent(),
+              ],
+            ),
+          ),
+          desktop: Container(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBottom(),
+                _buildContent(),
+              ],
+            ),
           ),
         ),
       ),

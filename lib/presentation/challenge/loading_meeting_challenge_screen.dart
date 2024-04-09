@@ -50,6 +50,9 @@ class _LoadingMeetingChallengeScreenState
     _configChickenFisrt();
     _configChickenSecond();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   _configChickenFisrt();
+    // _configChickenSecond();
+
       _controllerChicken1.forward();
       _controllerChicken2.forward();
       await Future.delayed(Duration(seconds: 3));
@@ -122,6 +125,7 @@ class _LoadingMeetingChallengeScreenState
         setState(() {});
       }
     });
+    
     _pathChicken2 = drawPathChicken2();
   }
 
@@ -140,8 +144,8 @@ class _LoadingMeetingChallengeScreenState
             transform: Matrix4.rotationY(0),
             child: Image.asset(
               Assets.chicken_flapping_swing_gif,
-              fit: BoxFit.fitHeight,
-              width: AppSizes.maxWidth * 0.2,
+              fit: BoxFit.contain,
+              width:  AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidth * 0.33 : AppSizes.maxWidth * 0.2,
               height: AppSizes.maxHeight * 0.12,
             ),
           ),
@@ -162,8 +166,8 @@ class _LoadingMeetingChallengeScreenState
             transform: Matrix4.rotationY(pi),
             child: Image.asset(
               Assets.chicken_flapping_swing_gif,
-              fit: BoxFit.fitHeight,
-              width: AppSizes.maxWidth * 0.2,
+              fit: BoxFit.contain,
+              width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidth * 0.33 : AppSizes.maxWidth * 0.2,
               height: AppSizes.maxHeight * 0.12,
             ),
           ),
@@ -233,7 +237,7 @@ class _LoadingMeetingChallengeScreenState
 
   Path drawPathChicken1() {
     Path path = Path();
-    double maxWidth = AppSizes.maxWidth;
+    double maxWidth = AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     path.moveTo(0, AppSizes.maxHeight / 4);
     path.quadraticBezierTo(
@@ -244,7 +248,7 @@ class _LoadingMeetingChallengeScreenState
 
   Path drawPathChicken2() {
     Path path = Path();
-    double maxWidth = AppSizes.maxWidth;
+    double maxWidth = AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     path.moveTo(maxWidth, AppSizes.maxHeight / 4);
     path.quadraticBezierTo(maxWidth - maxWidth / 4, maxHeight / 4,
@@ -274,7 +278,8 @@ class _LoadingMeetingChallengeScreenState
     return PopScope(
       canPop:false,
       child: Scaffold(
-        body: Container(
+        backgroundColor: Color(0xFFFACA44),
+        body: Responsive(mobile: Container(
           child: Stack(
             fit: StackFit.loose,
             children: [
@@ -282,7 +287,23 @@ class _LoadingMeetingChallengeScreenState
               _buildContent(),
             ],
           ),
-        ),
+        ), tablet: Container(
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
+              _buildBottom(),
+              _buildContent(),
+            ],
+          ),
+        ), desktop: Container(
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
+              _buildBottom(),
+              _buildContent(),
+            ],
+          ),
+        )),
       ),
     );
   }

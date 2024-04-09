@@ -68,13 +68,25 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Responsive(mobile: Stack(
         fit: StackFit.expand,
         children: [
           _buildBackground(),
           _buildContent(),
         ],
-      ),
+      ), tablet: Stack(
+        fit: StackFit.expand,
+        children: [
+          _buildBackground(),
+          _buildContent(),
+        ],
+      ), desktop: Stack(
+        fit: StackFit.expand,
+        children: [
+          _buildBackground(),
+          _buildContent(),
+        ],
+      )),
     );
   }
 }

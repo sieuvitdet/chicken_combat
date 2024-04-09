@@ -30,7 +30,7 @@ class CustomButtomImageColorWidget extends StatelessWidget {
             redColor ? Assets.img_button_red : 
             yellowColor ? Assets.img_button_yellow : Assets.img_button_grey ,
             fit: BoxFit.fill,
-            height: 48,
+            height: AppSizes.maxHeight*0.0535,
             width: AppSizes.maxWidth),
           child ?? Container()
 

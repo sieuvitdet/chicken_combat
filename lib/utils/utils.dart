@@ -25,7 +25,6 @@ static int currentNote = 0;
                 onTapClose: onTapClose,
                 onTapContinous: onTapContinous,
                 onTapExit: onTapExit,
-                onTapPlayBack: onTapPlayBack,
                 plusNote: () {
                   if (GlobalSetting.currentNote >= 10) {
                     return;

@@ -2,6 +2,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:flutter/material.dart';
 
 class LoadingChallegenScreen extends StatefulWidget {
@@ -256,7 +257,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     return PopScope(
       canPop:false,
       child: Scaffold(
-        body: Container(
+        body: Responsive(mobile: Container(
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -265,7 +266,25 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
               _buildContent(),
             ],
           ),
-        ),
+        ),desktop: Container(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
+              _buildContent(),
+            ],
+          ),
+        ),tablet: Container(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
+              _buildContent(),
+            ],
+          ),
+        ),),
       ),
     );
   }

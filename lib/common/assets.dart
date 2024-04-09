@@ -62,6 +62,36 @@ class Assets {
   static final String img_bg_skin_shop = "assets/images/img_bg_skin_shop.png";
   static final String img_chicken_brown = "assets/images/img_chicken_brown.png";
   static final String img_tomato_broken = "assets/images/img_tomato_broken.png";
+  static final String img_bg_popup_confirm = "assets/images/img_bg_popup_confirm.png";
+  static final String img_background_item_shop = "assets/images/img_background_item_shop.png";
+  static final String img_button_coin_shop = "assets/images/img_button_coin_shop.png";
+  static final String img_button_diamond_shop = "assets/images/img_button_diamond_shop.png";
+  static final String img_button_popup_confirm = "assets/images/img_button_popup_confirm.png";
+  static final String img_button_popup_logout = "assets/images/img_button_popup_logout.png";
+  static final String img_coin_border_white = "assets/images/img_coin_border_white.png";
+  static final String img_diamond_border_white = "assets/images/img_diamond_border_white.png";
+  static final String img_hot_item = "assets/images/img_hot_item.png";
+  static final String img_roof_shop = "assets/images/img_roof_shop.png";
+  static final String img_tab_button_unselected_shop = "assets/images/img_tab_button_unselected_shop.png";
+  static final String img_text_shop = "assets/images/img_text_shop.png";
+  static final String img_tab_button_selected_shop = "assets/images/img_tab_button_selected_shop.png";
+  static final String img_chicken_bear_premium = "assets/images/img_chicken_bear_premium.png";
+  static final String img_chicken_bear_white_premium = "assets/images/img_chicken_bear_white_premium.png";
+  static final String img_hat_scholar = "assets/images/img_hat_scholar.png";
+  static final String img_breath_machine = "assets/images/img_breath_machine.png";
+  static final String img_mask = "assets/images/img_mask.png";
+  static final String img_chicken_bear_fall = "assets/images/img_chicken_bear_fall.png";
+  static final String img_chicken_black_fall = "assets/images/img_chicken_black_fall.png";
+  static final String img_chicken_brown_fall = "assets/images/img_chicken_brown_fall.png";
+  static final String img_chicken_white_0 = "assets/images/img_chicken_white_0.png";
+  static final String img_chicken_white_fall = "assets/images/img_chicken_white_fall.png";
+  static final String img_chicken_red_fall = "assets/images/img_chicken_red_fall.png";
+  static final String img_chicken_brown_circleface_premium = "assets/images/img_chicken_brown_circleface_premium.png";
+  static final String img_chicken_blue_fall = "assets/images/img_chicken_blue_fall.png";
+  static final String img_chicken_green_fall = "assets/images/img_chicken_green_fall.png";
+  static final String img_banner_ranking = "assets/images/img_banner_ranking.png";
+  static final String img_treasure = "assets/images/img_treasure.png";
+  static final String img_item_ranking = "assets/images/img_item_ranking.png";
 
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";
@@ -87,8 +117,6 @@ class Assets {
   static final String ic_stt_redblur = "assets/icons/ic_stt_redblur.png";
   static final String ic_gun = "assets/icons/ic_gun.png";
 
-
-
   //gif
   static final String chicken_flapping_swing_gif = "assets/images/chicken_gif.gif";
   static final String gif_chicken_swimming = "assets/images/gif_chicken_swimming.gif";
@@ -96,4 +124,8 @@ class Assets {
   static final String gif_background_solo = "assets/images/gif_background_solo.gif"; 
   static final String gif_background_sea = "assets/images/gif_background_sea.gif";
   static final String gif_boom = "assets/images/gif_boom.gif";
+  static final String gif_chicken_brown = "assets/images/gif_chicken_brown.gif";
+  static final String gif_snow_home = "assets/images/gif_snow_home.gif";
+  static final String gif_chicken_black_dance = "assets/images/gif_chicken_black_dance.gif";
+  
 }

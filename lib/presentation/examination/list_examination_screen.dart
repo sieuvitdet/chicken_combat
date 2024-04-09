@@ -28,10 +28,10 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image(
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.contain,
           image: AssetImage(Assets.chicken_flapping_swing_gif),
-          width: AppSizes.maxWidth * 0.3,
-          height: AppSizes.maxHeight * 0.18,
+          width: AppSizes.maxWidth * 0.34,
+          height: AppSizes.maxHeight * 0.2,
         ),
         ..._listMap()
       ],
@@ -66,12 +66,47 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildBackground(),
-          _buildContent(),
-        ],
+      backgroundColor: Color(0xFFFACA44),
+      body: Responsive(
+        mobile: Center(
+          child: Container(
+            width: AppSizes.maxWidth,
+            height: AppSizes.maxHeight,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBackground(),
+                _buildContent(),
+              ],
+            ),
+          ),
+        ),
+        tablet: Center(
+          child: Container(
+            width: AppSizes.maxWidth,
+            height: AppSizes.maxHeight,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBackground(),
+                _buildContent(),
+              ],
+            ),
+          ),
+        ),
+        desktop: Center(
+          child: Container(
+            width: AppSizes.maxWidth,
+            height: AppSizes.maxHeight,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBackground(),
+                _buildContent(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

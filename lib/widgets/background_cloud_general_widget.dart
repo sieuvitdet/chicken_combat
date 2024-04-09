@@ -210,14 +210,18 @@ late AnimationController _controller1;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        fit: StackFit.loose,
-        children: [
-          SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
-          _buildContent(),
-        ],
+    return Center(
+      child: Container(
+        width: AppSizes.maxWidth,
+        height: AppSizes.maxHeight,
+        child: Stack(
+          fit: StackFit.loose,
+          children: [
+            SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
+            _buildContent(),
+          ],
+        ),
       ),
     );
   }
@@ -250,17 +254,21 @@ class Responsive extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth >= 1100) {
-          AppSizes.maxWidth = constraints.maxWidth/4;
+          AppSizes.maxWidth = 414;
+          AppSizes.maxHeight = constraints.maxHeight;
+          AppSizes.maxWidthTablet = constraints.maxWidth;
           return desktop;
         }
         else if (constraints.maxWidth >= 650) {
-          // AppSizes.maxWidth = constraints.maxWidth/2;
-          // AppSizes.maxHeight = constraints.maxHeight;
+          AppSizes.maxWidth = 414;
+          AppSizes.maxHeight = constraints.maxHeight;
+          AppSizes.maxWidthTablet = constraints.maxWidth;
           return tablet;
         }
         else {
-          // AppSizes.maxWidth = constraints.maxWidth;
+          AppSizes.maxWidth = constraints.maxWidth;
           // AppSizes.maxHeight = constraints.maxHeight;
+          AppSizes.maxWidthTablet = 0.0;
           return mobile;
         }
       },

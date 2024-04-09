@@ -4,6 +4,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -23,11 +24,18 @@ class _LoginScreenState extends State<LoginScreen> {
     return PopScope(
       canPop:false,
       child: Scaffold(
-        body: Stack(
-          children: [
-            _buildBackground(),
-            _body()
-          ],
+        backgroundColor: Color(0xFFFACA44),
+        body: Center(
+          child: Container(
+            width: AppSizes.maxWidth,
+            height: AppSizes.maxHeight,
+            child: Stack(
+              children: [
+                _buildBackground(),
+                _body()
+              ],
+            ),
+          ),
         ),
         // body: Responsive(mobile: _body(),tablet: _body(),desktop: _body(),),
         bottomNavigationBar: Container(
@@ -66,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
           physics: NeverScrollableScrollPhysics(),
           child: Container(
             height: AppSizes.maxHeight,
+            width: AppSizes.maxWidth,
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -170,9 +179,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       return StatefulBuilder(
                         builder: (BuildContext context,
                             void Function(void Function()) setState) {
-                          return DialogCongratulationLevelWidget(ontapExit: () {
+                          // return DialogCongratulationLevelWidget(ontapExit: () {
+                          //   Navigator.of(context).pop();
+                          // },
+                          // );
+                           return DialogConfirmWidget(cancel: () {
                             Navigator.of(context).pop();
-                          },);
+                           },
+                           agree: () {
+                            Navigator.of(context).pop(true);
+                           },);
                           
                         },
                       );

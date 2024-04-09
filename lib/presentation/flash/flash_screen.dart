@@ -239,7 +239,14 @@ class _FlashScreenState extends State<FlashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Responsive(desktop: Stack(
+          fit: StackFit.loose,
+          children: [
+            SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
+            _buildContent(),
+          ],
+        ),mobile: Stack(
           fit: StackFit.loose,
           children: [
             SingleChildScrollView(
@@ -247,6 +254,14 @@ class _FlashScreenState extends State<FlashScreen>
             _buildContent(),
           ],
         ),
+        tablet: Stack(
+          fit: StackFit.loose,
+          children: [
+            SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(), child: _buildBottom()),
+            _buildContent(),
+          ],
+        ),),
     );
   }
 }

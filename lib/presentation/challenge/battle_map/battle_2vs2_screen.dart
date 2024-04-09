@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/utils/utils.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class Battle2Vs2Screen extends StatefulWidget {
   State<Battle2Vs2Screen> createState() => _Battle2Vs2ScreenState();
 }
 
-class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProviderStateMixin {
+class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -34,11 +36,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
   late AnimationController _controllerGun;
   late Animation<double> _animationGun;
 
-
   int _currentEnemyBlood = 10;
   int _currentMyBlood = 10;
   late Timer _timer;
-  int _start = 30;
+  int _start = 5;
   int _total = 10;
   double _topWaterShot = 0.0;
   bool? isEnemyWin = null;
@@ -52,19 +53,22 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
   void initState() {
     super.initState();
     if (_isTomato) {
-      _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
+      _topWaterShot = AppSizes.maxHeight > 800
+          ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14
+          : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
     } else {
-      _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
+      _topWaterShot = AppSizes.maxHeight > 800
+          ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14
+          : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
     }
-    _configAnimation();
-    _configWaterShotAnimation();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _configAnimation();
+      _configWaterShotAnimation();
       _startTimer();
     });
   }
 
-
-@override
+  @override
   void dispose() {
     super.dispose();
     _controller.dispose();
@@ -72,10 +76,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
     _controllerGun.dispose();
     _controllerWaterLeftToRight.dispose();
     _controllerWaterRightToLeft.dispose();
+    _timer.cancel();
   }
-
-
-  
 
   _configAnimation() {
     _controllerFirst = AnimationController(
@@ -135,23 +137,21 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
       vsync: this,
       duration: Duration(seconds: 1),
     );
-    _animationGun = Tween<double>(begin: 0.0, end: -30.0).animate(_controllerGun)
-      ..addListener(() {
-        setState(() {
-          // Rebuild the widget when animation value changes
-        });
-      });
+    _animationGun =
+        Tween<double>(begin: 0.0, end: -30.0).animate(_controllerGun)
+          ..addListener(() {
+            setState(() {
+              // Rebuild the widget when animation value changes
+            });
+          });
 
     _controllerGun.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         setState(() {
           _controllerGun.reset();
-
         });
       }
     });
-
-    
   }
 
   void _configWaterShotAnimation() {
@@ -226,9 +226,12 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
 
   Path drawPathLeftToRight() {
     Path path = Path();
-    path.moveTo(16 + AppSizes.maxWidth * 0.18, _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
-        AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
+    path.moveTo(16 + maxWidth * 0.18, _topWaterShot);
+    path.quadraticBezierTo(maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
+        maxWidth - (40 + maxWidth * 0.18), _topWaterShot);
     return path;
   }
 
@@ -242,10 +245,12 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
 
   Path drawPathRightToLeft() {
     Path path = Path();
-    path.moveTo(
-        AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
-        16 + AppSizes.maxWidth * 0.18, _topWaterShot);
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
+    path.moveTo(maxWidth - (40 + maxWidth * 0.18), _topWaterShot);
+    path.quadraticBezierTo(maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
+        16 + maxWidth * 0.18, _topWaterShot);
     return path;
   }
 
@@ -261,13 +266,18 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
     return Container(
       color: Colors.amber,
       height: AppSizes.maxHeight * 0.35,
+      width: AppSizes.maxWidthTablet > 0
+          ? AppSizes.maxWidthTablet
+          : AppSizes.maxWidth,
       child: Stack(
         children: [
           Image(
             image: AssetImage(Assets.gif_background_sea),
             fit: BoxFit.fill,
             height: AppSizes.maxHeight,
-            width: AppSizes.maxWidth,
+            width: AppSizes.maxWidthTablet > 0
+                ? AppSizes.maxWidthTablet
+                : AppSizes.maxWidth,
           ),
           _menu(),
           Positioned(
@@ -333,22 +343,23 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
                 ),
               ),
             ),
-             if (_start > 0) Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset((Assets.ic_boom),width: 24),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Text(
-                    "$_start s",
-                    style: TextStyle(fontSize: 16, color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              ],
-            ),
+            if (_start > 0)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset((Assets.ic_boom), width: 24),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: Text(
+                      "$_start s",
+                      style: TextStyle(fontSize: 16, color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
             SizedBox(
-              height: 16,
+              height: AppSizes.maxHeight*0.02,
             ),
           ],
         ),
@@ -359,14 +370,15 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
             child: Image(
               image: AssetImage(Assets.img_line_table),
             )),
-
-            if (_start == 0) Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Image(
-              image: AssetImage(Assets.gif_boom),height: 100,
-            ))
+        if (_start == 0)
+          Positioned(
+              bottom: 16,
+              left: 0,
+              right: 0,
+              child: Image(
+                image: AssetImage(Assets.gif_boom),
+                height: AppSizes.maxHeight * 0.3,
+              ))
       ],
     );
   }
@@ -380,102 +392,102 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
         ),
         (isEnemyWin != null && isEnemyWin!)
             ? Stack(
-              children: [
-                Row(
-                  children: [
-                    Transform.rotate(
-                    angle: _animationFirst.value *
-                        3.1415926535 /
-                        120, // Convert degrees to radians
-                    origin:
-                        Offset(0, 20), // Set the origin to BottomLeft coordinate
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(pi),
-                      child: ShakeWidget(
-                        duration: const Duration(seconds: 10),
-                        shakeConstant: ShakeDefaultConstant1(),
-                        autoPlay: true,
-                        child: Image.asset(
-                          Assets.img_chicken_fall,
-                          fit: BoxFit.contain,
-                          width: AppSizes.maxWidth * 0.08,
-                        ),
-                      ),
-                    )), 
-                    Transform.rotate(
-                    angle: _animationFirst.value *
-                        3.1415926535 /
-                        360, // Convert degrees to radians
-                    origin:
-                        Offset(0, 20), // Set the origin to BottomLeft coordinate
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(pi),
-                      child: ShakeWidget(
-                        duration: const Duration(seconds: 10),
-                        shakeConstant: ShakeDefaultConstant1(),
-                        autoPlay: true,
-                        child: Image.asset(
-                          Assets.img_chicken_fall,
-                          fit: BoxFit.contain,
-                          width: AppSizes.maxWidth * 0.1,
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-                
-              ],
-            )
-            : Stack(
-              children: [
-                Row(
-                  children: [
-                    Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(0),
-                    child: ShakeWidget(
-                      duration: const Duration(seconds: 10),
-                      shakeConstant: ShakeDefaultConstant1(),
-                      autoPlay: true,
-                      child: Image.asset(
-                        Assets.img_chicken_black,
-                        fit: BoxFit.contain,
-                        width: AppSizes.maxWidth * 0.09,
-                      ),
-                    ),
-                  ),Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(0),
-                    child: ShakeWidget(
-                      duration: const Duration(seconds: 10),
-                      shakeConstant: ShakeDefaultConstant1(),
-                      autoPlay: true,
-                      child: Image.asset(
-                        Assets.img_chicken_black,
-                        fit: BoxFit.contain,
-                        width: AppSizes.maxWidth * 0.1,
-                      ),
-                    ),
+                children: [
+                  Row(
+                    children: [
+                      Transform.rotate(
+                          angle: _animationFirst.value *
+                              3.1415926535 /
+                              120, // Convert degrees to radians
+                          origin: Offset(
+                              0, 20), // Set the origin to BottomLeft coordinate
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.rotationY(pi),
+                            child: ShakeWidget(
+                              duration: const Duration(seconds: 10),
+                              shakeConstant: ShakeDefaultConstant1(),
+                              autoPlay: true,
+                              child: Image.asset(
+                                Assets.img_chicken_fall,
+                                fit: BoxFit.contain,
+                                width: AppSizes.maxWidth * 0.08,
+                              ),
+                            ),
+                          )),
+                      Transform.rotate(
+                          angle: _animationFirst.value *
+                              3.1415926535 /
+                              360, // Convert degrees to radians
+                          origin: Offset(
+                              0, 20), // Set the origin to BottomLeft coordinate
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.rotationY(pi),
+                            child: ShakeWidget(
+                              duration: const Duration(seconds: 10),
+                              shakeConstant: ShakeDefaultConstant1(),
+                              autoPlay: true,
+                              child: Image.asset(
+                                Assets.img_chicken_fall,
+                                fit: BoxFit.contain,
+                                width: AppSizes.maxWidth * 0.1,
+                              ),
+                            ),
+                          ))
+                    ],
                   ),
-                  ],
-                ),
-                // if ((waterShotLeftToRight != null && waterShotLeftToRight!)) Transform.rotate(
-                //     angle: _animationGun.value *
-                //         3.1415926535 /
-                //         120,
-                //     child: Transform.rotate(
-                //       angle: 70,
-                //       child: Image.asset(
-                //         Assets.ic_gun,
-                //         fit: BoxFit.contain,
-                //         width: 50,
-                //         height: 50,
-                //       ),
-                //     ))
-              ],
-            ),
+                ],
+              )
+            : Stack(
+                children: [
+                  Row(
+                    children: [
+                      Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(0),
+                        child: ShakeWidget(
+                          duration: const Duration(seconds: 10),
+                          shakeConstant: ShakeDefaultConstant1(),
+                          autoPlay: true,
+                          child: Image.asset(
+                            Assets.img_chicken_black,
+                            fit: BoxFit.contain,
+                            width: AppSizes.maxWidth * 0.09,
+                          ),
+                        ),
+                      ),
+                      Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(0),
+                        child: ShakeWidget(
+                          duration: const Duration(seconds: 10),
+                          shakeConstant: ShakeDefaultConstant1(),
+                          autoPlay: true,
+                          child: Image.asset(
+                            Assets.img_chicken_black,
+                            fit: BoxFit.contain,
+                            width: AppSizes.maxWidth * 0.1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // if ((waterShotLeftToRight != null && waterShotLeftToRight!)) Transform.rotate(
+                  //     angle: _animationGun.value *
+                  //         3.1415926535 /
+                  //         120,
+                  //     child: Transform.rotate(
+                  //       angle: 70,
+                  //       child: Image.asset(
+                  //         Assets.ic_gun,
+                  //         fit: BoxFit.contain,
+                  //         width: 50,
+                  //         height: 50,
+                  //       ),
+                  //     ))
+                ],
+              ),
         Container(
           margin: EdgeInsets.only(top: 8.0),
           padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -535,75 +547,78 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
       children: [
         Text(
           "Covid Team",
-          style: TextStyle(color: Colors.black, fontSize: 14,fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
         ),
         (isEnemyWin != null && !isEnemyWin!)
             ? Row(
-              children: [
-                Transform.rotate(
-                angle: _animation.value *
-                    3.1415926535 /
-                    180, // Convert degrees to radians
-                origin:
-                    Offset(0, 20), // Set the origin to BottomLeft coordinate
-                child: ShakeWidget(
-                  duration: const Duration(seconds: 10),
-                  shakeConstant: ShakeDefaultConstant1(),
-                  autoPlay: true,
-                  child: Image.asset(
-                    Assets.img_chicken_fall,
-                    fit: BoxFit.contain,
-                    width: AppSizes.maxWidth * 0.1,
-                  ),
-                )),Transform.rotate(
-                angle: _animation.value *
-                    3.1415926535 /
-                    120, // Convert degrees to radians
-                origin:
-                    Offset(0, 20), // Set the origin to BottomLeft coordinate
-                child: ShakeWidget(
-                  duration: const Duration(seconds: 10),
-                  shakeConstant: ShakeDefaultConstant1(),
-                  autoPlay: true,
-                  child: Image.asset(
-                    Assets.img_chicken_fall,
-                    fit: BoxFit.contain,
-                    width: AppSizes.maxWidth * 0.09,
-                  ),
-                ))
-              ],
-            )
-            : Row(
-              children: [
-                Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(pi),
-                child: ShakeWidget(
-                  duration: const Duration(seconds: 10),
-                  shakeConstant: ShakeDefaultConstant1(),
-                  autoPlay: true,
-                  child: Image.asset(
-                    Assets.img_chicken_blue,
-                    fit: BoxFit.contain,
-                    width: AppSizes.maxWidth * 0.1,
-                  ),
-                ),
-              ),Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(pi),
-                child: ShakeWidget(
-                  duration: const Duration(seconds: 10),
-                  shakeConstant: ShakeDefaultConstant1(),
-                  autoPlay: true,
-                  child: Image.asset(
-                    Assets.img_chicken_green,
-                    fit: BoxFit.contain,
-                    width: AppSizes.maxWidth * 0.09,
-                  ),
-                ),
+                children: [
+                  Transform.rotate(
+                      angle: _animation.value *
+                          3.1415926535 /
+                          180, // Convert degrees to radians
+                      origin: Offset(
+                          0, 20), // Set the origin to BottomLeft coordinate
+                      child: ShakeWidget(
+                        duration: const Duration(seconds: 10),
+                        shakeConstant: ShakeDefaultConstant1(),
+                        autoPlay: true,
+                        child: Image.asset(
+                          Assets.img_chicken_fall,
+                          fit: BoxFit.contain,
+                          width: AppSizes.maxWidth * 0.1,
+                        ),
+                      )),
+                  Transform.rotate(
+                      angle: _animation.value *
+                          3.1415926535 /
+                          120, // Convert degrees to radians
+                      origin: Offset(
+                          0, 20), // Set the origin to BottomLeft coordinate
+                      child: ShakeWidget(
+                        duration: const Duration(seconds: 10),
+                        shakeConstant: ShakeDefaultConstant1(),
+                        autoPlay: true,
+                        child: Image.asset(
+                          Assets.img_chicken_fall,
+                          fit: BoxFit.contain,
+                          width: AppSizes.maxWidth * 0.09,
+                        ),
+                      ))
+                ],
               )
-              ],
-            ),
+            : Row(
+                children: [
+                  Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(pi),
+                    child: ShakeWidget(
+                      duration: const Duration(seconds: 10),
+                      shakeConstant: ShakeDefaultConstant1(),
+                      autoPlay: true,
+                      child: Image.asset(
+                        Assets.img_chicken_blue,
+                        fit: BoxFit.contain,
+                        width: AppSizes.maxWidth * 0.1,
+                      ),
+                    ),
+                  ),
+                  Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(pi),
+                    child: ShakeWidget(
+                      duration: const Duration(seconds: 10),
+                      shakeConstant: ShakeDefaultConstant1(),
+                      autoPlay: true,
+                      child: Image.asset(
+                        Assets.img_chicken_green,
+                        fit: BoxFit.contain,
+                        width: AppSizes.maxWidth * 0.09,
+                      ),
+                    ),
+                  )
+                ],
+              ),
         Container(
           margin: EdgeInsets.only(top: 8.0),
           padding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -733,8 +748,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
         blueColor: i == 1,
         yellowColor: i == 2,
         redBlurColor: i == 3,
-        child:
-            Text("Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
+        child: Text("Đáp án ${i + 1}",
+            style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: ontap,
       ),
     );
@@ -770,15 +785,17 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop:false,
+      canPop: false,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
+        body: Responsive(mobile: Column(
           children: [
             _header(),
             Expanded(
                 child: Container(
-                    width: AppSizes.maxWidth,
+                    width: AppSizes.maxWidthTablet > 0
+                        ? AppSizes.maxWidthTablet
+                        : AppSizes.maxWidth,
                     decoration: BoxDecoration(
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
@@ -788,7 +805,41 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>  with TickerProvide
               height: AppSizes.bottomHeight,
             )
           ],
-        ),
+        ), tablet: Column(
+          children: [
+            _header(),
+            Expanded(
+                child: Container(
+                    width: AppSizes.maxWidthTablet > 0
+                        ? AppSizes.maxWidthTablet
+                        : AppSizes.maxWidth,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 4, color: Color(0xFFE97428)),
+                        color: Color(0xFF467865)),
+                    child: _body())),
+            ..._listAnswer(),
+            SizedBox(
+              height: AppSizes.bottomHeight,
+            )
+          ],
+        ), desktop: Column(
+          children: [
+            _header(),
+            Expanded(
+                child: Container(
+                    width: AppSizes.maxWidthTablet > 0
+                        ? AppSizes.maxWidthTablet
+                        : AppSizes.maxWidth,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 4, color: Color(0xFFE97428)),
+                        color: Color(0xFF467865)),
+                    child: _body())),
+            ..._listAnswer(),
+            SizedBox(
+              height: AppSizes.bottomHeight,
+            )
+          ],
+        )),
       ),
     );
   }

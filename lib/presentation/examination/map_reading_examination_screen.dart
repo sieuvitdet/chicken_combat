@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/utils/utils.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_menu_action_widget.dart';
 import 'package:flutter/material.dart';
@@ -230,7 +231,7 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
                 ],
                 title: Text("Level 1",
                     style: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.w500))),
-              backgroundColor: Color(0xFFFACA44), body: _buildContent()),
+              backgroundColor: Color(0xFFFACA44), body: Responsive(mobile: _buildContent(), tablet: _buildContent(), desktop: _buildContent())),
       ),
     );
   }

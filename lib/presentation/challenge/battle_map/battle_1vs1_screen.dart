@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/utils/utils.dart';
+import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
 import 'package:flutter/material.dart';
@@ -52,11 +53,27 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     } else {
       _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
     }
-    _configAnimation();
-    _configWaterShotAnimation();
+    // _configAnimation();
+    // _configWaterShotAnimation();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _configAnimation();
+    _configWaterShotAnimation();
       _startTimer();
     });
+  }
+
+   void dispose() {
+    _controller.dispose();
+    _controllerWaterLeftToRight.dispose();
+    _controllerWaterRightToLeft.dispose();
+    _controllerFirst.dispose();
+    _controller.removeListener(() { });
+    _controllerFirst.removeListener(() { });
+    _controllerWaterLeftToRight.removeListener(() { });
+    _controllerWaterRightToLeft.removeListener(() { });
+    _timer.cancel();
+
+    super.dispose();
   }
 
   _configAnimation() {
@@ -172,9 +189,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   Path drawPathLeftToRight() {
     Path path = Path();
-    path.moveTo(16 + AppSizes.maxWidth * 0.18, _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
-        AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
+    path.moveTo(16 + maxWidth * 0.18, _topWaterShot);
+    path.quadraticBezierTo(maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
+        maxWidth - (40 + maxWidth * 0.18), _topWaterShot);
     return path;
   }
 
@@ -188,10 +208,13 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   Path drawPathRightToLeft() {
     Path path = Path();
+    double maxWidth = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     path.moveTo(
-        AppSizes.maxWidth - (40 + AppSizes.maxWidth * 0.18), _topWaterShot);
-    path.quadraticBezierTo(AppSizes.maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
-        16 + AppSizes.maxWidth * 0.18, _topWaterShot);
+        maxWidth - (40 + maxWidth * 0.18), _topWaterShot);
+    path.quadraticBezierTo(maxWidth / 2, _topWaterShot - (_isTomato ? 50 : 0),
+        16 + maxWidth * 0.18, _topWaterShot);
     return path;
   }
 
@@ -207,13 +230,14 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Container(
       color: Colors.amber,
       height: AppSizes.maxHeight * 0.35,
+      width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth,
       child: Stack(
         children: [
           Image(
             image: AssetImage(Assets.gif_background_sea),
             fit: BoxFit.fill,
             height: AppSizes.maxHeight,
-            width: AppSizes.maxWidth,
+            width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth,
           ),
           _menu(),
           Positioned(
@@ -294,7 +318,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               ],
             ),
             SizedBox(
-              height: 16,
+              height: AppSizes.maxHeight*0.02,
             ),
           ],
         ),
@@ -615,12 +639,13 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       canPop:false,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
+        body: Responsive(mobile: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _header(),
             Expanded(
                 child: Container(
-                    width: AppSizes.maxWidth,
+                    width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth,
                     decoration: BoxDecoration(
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
@@ -630,7 +655,39 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               height: AppSizes.bottomHeight,
             )
           ],
-        ),
+        ),tablet: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _header(),
+            Expanded(
+                child: Container(
+                    width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 4, color: Color(0xFFE97428)),
+                        color: Color(0xFF467865)),
+                    child: _body())),
+            ..._listAnswer(),
+            SizedBox(
+              height: AppSizes.bottomHeight,
+            )
+          ],
+        ),desktop: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _header(),
+            Expanded(
+                child: Container(
+                    width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 4, color: Color(0xFFE97428)),
+                        color: Color(0xFF467865)),
+                    child: _body())),
+            ..._listAnswer(),
+            SizedBox(
+              height: AppSizes.bottomHeight,
+            )
+          ],
+        ),),
       ),
     );
   }

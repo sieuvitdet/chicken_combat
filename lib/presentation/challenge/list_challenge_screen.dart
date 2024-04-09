@@ -28,8 +28,8 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image(
-          fit: BoxFit.fitHeight,
-          image: AssetImage(Assets.chicken_flapping_swing_gif),
+          fit: BoxFit.contain,
+          image: AssetImage(Assets.gif_chicken_black_dance),
           width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.18,
         ),
@@ -74,13 +74,26 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      backgroundColor: Color(0xFFFACA44),
+      body: Responsive(mobile: Stack(
         fit: StackFit.expand,
         children: [
           _buildBackground(),
           _buildContent(),
         ],
-      ),
+      ),tablet: Stack(
+        fit: StackFit.expand,
+        children: [
+          _buildBackground(),
+          _buildContent(),
+        ],
+      ),desktop: Stack(
+        fit: StackFit.expand,
+        children: [
+          _buildBackground(),
+          _buildContent(),
+        ],
+      ),),
     );
   }
 }

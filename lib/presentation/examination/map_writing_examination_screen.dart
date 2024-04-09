@@ -174,6 +174,7 @@ class _MapWritingExaminationScreenState
 
   Widget _buildContent() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
             child: CustomListView(
@@ -256,7 +257,7 @@ class _MapWritingExaminationScreenState
               right: 16,
               child: Image(image: AssetImage(Assets.img_line_table))),
           Positioned(
-              bottom: 16,
+              bottom: AppSizes.maxHeight*0.02,
               right: 24,
               child: Text(
                 "${page + 1}/${pages.length}",
@@ -386,7 +387,7 @@ class _MapWritingExaminationScreenState
       bottom: false,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
+        child: Scaffold(  
             appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 leading: IconTheme(
@@ -435,8 +436,19 @@ class _MapWritingExaminationScreenState
                         fontSize: 28,
                         fontWeight: FontWeight.w500))),
             backgroundColor: Color(0xFFFACA44),
-            body: Stack(
+            body: Responsive(
+              mobile: Stack(
+                alignment: Alignment.center,
               children: [_buildBackground(), _buildContent()],
+            ),
+            tablet: Stack(
+              alignment: Alignment.center,
+              children: [_buildBackground(), _buildContent()],
+            ),
+            desktop: Stack(
+              alignment: Alignment.center,
+              children: [_buildBackground(), _buildContent()],
+            ),
             )),
       ),
     );

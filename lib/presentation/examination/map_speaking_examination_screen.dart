@@ -129,7 +129,6 @@ class _MapSpeakingExaminationScreenState
     return BackGroundCloudWidget();
   }
 
-
   Widget _body() {
     return Expanded(
       child: Stack(
@@ -272,7 +271,7 @@ class _MapSpeakingExaminationScreenState
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
-          appBar: AppBar(
+            appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 leading: IconTheme(
                   data: IconThemeData(size: 24.0), // Set the size here
@@ -287,30 +286,40 @@ class _MapSpeakingExaminationScreenState
                   Padding(
                     padding: EdgeInsets.only(right: 16),
                     child: GestureDetector(
-                      onTap: () {
-                       GlobalSetting.shared.showPopup(context,onTapClose: () {
-                          Navigator.of(context).pop();
-
+                        onTap: () {
+                          GlobalSetting.shared.showPopup(context,
+                              onTapClose: () {
+                            Navigator.of(context).pop();
+                          }, onTapExit: () {
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop()
+                              ..pop();
+                          }, onTapContinous: () {
+                            Navigator.of(context).pop();
+                          }, onTapPlayBack: () {
+                            Navigator.of(context).pop();
+                          });
                         },
-                        onTapExit: () {
-                          Navigator.of(context)..pop()..pop()..pop();
-                        },
-                        onTapContinous: () {
-                          Navigator.of(context).pop();
-                        },
-                        onTapPlayBack:() {
-                          Navigator.of(context).pop();
-                        });
-                      },
-                      child: Image.asset(Assets.ic_menu, height: 24)),
+                        child: Image.asset(Assets.ic_menu, height: 24)),
                   )
                 ],
                 title: Text("Level 1",
-                    style: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.w500))),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w500))),
             backgroundColor: Color(0xFFFACA44),
-            body: Stack(
-              children: [_buildBackground(), _buildContent()],
-            )),
+            body: Responsive(
+                mobile: Stack(
+                  children: [_buildBackground(), _buildContent()],
+                ),
+                tablet: Stack(
+                  children: [_buildBackground(), _buildContent()],
+                ),
+                desktop: Stack(
+                  children: [_buildBackground(), _buildContent()],
+                ))),
       ),
     );
   }

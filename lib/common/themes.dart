@@ -10,6 +10,7 @@ class AppSizes {
   static double screenHeightAppBar = 0.0;
   static double scaleWidth = 0.0;
   static double scaleHeight = 0.0;
+  static double maxWidthTablet = 0.0;
   //icon
 
   static init(BuildContext context) {
@@ -22,6 +23,7 @@ class AppSizes {
     screenHeight = maxHeight - statusBarHeight;
     scaleWidth = maxWidth/414;
     scaleHeight = maxHeight/896;
+    maxWidthTablet = MediaQuery.of(context).size.width;
   }
 
    static bool isSmallScreen(BuildContext context) {

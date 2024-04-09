@@ -1,4 +1,5 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +12,12 @@ class DialogMenuActionWidget extends StatelessWidget {
   final Function? onTapClose;
   final Function? onTapExit;
   final Function? onTapContinous;
-  final Function? onTapPlayBack;
   final Function? plusVolume; 
   final Function? minusVolume;
   final Function? plusNote; 
   final Function? minusNote;
 
-  DialogMenuActionWidget({this.currentVolume = 0,this.currentNote = 0,this.minusVolume,this.onTapContinous,this.onTapExit,this.onTapPlayBack,this.onTapClose,this.plusVolume,this.minusNote,this.plusNote});
+  DialogMenuActionWidget({this.currentVolume = 0,this.currentNote = 0,this.minusVolume,this.onTapContinous,this.onTapExit,this.onTapClose,this.plusVolume,this.minusNote,this.plusNote});
 
 
   @override
@@ -26,23 +26,24 @@ class DialogMenuActionWidget extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: Center(
           child: Container( 
-            width: 347,
-            height: 410,
+            width: AppSizes.maxWidth*0.838,
+            height: AppSizes.maxHeight*0.47,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Image.asset(
                   Assets.img_background_popup,
                   fit: BoxFit.fill,
+                  height: AppSizes.maxHeight*0.49,
                 ),
                 Column(
                   children: [
                     Container(
-                      height: 80,
+                      height: AppSizes.maxHeight*0.09,
                       child: Center(
                         child: Text(
                           "Cài đặt",
-                          style: TextStyle(fontSize: 40, color: Colors.white),
+                          style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 30 : 40, color: Colors.white),
                         ),
                       ),
                     ),
@@ -65,22 +66,22 @@ class DialogMenuActionWidget extends StatelessWidget {
                           _itemVolume(),
                           _itemNote(),
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: _listAction())
                         ],
                       ),
                     )),
                     SizedBox(
-                      height: 24,
+                      height: AppSizes.maxHeight*0.025,
                     )
                   ],
                 ),
                 Positioned(
                     right: 16,
-                    top: 22,
+                    top: AppSizes.maxHeight*0.0245,
                     child: ScalableButton(
                       onTap: onTapClose as void Function(),
-                      child: Image.asset(Assets.ic_close_popup, width: 48))),
+                      child: Image.asset(Assets.ic_close_popup, width: AppSizes.maxWidth*0.116))),
               ],
             ),
           ),
@@ -90,7 +91,7 @@ class DialogMenuActionWidget extends StatelessWidget {
 
   Widget _itemVolume() {
     return Container(
-      height: 65,
+      height: AppSizes.maxHeight*0.07,
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
@@ -104,19 +105,19 @@ class DialogMenuActionWidget extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(left: 16),
-              child: Image.asset(Assets.ic_volume_popup, width: 32),
+              child: Image.asset(Assets.ic_volume_popup, width: AppSizes.maxWidth*0.0773),
             ),
             Expanded(
                 child: Center(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 16),
-                height: 40,
+                height: AppSizes.maxHeight*0.0446,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     Center(
                         child: Container(
-                      height: 16,
+                      height: AppSizes.maxHeight*0.0179,
                       decoration: BoxDecoration(color: Color(0xFFFFD480)),
                       child: _statusVolum(),
                     )),
@@ -134,8 +135,8 @@ class DialogMenuActionWidget extends StatelessWidget {
 
   Widget _minus(Function? ontap) {
     return Positioned(
-      top: 8,
-      left: -5,
+      top: AppSizes.maxHeight*0.009,
+      left: -(AppSizes.maxWidth*0.011),
       child: ScalableButton(
         onTap: ontap as void Function()?,
         child: Image.asset(
@@ -143,15 +144,15 @@ class DialogMenuActionWidget extends StatelessWidget {
           fit: BoxFit.fill,
         ),
       ),
-      width: 24,
-      height: 24,
+      width: AppSizes.maxHeight*0.0268,
+      height: AppSizes.maxHeight*0.0268,
     );
   }
 
   Widget _plus(Function? ontap) {
     return Positioned(
-        top: 8,
-        right: -5,
+        top: AppSizes.maxHeight*0.009,
+      right: -AppSizes.maxWidth*0.011,
         child: ScalableButton(
           onTap: ontap as void Function()?,
           child: Image.asset(
@@ -159,8 +160,8 @@ class DialogMenuActionWidget extends StatelessWidget {
             fit: BoxFit.fill,
           ),
         ),
-        width: 24,
-        height: 24);
+        width: AppSizes.maxHeight*0.0268,
+        height: AppSizes.maxHeight*0.0268);
   }
 
   Widget _statusVolum() {
@@ -197,7 +198,7 @@ class DialogMenuActionWidget extends StatelessWidget {
 
   Widget _itemNote() {
     return Container(
-      height: 65,
+      height:  AppSizes.maxHeight*0.07,
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
@@ -211,19 +212,19 @@ class DialogMenuActionWidget extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(left: 16),
-              child: Image.asset(Assets.ic_note_music_popup, width: 32),
+              child: Image.asset(Assets.ic_note_music_popup, width: AppSizes.maxWidth*0.0773),
             ),
             Expanded(
                 child: Center(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 16),
-                height: 40,
+                height: AppSizes.maxHeight*0.0443,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     Center(
                         child: Container(
-                      height: 16,
+                      height: AppSizes.maxHeight*0.0179,
                       decoration: BoxDecoration(color: Color(0xFFFFD480)),
                       child: _statusNote(),
                     )),
@@ -274,7 +275,7 @@ class DialogMenuActionWidget extends StatelessWidget {
   List<Widget> _listAction() {
     List<Widget> _list = [];
     _list.add(_itemPlaygame());
-    _list.add(_itemPlayBack());
+    _list.add(Container(width: AppSizes.maxWidth*0.116,));
     _list.add(_itemExit());
     return _list;
   }
@@ -286,41 +287,20 @@ class DialogMenuActionWidget extends StatelessWidget {
             onTap: onTapContinous as void Function(),
             child: Image.asset(
               Assets.ic_playgame_popup,
-              width: 48,
+              width: AppSizes.maxWidth*0.114,
               fit: BoxFit.fill,
             )),
         Padding(
-          padding: EdgeInsets.only(top: 8),
+          padding: EdgeInsets.only(top: 4),
           child: Text(
             "Tiếp tục",
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(fontSize: AppSizes.maxWidth < 350 ? 16 : 24 , color: Colors.white),
           ),
         )
       ],
     );
   }
 
-  Widget _itemPlayBack() {
-    return Column(
-      children: [
-        ScalableButton(
-          onTap: onTapPlayBack as void Function(),
-          child: Image.asset(
-            Assets.ic_playagain_popup,
-            width: 48,
-            fit: BoxFit.fill,
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Text(
-            "Quay lại",
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        )
-      ],
-    );
-  }
 
   Widget _itemExit() {
     return Column(
@@ -329,15 +309,15 @@ class DialogMenuActionWidget extends StatelessWidget {
           onTap: onTapExit as void Function(),
           child: Image.asset(
             Assets.ic_exit_popup,
-            width: 48,
+            width: AppSizes.maxWidth*0.114,
             fit: BoxFit.fill,
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 8),
+          padding: EdgeInsets.only(top: 4),
           child: Text(
             "Thoát",
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
           ),
         )
       ],

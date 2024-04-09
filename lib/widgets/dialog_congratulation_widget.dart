@@ -1,14 +1,14 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/themes.dart';
 import 'package:flutter/material.dart';
 
 class DialogCongratulationWidget extends StatelessWidget {
   final Function? ontapContinue;
-  final Function? ontapPlayBack;
   final Function? ontapExit;
   final bool isWin;
 
   DialogCongratulationWidget(
-      {this.ontapContinue, this.ontapPlayBack, this.ontapExit,this.isWin = false});
+      {this.ontapContinue, this.ontapExit, this.isWin = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,19 +16,25 @@ class DialogCongratulationWidget extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: Center(
         child: Container(
-          width: 347,
-          height: 550,
+          width: AppSizes.maxWidth * 0.838,
+          height: AppSizes.maxHeight > 800
+              ? AppSizes.maxHeight * 0.614
+              : AppSizes.maxHeight * 0.65,
           child: Stack(
             alignment: Alignment.center,
             children: [
               Image.asset(
                 Assets.img_bg_dialog_congratulation,
                 fit: BoxFit.fill,
+                width: AppSizes.maxWidth * 0.838,
+                height: AppSizes.maxHeight > 800
+                    ? AppSizes.maxHeight * 0.614
+                    : AppSizes.maxHeight * 0.65,
               ),
               Column(
                 children: [
                   Container(
-                    height: 220,
+                    height: AppSizes.maxHeight * 0.223,
                   ),
                   Center(
                     child: Text(
@@ -44,7 +50,7 @@ class DialogCongratulationWidget extends StatelessWidget {
                       children: [
                         _gif(),
                         Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: _listAction())
                       ],
                     ),
@@ -63,8 +69,9 @@ class DialogCongratulationWidget extends StatelessWidget {
 
   Widget _gif() {
     return Container(
-      height: 65,
-      margin: EdgeInsets.symmetric(horizontal: 50,vertical: 16),
+      height: AppSizes.maxHeight * 0.0725,
+      margin: EdgeInsets.symmetric(
+          horizontal: AppSizes.maxHeight * 0.0386, vertical: AppSizes.maxHeight * 0.0178),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         color: Color(0xFFB96747),
@@ -80,9 +87,11 @@ class DialogCongratulationWidget extends StatelessWidget {
                 child: Text("Your Reward:",
                     style: TextStyle(
                         color: Color(0xFFB96747),
-                        fontWeight: FontWeight.bold))),
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppSizes.maxWidth < 350 ? 12 : 16))),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppSizes.maxWidth * 0.058),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [_gold(), _dimond()],
@@ -99,14 +108,19 @@ class DialogCongratulationWidget extends StatelessWidget {
       children: [
         Image.asset(
           Assets.ic_coin,
-          width: 24,
+          width: AppSizes.maxWidth * 0.05,
+          height: AppSizes.maxWidth * 0.05,
           fit: BoxFit.fill,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(
+            left: AppSizes.maxWidth * 0.019,
+          ),
           child: Text(
             "100",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
           ),
         )
       ],
@@ -118,14 +132,17 @@ class DialogCongratulationWidget extends StatelessWidget {
       children: [
         Image.asset(
           Assets.ic_diamond,
-          width: 24,
+          width: AppSizes.maxWidth * 0.05,
+          height: AppSizes.maxWidth * 0.05,
           fit: BoxFit.fill,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: AppSizes.maxWidth * 0.019),
           child: Text(
             "100",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
           ),
         )
       ],
@@ -135,7 +152,9 @@ class DialogCongratulationWidget extends StatelessWidget {
   List<Widget> _listAction() {
     List<Widget> _list = [];
     _list.add(_itemPlaygame());
-    _list.add(_itemPlayBack());
+    _list.add(Container(
+      width: AppSizes.maxWidth * 0.05,
+    ));
     _list.add(_itemExit());
     return _list;
   }
@@ -147,33 +166,16 @@ class DialogCongratulationWidget extends StatelessWidget {
             onTap: () {},
             child: Image.asset(
               Assets.ic_playgame_popup,
-              width: 48,
+              width: AppSizes.maxWidth * 0.114,
               fit: BoxFit.fill,
             )),
         Padding(
           padding: EdgeInsets.only(top: 8),
           child: Text(
             "Tiếp tục",
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _itemPlayBack() {
-    return Column(
-      children: [
-        Image.asset(
-          Assets.ic_playagain_popup,
-          width: 48,
-          fit: BoxFit.fill,
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Text(
-            "Quay lại",
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(
+                fontSize: AppSizes.maxWidth < 350 ? 16 : 24,
+                color: Colors.white),
           ),
         )
       ],
@@ -187,14 +189,16 @@ class DialogCongratulationWidget extends StatelessWidget {
         children: [
           Image.asset(
             Assets.ic_exit_popup,
-            width: 48,
+            width: AppSizes.maxWidth * 0.114,
             fit: BoxFit.fill,
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
               "Thoát",
-              style: TextStyle(fontSize: 24, color: Colors.white),
+              style: TextStyle(
+                  fontSize: AppSizes.maxWidth < 350 ? 16 : 24,
+                  color: Colors.white),
             ),
           )
         ],
