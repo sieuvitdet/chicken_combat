@@ -6,6 +6,7 @@ import 'package:chicken_combat/presentation/examination/map_listening_examinatio
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/presentation/map/map2_screen.dart';
+import 'package:chicken_combat/presentation/map/map3_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,10 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
             case 1:
               Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => Map2Screen(type: widget.type)));
+              break;
+            case 2:
+            Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Map3Screen(type: widget.type)));
               break;
             default:
           }

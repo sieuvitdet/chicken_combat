@@ -86,7 +86,7 @@ class _ScalableButtonState extends State<ScalableButton> {
         }
       },
       child: Transform.scale(
-        scale: isPressed ? 0.98 : 1.0, // Adjust the scaling factor as needed
+        scale: isPressed ? 0.98 : 1.0,
         child: widget.child,
       ),
     );

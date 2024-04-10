@@ -3,11 +3,17 @@ import 'dart:ui';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
 import 'package:chicken_combat/widgets/group_mountain_sea_widget.dart';
+import 'package:chicken_combat/widgets/group_mountain_snow_widget.dart';
 import 'package:flutter/material.dart';
 
 class Map3Screen extends StatefulWidget {
-  const Map3Screen({super.key});
+  final String? type;
+  Map3Screen({this.type});
 
   @override
   State<Map3Screen> createState() => _Map3ScreenState();
@@ -104,7 +110,7 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
   Widget _buildBottom() {
     return Container(
       height: heightContent,
-      child: Image.asset(Assets.img_background_blue, fit: BoxFit.cover),
+      child: Image.asset(Assets.img_background_map3, fit: BoxFit.cover),
     );
   }
 
@@ -114,6 +120,7 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
       height: heightContent,
       child: Stack(
         children: [
+          _mountainBottom(),
           ...(_buildItemList()).map((e) => e).toList(),
           Positioned(
             top: calculate(_animation.value).dy,
@@ -128,11 +135,11 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
                   builder: (context, child) {
                     return Transform.translate(
                       offset:
-                          _animation1.value * 200, // Adjust the curve radius here
+                          _animation1.value * 50, // Adjust the curve radius here
                       child: child,
                     );
                   },
-                  child: Image.asset(Assets.gif_chicken_swimming, fit: BoxFit.fitHeight,width: AppSizes.maxWidth * 0.2,
+                  child: Image.asset(Assets.gif_chicken_white_candy, fit: BoxFit.contain,width: AppSizes.maxWidth * 0.2,
                   height: AppSizes.maxWidth * 0.2),
                     ),
             ),
@@ -144,6 +151,42 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
           //   ),
           // ),
         ],
+      ),
+    );
+  }
+
+   Widget _mountainBottom() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        height: AppSizes.maxHeight * 0.25,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                child: Image(
+                  fit: BoxFit.fill,
+                  image: AssetImage(Assets.img_mountain_snow_left),
+                  width: AppSizes.maxWidth * 0.7,
+                  height: AppSizes.maxHeight * 0.13,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                child: Image(
+                  fit: BoxFit.fill,
+                  image: AssetImage(Assets.img_mountain_snow_right),
+                  width: AppSizes.maxWidth * 0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -160,21 +203,40 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
                     child: child,
                   );
                 },
-                child: GroupMountainSea(
-                heightMountain:AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.13 : AppSizes.maxHeight* 0.15,
+                child: GroupMountainSnow(
+                heightMountain:AppSizes.maxHeight * 0.13,
                 isLeft: i % 2 == 0,
                 horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
                 count: i + 1,
-                onTap: () => {
-                  if (i < numberMountain)
-                    {
-                      currentPadding = _listPadding[i + 1],
-                      nextPadding =
-                          i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2],
-                      _scrollToTop(maxScroll -
-                          (location * (distance + 60) * AppSizes.maxHeight / 896)),
-                      _controller.forward(),
-                    }
+                isStart: i == 0,
+                snowMan: i == 1,
+                onTap: () async {
+                  if (i > location) {
+                return;
+              }
+              bool? result = null;
+              if (widget.type != "" && widget.type == "reading") {
+                result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapReadingExaminationScreen()));
+              } else if (widget.type != "" && widget.type == "listening") {
+                result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapListeningExaminationScreen()));
+              } else if (widget.type != "" && widget.type == "speaking") {
+               result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapSpeakingExaminationScreen()));
+              }  else if (widget.type != "" && widget.type == "writing") {
+               result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MapWritingExaminationScreen()));
+              }
+
+              if (result != null && result == true && i == location) {
+                if (i < numberMountain) {
+                  currentPadding = _listPadding[i + 1];
+                nextPadding = i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
+                _scrollToTop(maxScroll - (location * (distance + 60)));
+                _controller.forward();
+                }
+              }
                 },
               ),
         )
@@ -209,7 +271,7 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
 
   Path drawPath() {
     Path path = Path();
-    double bottomChicken = AppSizes.maxHeight > 800 ? 60 : 80;
+    double bottomChicken = AppSizes.maxHeight*0.09;
     double bottom = heightContent - bottomChicken - AppSizes.maxHeight * multiple;
     double left = currentPadding * AppSizes.maxWidth / 414;
     double nextleft = nextPadding * AppSizes.maxWidth / 414;
