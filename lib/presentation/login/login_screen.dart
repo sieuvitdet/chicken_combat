@@ -1,8 +1,6 @@
-
-import 'dart:html';
-
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -22,9 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
   ScrollController _scrollController = ScrollController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('userdata');
     return PopScope(
       canPop:false,
       child: Scaffold(
@@ -37,26 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 _buildBackground(),
                 _body(),
-              FutureBuilder<DocumentSnapshot>(
-              future: users.doc("0924002700").get(),
-              builder:
-                (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-               if (snapshot.hasError) {
-                  return Text("Something went wrong");
-               }
-
-              if (snapshot.hasData && !snapshot.data!.exists) {
-                return Text("Document does not exist");
-              }
-
-              if (snapshot.connectionState == ConnectionState.done) {
-                Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-                return Text("Full Name: ${data['name']} phone: ${data['phone']}");
-              }
-
-              return Text("loading");
-          },
-        )
               ],
             ),
           ),
@@ -67,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Color(0xFFFACA44),
               child: Center(
                 child: InkWell(
-                  onTap: addUser,
+                  onTap: () => {},
                   child: RichText(
                       text: TextSpan(
                           text: "Bạn chưa có tài khoản?",
@@ -91,16 +72,40 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> addUser() {
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void login(String _phone, String _password) async {
+    if (_phone.isEmpty || _password.isEmpty) {
+        print('Phone or password is Empty');
+        return;
+    }
+
     CollectionReference users = FirebaseFirestore.instance.collection('userdata');
-    return users
-        .doc("0559237978").set({
-      'name': "Gà đỏ", // John Doe
-      'password': "123456", // Stokes and Sons
-      'phone': "0559237978" // 42
-    })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+    await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+        UserModel user = UserModel.fromSnapshot(documentSnapshot);
+        if (user.id == _phone && user.password == _password) {
+          print('User ID: ${user.id}');
+          print('User Phone Number: ${user.phoneNumber}');
+          print('User Password: ${user.password}');
+          print('User Full Name: ${user.fullName}');
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomeScreen()));
+        } else {
+          print('Phone or password faild');
+        }
+      } else {
+        print('Document does not exist on the database');
+      }
+    }).catchError((error) {
+      print('Error getting document: $error');
+    });
   }
 
   Widget _buildBackground() {
@@ -140,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(8.0),
                   color: Colors.white),
               child: TextField(
+                controller: _phoneController,
                   decoration: InputDecoration(
                 isCollapsed: true,
                 contentPadding: EdgeInsets.all(12.0),
@@ -154,6 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(8.0),
                   color: Colors.white),
               child: TextField(
+                controller: _passwordController,
                   decoration: InputDecoration(
                 isCollapsed: true,
                 contentPadding: EdgeInsets.all(12.0),
@@ -196,13 +203,11 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
             child: Text("Đăng nhập",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen()));
-        },
+        onTap: () => login(_phoneController.text, _passwordController.text),
       ),
     );
   }
+
   Widget _comeinNow() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
