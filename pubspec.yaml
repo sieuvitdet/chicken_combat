@@ -20,6 +20,8 @@ dependencies:
   audio_manager: ^0.8.2
   firebase_core: ^2.28.0
   cloud_firestore: ^4.16.0
+  rxdart: ^0.27.4
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

@@ -258,10 +258,17 @@ class _MapWritingExaminationScreenState
               child: Image(image: AssetImage(Assets.img_line_table))),
           Positioned(
               bottom: AppSizes.maxHeight*0.02,
-              right: 24,
-              child: Text(
+              left: 0,
+              right: 0,
+              child: Row(
+                children: [
+                  Image.asset(Assets.ic_previous_page,width: AppSizes.maxWidth*0.058,fit: BoxFit.contain,),
+                  Text(
                 "${page + 1}/${pages.length}",
                 style: TextStyle(color: Colors.white),
+              ),
+              Image.asset(Assets.ic_next_page,width: AppSizes.maxWidth*0.058,fit: BoxFit.contain,),
+                ],
               )),
           if (isTextOverflow)
             Positioned(

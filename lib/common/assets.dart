@@ -132,6 +132,8 @@ class Assets {
   static final String ic_rank_gold = "assets/icons/ic_rank_gold.png";
   static final String ic_rank_silver = "assets/icons/ic_rank_silver.png";
   static final String ic_rank_bronze = "assets/icons/ic_rank_bronze.png";
+  static final String ic_next_page = "assets/icons/ic_next_page.png";
+  static final String ic_previous_page = "assets/icons/ic_previous_page.png";
 
   //gif
   static final String chicken_flapping_swing_gif = "assets/images/chicken_gif.gif";
