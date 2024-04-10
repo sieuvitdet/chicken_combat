@@ -1,7 +1,8 @@
+import 'package:chicken_combat/common/assets.dart';
 import 'dart:async';
 
-import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -81,30 +82,30 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         // body: Responsive(mobile: _body(),tablet: _body(),desktop: _body(),),
         bottomNavigationBar: Container(
-          height: 80,
-          color: Color(0xFFFACA44),
-          child: Center(
-            child: InkWell(
-              onTap: addUser,
-              child: RichText(
-                  text: TextSpan(
-                      text: "Bạn chưa có tài khoản?",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Itim",
-                          color: Colors.white),
-                      children: [
-                    TextSpan(
-                        text: "  " + "Đăng ký",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFE84C3D)))
-                  ])),
+              height: 80,
+              color: Color(0xFFFACA44),
+              child: Center(
+                child: InkWell(
+                  onTap: () => {},
+                  child: RichText(
+                      text: TextSpan(
+                          text: "Bạn chưa có tài khoản?",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Itim",
+                              color: Colors.white),
+                          children: [
+                        TextSpan(
+                            text: "  " + "Đăng ký",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFE84C3D)))
+                      ])),
+                ),
+              ),
             ),
-          ),
-        ),
       ),
     );
   }
@@ -206,6 +207,40 @@ class _LoginScreenState extends State<LoginScreen> {
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void login(String _phone, String _password) async {
+    if (_phone.isEmpty || _password.isEmpty) {
+        print('Phone or password is Empty');
+        return;
+    }
+
+    CollectionReference users = FirebaseFirestore.instance.collection('userdata');
+    await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+        UserModel user = UserModel.fromSnapshot(documentSnapshot);
+        if (user.id == _phone && user.password == _password) {
+          print('User ID: ${user.id}');
+          print('User Phone Number: ${user.phoneNumber}');
+          print('User Password: ${user.password}');
+          print('User Full Name: ${user.fullName}');
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomeScreen()));
+        } else {
+          print('Phone or password faild');
+        }
+      } else {
+        print('Document does not exist on the database');
+      }
+    }).catchError((error) {
+      print('Error getting document: $error');
+    });
   }
 
 
@@ -283,6 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // Navigator.of(context).push(MaterialPageRoute(
           //     builder: (context) => HomeScreen()));
         },
+        onTap: () => login(_phoneController.text, _passwordController.text),
       ),
     );
   }
