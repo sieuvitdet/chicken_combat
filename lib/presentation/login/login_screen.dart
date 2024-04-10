@@ -1,11 +1,13 @@
 
+import 'dart:html';
+
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
-import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,9 +20,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   ScrollController _scrollController = ScrollController();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('userdata');
     return PopScope(
       canPop:false,
       child: Scaffold(
@@ -32,7 +36,27 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Stack(
               children: [
                 _buildBackground(),
-                _body()
+                _body(),
+              FutureBuilder<DocumentSnapshot>(
+              future: users.doc("0924002700").get(),
+              builder:
+                (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+               if (snapshot.hasError) {
+                  return Text("Something went wrong");
+               }
+
+              if (snapshot.hasData && !snapshot.data!.exists) {
+                return Text("Document does not exist");
+              }
+
+              if (snapshot.connectionState == ConnectionState.done) {
+                Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                return Text("Full Name: ${data['name']} phone: ${data['phone']}");
+              }
+
+              return Text("loading");
+          },
+        )
               ],
             ),
           ),
@@ -42,26 +66,41 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 80,
               color: Color(0xFFFACA44),
               child: Center(
-                child: RichText(
-                    text: TextSpan(
-                        text: "Bạn chưa có tài khoản?",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Itim",
-                            color: Colors.white),
-                        children: [
-                      TextSpan(
-                          text: "  " + "Đăng ký",
+                child: InkWell(
+                  onTap: addUser,
+                  child: RichText(
+                      text: TextSpan(
+                          text: "Bạn chưa có tài khoản?",
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFFE84C3D)))
-                    ])),
+                              fontFamily: "Itim",
+                              color: Colors.white),
+                          children: [
+                        TextSpan(
+                            text: "  " + "Đăng ký",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFE84C3D)))
+                      ])),
+                ),
               ),
             ),
       ),
     );
+  }
+
+  Future<void> addUser() {
+    CollectionReference users = FirebaseFirestore.instance.collection('userdata');
+    return users
+        .doc("0559237978").set({
+      'name': "Gà đỏ", // John Doe
+      'password': "123456", // Stokes and Sons
+      'phone': "0559237978" // 42
+    })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
   }
 
   Widget _buildBackground() {
