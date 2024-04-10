@@ -123,14 +123,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 isDense: true,
               )),
             ),
-            InkWell(
-              onTap: () {
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 16, top: 16),
+                child: ScalableButton(
+                  onTap: () {
                 print("forget");
               },
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
                   child: Text(
                     "Quên mật khẩu?",
                     style: TextStyle(
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: CustomButtomImageColorWidget(
-        redBlurColor: true,
+        orangeColor: true,
         child: Center(
             child: Text("Đăng nhập",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: CustomButtomImageColorWidget(
-        redBlurColor: true,
+        orangeColor: true,
         child: Center(
             child: Text("Vào ngay",
                 style: TextStyle(fontSize: 24, color: Colors.white))),

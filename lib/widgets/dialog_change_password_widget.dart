@@ -24,6 +24,10 @@ class _DialogChangePasswordWidgetState
   TextEditingController _controllerNewPassAgain = TextEditingController();
   FocusNode _focusNodeNewPassAgain = FocusNode();
 
+  bool secureOldPass = true;
+  bool secureNewPass = true;
+  bool secureNewPassAgain = true;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -51,13 +55,14 @@ class _DialogChangePasswordWidgetState
                       child: Center(
                         child: StrokeTextWidget(
                             text: "Đổi mật khẩu",
-                            size: AppSizes.maxWidth < 350 ? 20: 30,
+                            size: AppSizes.maxWidth < 350 ? 20 : 30,
                             colorStroke: Colors.red[900]),
                       ),
                     ),
                     Expanded(
                         child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50.0),
@@ -144,23 +149,37 @@ class _DialogChangePasswordWidgetState
                 children: [
                   Expanded(
                     child: TextField(
+                      style: TextStyle(color: Colors.white),
                         controller: _controllerOldPass,
                         focusNode: _focusNodeOldPass,
+                        obscureText: secureOldPass,
+                        cursorColor: Colors.amber,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                         decoration: InputDecoration(
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 4),
                           border: InputBorder.none,
                           hintText: "Nhập mật khẩu cũ",
+                          hintStyle: TextStyle(color: Colors.white),
                           isDense: true,
                         )),
                   ),
-                  GestureDetector(
-                      onTap: () {},
-                      child: Image.asset(
-                        Assets.ic_coin,
-                        width: AppSizes.maxWidth * 0.058,
-                        fit: BoxFit.fill,
-                      ))
+                  if (_controllerOldPass.text.length > 0)
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            secureOldPass = !secureOldPass;
+                          });
+                        },
+                        child: Image.asset(
+                          secureOldPass
+                              ? Assets.img_eye_open
+                              : Assets.img_eye_close,
+                          width: AppSizes.maxWidth * 0.058,
+                          fit: BoxFit.fill,
+                        ))
                 ],
               )),
         ))
@@ -203,23 +222,38 @@ class _DialogChangePasswordWidgetState
                 children: [
                   Expanded(
                     child: TextField(
+                      style: TextStyle(color: Colors.white),
                         controller: _controllerNewPass,
                         focusNode: _focusNodeNewPass,
+                        obscureText: secureNewPass,
+                        cursorColor: Colors.amber,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                         decoration: InputDecoration(
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 4),
                           border: InputBorder.none,
                           hintText: "Nhập mật khẩu mới",
+                          hintStyle: TextStyle(color: Colors.white),
+                          fillColor: Colors.red,
                           isDense: true,
                         )),
                   ),
-                  GestureDetector(
-                      onTap: () {},
-                      child: Image.asset(
-                        Assets.ic_coin,
-                        width: AppSizes.maxWidth * 0.058,
-                        fit: BoxFit.fill,
-                      ))
+                  if (_controllerNewPass.text.length > 0)
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            secureNewPass = !secureNewPass;
+                          });
+                        },
+                        child: Image.asset(
+                          secureNewPass
+                              ? Assets.img_eye_open
+                              : Assets.img_eye_close,
+                          width: AppSizes.maxWidth * 0.058,
+                          fit: BoxFit.fill,
+                        ))
                 ],
               )),
         ))
@@ -261,20 +295,35 @@ class _DialogChangePasswordWidgetState
                 children: [
                   Expanded(
                     child: TextField(
+                      style: TextStyle(color: Colors.white),
                         controller: _controllerNewPassAgain,
                         focusNode: _focusNodeNewPassAgain,
+                        obscureText: secureNewPassAgain,
+                        cursorColor: Colors.amber,
+                        onChanged: (value) {
+                          setState(() {
+                            
+                          });
+                        },
                         decoration: InputDecoration(
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 4),
                           border: InputBorder.none,
                           hintText: "Nhập lại mật khẩu",
                           isDense: true,
+                          hintStyle: TextStyle(color: Colors.white),
                         )),
                   ),
-                  GestureDetector(
-                      onTap: () {},
+                  if (_controllerNewPassAgain.text.length > 0) GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          secureNewPassAgain = !secureNewPassAgain;
+                        });
+                      },
                       child: Image.asset(
-                        Assets.ic_coin,
+                        secureNewPassAgain
+                              ? Assets.img_eye_open
+                              : Assets.img_eye_close,
                         width: AppSizes.maxWidth * 0.058,
                         fit: BoxFit.fill,
                       ))

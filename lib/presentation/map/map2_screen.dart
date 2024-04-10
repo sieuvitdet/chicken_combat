@@ -8,6 +8,7 @@ import 'package:chicken_combat/presentation/examination/map_reading_examination_
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
+import 'package:chicken_combat/widgets/background_cloud_map2_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_green_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +44,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
     currentPadding = _listPadding[0];
     nextPadding = _listPadding[1];
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 3);
-    location = 3;
+    location = 0;
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
@@ -78,11 +79,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
   }
 
   Widget _buildBottom() {
-    return Container(
-      height: heightContent,
-      width:  AppSizes.maxWidthTablet > 0 ?  AppSizes.maxWidthTablet : AppSizes.maxWidth,
-      child: Image.asset(Assets.img_background_blue, fit: BoxFit.cover),
-    );
+    return BackgroundCloudMap2Widget(heightContent: heightContent,);
   }
 
   Widget _buildContent() {
@@ -145,7 +142,6 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
           horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
           count: i + 1,
           onTap: () async {
-            print(AppSizes.maxWidth);
             if (i > location) {
                 return;
               }

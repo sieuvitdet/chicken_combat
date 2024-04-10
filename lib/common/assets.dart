@@ -93,6 +93,19 @@ class Assets {
   static final String img_treasure = "assets/images/img_treasure.png";
   static final String img_item_ranking = "assets/images/img_item_ranking.png";
 
+  static final String img_banner_reward = "assets/images/img_banner_reward.png";
+  static final String img_change_password = "assets/images/img_change_password.png";
+  static final String img_eye_close = "assets/images/img_eye_close.png";
+  static final String img_eye_open = "assets/images/img_eye_open.png";
+  static final String img_green_circle = "assets/images/img_green_circle.png";
+  static final String img_redblur_circle = "assets/images/img_redblur_circle.png";
+  static final String img_reward = "assets/images/img_reward.png";
+  static final String img_background_map3 = "assets/images/img_background_map3.png";
+  static final String img_snowman = "assets/images/img_snowman.png";
+  static final String img_mountain_snow = "assets/images/img_mountain_snow.png";
+  static final String img_mountain_snow_left = "assets/images/img_mountain_snow_left.png";
+  static final String img_mountain_snow_right = "assets/images/img_mountain_snow_right.png";
+
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";
   static final String ic_block = "assets/icons/ic_block.png";
@@ -116,6 +129,9 @@ class Assets {
   static final String ic_down = "assets/icons/ic_down.png";
   static final String ic_stt_redblur = "assets/icons/ic_stt_redblur.png";
   static final String ic_gun = "assets/icons/ic_gun.png";
+  static final String ic_rank_gold = "assets/icons/ic_rank_gold.png";
+  static final String ic_rank_silver = "assets/icons/ic_rank_silver.png";
+  static final String ic_rank_bronze = "assets/icons/ic_rank_bronze.png";
 
   //gif
   static final String chicken_flapping_swing_gif = "assets/images/chicken_gif.gif";
@@ -127,5 +143,5 @@ class Assets {
   static final String gif_chicken_brown = "assets/images/gif_chicken_brown.gif";
   static final String gif_snow_home = "assets/images/gif_snow_home.gif";
   static final String gif_chicken_black_dance = "assets/images/gif_chicken_black_dance.gif";
-  
+  static final String gif_chicken_white_candy = "assets/images/gif_chicken_white_candy.gif";
 }

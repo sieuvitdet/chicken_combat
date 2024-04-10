@@ -5,8 +5,9 @@ class StrokeTextWidget extends StatelessWidget {
   final String text;
   final double? size;
   final Color? colorStroke;
+  final TextAlign? textAlign;
 
-  StrokeTextWidget({required this.text,this.size,this.colorStroke});
+  StrokeTextWidget({required this.text,this.size,this.colorStroke,this.textAlign});
  
 
   @override
@@ -14,7 +15,7 @@ class StrokeTextWidget extends StatelessWidget {
     return Stack(
           children: <Widget>[
             Text(
-              textAlign: TextAlign.center,
+              textAlign: textAlign ?? TextAlign.center,
               text,
               style: TextStyle(
                 fontSize: size ?? 24,
@@ -26,7 +27,7 @@ class StrokeTextWidget extends StatelessWidget {
             ),
             // Solid text as fill.
             Text(
-              textAlign: TextAlign.center,
+              textAlign: textAlign ??TextAlign.center,
               text,
               style: TextStyle(
                 fontSize: size ?? 24,

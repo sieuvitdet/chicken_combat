@@ -3,14 +3,11 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
-import 'package:chicken_combat/presentation/ranking/ranking_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
-import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,39 +48,52 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _info() {
     return Container(
       margin: EdgeInsets.only(top: AppSizes.sizeAppBar / 2),
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 4.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Container(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
+                  ScalableButton(
                     onTap: () {
                       showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return StatefulBuilder(
-                        builder: (BuildContext context,
-                            void Function(void Function()) setState) {
-                          return DialogAccountWidget();
-                        },
-                      );
-                    });
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (BuildContext context,
+                                  void Function(void Function()) setState) {
+                                return DialogAccountWidget();
+                              },
+                            );
+                          });
                     },
                     child: Image(
                       image: AssetImage(Assets.img_avatar),
-                      width: AppSizes.maxHeight * 0.0558,
-                      height: AppSizes.maxHeight * 0.0558,
+                      width: AppSizes.maxHeight * 0.055,
+                      height: AppSizes.maxHeight * 0.055,
                     ),
                   ),
-                  if (AppSizes.maxWidth > 350)
-                    Padding(
-                      padding: EdgeInsets.only(left: 2),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [Text("Tên User"), Text("Level 3")],
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 2),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Đuc trannnnnnnnmnnnnnn",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text("Level 100000000000",
+                            overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(color: Colors.white))
+                          ],
+                        ),
                       ),
                     )
                 ],
@@ -93,21 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               _itemRow("200", Assets.ic_coin, ontap: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return StatefulBuilder(
-                        builder: (BuildContext context,
-                            void Function(void Function()) setState) {
-                          return RankingScreen();
-                        },
-                      );
-                    });
               }),
               SizedBox(width: 4),
-              _itemRow("2000", Assets.ic_diamond, ontap: () {
-                
-              }),
+              _itemRow("2000", Assets.ic_diamond, ontap: () {}),
               SizedBox(width: 4),
               _itemRow("Cửa hàng", Assets.ic_shop, ontap: () {
                 showDialog(
@@ -159,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: ontap as void Function()?,
       child: Container(
         height: AppSizes.maxHeight * 0.055,
-        width: AppSizes.maxWidth * 0.2,
+        width: AppSizes.maxWidth * 0.18,
         decoration: BoxDecoration(
             color: Color(0xFF97381A),
             borderRadius: BorderRadius.circular(12.0)),
@@ -178,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 maxLines: 1,
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: AppSizes.maxWidth < 350 ? 11.0 : 14.0),
+                    fontSize: AppSizes.maxWidth < 350 ? 10.0 : 14.0),
               )
             ],
           ),
