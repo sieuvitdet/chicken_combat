@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Color(0xFFFACA44),
               child: Center(
                 child: InkWell(
-                  onTap: () => {},
+                  onTap: addUser,
                   child: RichText(
                       text: TextSpan(
                           text: "Bạn chưa có tài khoản?",
@@ -207,9 +207,10 @@ class _LoginScreenState extends State<LoginScreen> {
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
+  }
   @override
   void dispose() {
-    _phoneController.dispose();
+    _userNameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -219,6 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print('Phone or password is Empty');
         return;
     }
+  
 
     CollectionReference users = FirebaseFirestore.instance.collection('userdata');
     await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
@@ -312,13 +314,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
             child: Text("Đăng nhập",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: () {
-          _bloc.setErrorUserName("Số điện thoại không tồn tại");
-          _bloc.setErrorPassword("Sai mật khẩu");
-          // Navigator.of(context).push(MaterialPageRoute(
-          //     builder: (context) => HomeScreen()));
-        },
-        onTap: () => login(_phoneController.text, _passwordController.text),
+        // onTap: () {
+        //   _bloc.setErrorUserName("Số điện thoại không tồn tại");
+        //   _bloc.setErrorPassword("Sai mật khẩu");
+        //   // Navigator.of(context).push(MaterialPageRoute(
+        //   //     builder: (context) => HomeScreen()));
+        // },
+        onTap: () => login(_userNameController.text, _passwordController.text),
       ),
     );
   }
