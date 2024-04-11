@@ -5,6 +5,9 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
+import 'package:chicken_combat/utils/utils.dart';
+import 'package:chicken_combat/utils/validator.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
@@ -38,79 +41,89 @@ class _LoginScreenState extends State<LoginScreen> {
     _scrollController = ScrollController();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    CollectionReference users =
-        FirebaseFirestore.instance.collection('userdata');
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
-        body: Center(
-          child: Container(
-            width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Stack(
-              children: [
-                _buildBackground(),
-                _body(),
-                FutureBuilder<DocumentSnapshot>(
-                  future: users.doc("0924002700").get(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text("Something went wrong");
-                    }
-
-                    if (snapshot.hasData && !snapshot.data!.exists) {
-                      return Text("Document does not exist");
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      Map<String, dynamic> data =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      return Text(
-                          "Full Name: ${data['name']} phone: ${data['phone']}");
-                    }
-
-                    return Text("loading");
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
-        // body: Responsive(mobile: _body(),tablet: _body(),desktop: _body(),),
-        bottomNavigationBar: Container(
-              height: 80,
-              color: Color(0xFFFACA44),
-              child: Center(
-                child: InkWell(
-                  onTap: addUser,
-                  child: RichText(
-                      text: TextSpan(
-                          text: "Bạn chưa có tài khoản?",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Itim",
-                              color: Colors.white),
-                          children: [
-                        TextSpan(
-                            text: "  " + "Đăng ký",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFE84C3D)))
-                      ])),
-                ),
-              ),
-            ),
-      ),
-    );
+    @override
+  void dispose() {
+    _userNameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+  bool checkValidInputField() {
+    FocusScope.of(context).unfocus();
+    _bloc.setErrorUserName('');
+    _bloc.setErrorPassword('');
+    bool check = true;
+    if (_userNameController.text.trim() == "" &&
+        _passwordController.text.trim() == "") {
+      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorPassword("Vui lòng nhập mật khẩu");
+      check = false;
+    } else if (_userNameController.text.trim() == "") {
+      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      check = false;
+    } else if (_passwordController.text.trim() == "") {
+      if (!Validators().isValidPhone(_userNameController.text.trim())) {
+        _bloc.setErrorUserName("Số điện thoại không đúng định dạng");
+      }
+      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      check = false;
+    } else {
+      if (!Validators().isValidPhone(_userNameController.text.trim())) {
+        _bloc.setErrorUserName("Số điện thoại không đúng định dạng");
+        check = false;
+      } else {
+        check = true;
+      }
+    }
+    return check;
   }
 
-  Widget _inputForm() {
+  Future<void> addUser() {
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('userdata');
+    return users
+        .doc("0559237978")
+        .set({
+          'name': "Gà đỏ", // John Doe
+          'password': "123456", // Stokes and Sons
+          'phone': "0559237978" // 42
+        })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  void login(String _phone, String _password) async {
+    CustomNavigator.showProgressDialog(context);
+    if (_phone.isEmpty || _password.isEmpty) {
+      print('Phone or password is Empty');
+      return;
+    }
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('userdata');
+    await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
+      CustomNavigator.hideProgressDialog();
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+        UserModel user = UserModel.fromSnapshot(documentSnapshot);
+        if (user.id == _phone && user.password == _password) {
+          _bloc.setupLogin(user);
+          print('User ID: ${user.id}');
+          print('User Phone Number: ${user.phoneNumber}');
+          print('User Password: ${user.password}');
+          print('User Full Name: ${user.fullName}');
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => HomeScreen()));
+        } else {
+          _bloc.setErrorLogin("aaaa");
+        }
+      } else {
+        _bloc.setErrorLogin("bbbbbb");
+      }
+    }).catchError((error) {
+      _bloc.setErrorLogin("ccccc");
+    });
+  }
+
+   Widget _inputForm() {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -189,63 +202,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 );
               }),
+          StreamBuilder(
+            stream: _bloc.outputErrorLogin,
+            initialData: "",
+            builder: (_, snapshot) {
+              if (snapshot.hasData && snapshot.data != "") {
+                return Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    snapshot.data ?? "Lỗi",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
           // _forgot_password(),
         ],
       ),
     );
   }
-
-  Future<void> addUser() {
-    CollectionReference users =
-        FirebaseFirestore.instance.collection('userdata');
-    return users
-        .doc("0559237978")
-        .set({
-          'name': "Gà đỏ", // John Doe
-          'password': "123456", // Stokes and Sons
-          'phone': "0559237978" // 42
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
-  }
-  @override
-  void dispose() {
-    _userNameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void login(String _phone, String _password) async {
-    if (_phone.isEmpty || _password.isEmpty) {
-        print('Phone or password is Empty');
-        return;
-    }
-  
-
-    CollectionReference users = FirebaseFirestore.instance.collection('userdata');
-    await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        print('Document exists on the database');
-        UserModel user = UserModel.fromSnapshot(documentSnapshot);
-        if (user.id == _phone && user.password == _password) {
-          print('User ID: ${user.id}');
-          print('User Phone Number: ${user.phoneNumber}');
-          print('User Password: ${user.password}');
-          print('User Full Name: ${user.fullName}');
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen()));
-        } else {
-          print('Phone or password faild');
-        }
-      } else {
-        print('Document does not exist on the database');
-      }
-    }).catchError((error) {
-      print('Error getting document: $error');
-    });
-  }
-
-
 
   Widget _buildBackground() {
     return BackGroundCloudWidget();
@@ -310,18 +288,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: true,
-        child: Center(
-            child: Text("Đăng nhập",
-                style: TextStyle(fontSize: 24, color: Colors.white))),
-        // onTap: () {
-        //   _bloc.setErrorUserName("Số điện thoại không tồn tại");
-        //   _bloc.setErrorPassword("Sai mật khẩu");
-        //   // Navigator.of(context).push(MaterialPageRoute(
-        //   //     builder: (context) => HomeScreen()));
-        // },
-        onTap: () => login(_userNameController.text, _passwordController.text),
-      ),
+          orangeColor: true,
+          child: Center(
+              child: Text("Đăng nhập",
+                  style: TextStyle(fontSize: 24, color: Colors.white))),
+          onTap: () {
+                if (checkValidInputField())
+                  {
+                    login(_userNameController.text, _passwordController.text);
+                  }
+
+              }),
     );
   }
 
@@ -340,10 +317,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 return StatefulBuilder(
                   builder: (BuildContext context,
                       void Function(void Function()) setState) {
-                    // return DialogCongratulationLevelWidget(ontapExit: () {
-                    //   Navigator.of(context).pop();
-                    // },
-                    // );
                     return DialogConfirmWidget(
                       cancel: () {
                         Navigator.of(context).pop();
@@ -356,6 +329,78 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               });
         },
+      ),
+    );
+  }
+
+    @override
+  Widget build(BuildContext context) {
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('userdata');
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Color(0xFFFACA44),
+        body: Center(
+          child: Container(
+            width: AppSizes.maxWidth,
+            height: AppSizes.maxHeight,
+            child: Stack(
+              children: [
+                _buildBackground(),
+                _body(),
+                FutureBuilder<DocumentSnapshot>(
+                  future: users.doc("0924002700").get(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<DocumentSnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Something went wrong");
+                    }
+
+                    if (snapshot.hasData && !snapshot.data!.exists) {
+                      return Text("Document does not exist");
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      Map<String, dynamic> data =
+                          snapshot.data!.data() as Map<String, dynamic>;
+                      return Text(
+                          "Full Name: ${data['name']} phone: ${data['phone']}");
+                    }
+
+                    return Text("loading");
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
+        // body: Responsive(mobile: _body(),tablet: _body(),desktop: _body(),),
+        bottomNavigationBar: Container(
+          height: 80,
+          color: Color(0xFFFACA44),
+          child: Center(
+            child: InkWell(
+              onTap: addUser,
+              child: RichText(
+                  text: TextSpan(
+                      text: "Bạn chưa có tài khoản?",
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Itim",
+                          color: Colors.white),
+                      children: [
+                    TextSpan(
+                        text: "  " + "Đăng ký",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFE84C3D)))
+                  ])),
+            ),
+          ),
+        ),
       ),
     );
   }

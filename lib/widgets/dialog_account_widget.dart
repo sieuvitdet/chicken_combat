@@ -1,7 +1,9 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/presentation/ranking/ranking_screen.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/custom_route.dart';
 import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.838,
-          height: AppSizes.maxHeight * 0.47,
+          height: AppSizes.maxHeight * 0.5,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -60,11 +62,25 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                         _level(),
                         _nameAccount(),
                         _passWord(),
+                        _phoneNumber(),
                         _ranking(),
-                        Container(height: AppSizes.maxHeight*0.0335),
+                        Container(height: AppSizes.maxHeight * 0.02),
                         CustomButtomImageColorWidget(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .popUntil((route) => route.isFirst);
+                            Navigator.of(context, rootNavigator: true)
+                                .pushReplacement(
+                                    CustomRoute(page: LoginScreen()));
+                          },
                           orangeColor: true,
-                          child: Center(child: StrokeTextWidget(text: "Đăng xuất",size: AppSizes.maxWidth < 350 ? 14:20,colorStroke:Color(0xFFD18A5A) ,),),
+                          child: Center(
+                            child: StrokeTextWidget(
+                              text: "Đăng xuất",
+                              size: AppSizes.maxWidth < 350 ? 14 : 20,
+                              colorStroke: Color(0xFFD18A5A),
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -130,9 +146,14 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
         Container(
           margin: EdgeInsets.only(left: AppSizes.maxWidth * 0.03),
           alignment: Alignment.centerLeft,
-            width: AppSizes.maxWidth * 0.17,
-             height: AppSizes.maxWidth * 0.097,
-             child: StrokeTextWidget(text: "Tên tk:",size: AppSizes.maxWidth < 350 ? 12 : 16,colorStroke: Color(0xFFD18A5A),),),
+          width: AppSizes.maxWidth * 0.17,
+          height: AppSizes.maxWidth * 0.097,
+          child: StrokeTextWidget(
+            text: "Tên tk:",
+            size: AppSizes.maxWidth < 350 ? 12 : 16,
+            colorStroke: Color(0xFFD18A5A),
+          ),
+        ),
         Expanded(
             child: Container(
           padding: EdgeInsets.only(left: 4.0),
@@ -164,9 +185,14 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
         Container(
           margin: EdgeInsets.only(left: AppSizes.maxWidth * 0.02),
           alignment: Alignment.centerLeft,
-            width: AppSizes.maxWidth * 0.18,
-             height: AppSizes.maxWidth * 0.097,
-             child: StrokeTextWidget(text: "Mật khẩu:",size: AppSizes.maxWidth < 350 ? 12 : 14,colorStroke: Color(0xFFD18A5A),),),
+          width: AppSizes.maxWidth * 0.18,
+          height: AppSizes.maxWidth * 0.097,
+          child: StrokeTextWidget(
+            text: "Mật khẩu:",
+            size: AppSizes.maxWidth < 350 ? 12 : 14,
+            colorStroke: Color(0xFFD18A5A),
+          ),
+        ),
         Expanded(
             child: Container(
           padding: EdgeInsets.only(left: 4.0),
@@ -187,27 +213,70 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                "***********",
-                style: TextStyle(color: Colors.white),
-              ), 
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return StatefulBuilder(
-                        builder: (BuildContext context,
-                            void Function(void Function()) setState) {
-                          return DialogChangePasswordWidget();
-                        },
-                      );
-                    });
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(right: 4.0),
-                  child: Image.asset(Assets.img_change_password,width: AppSizes.maxWidth*0.058,fit: BoxFit.fill,),
-                ))
+                    "***********",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context,
+                                    void Function(void Function()) setState) {
+                                  return DialogChangePasswordWidget();
+                                },
+                              );
+                            });
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 4.0),
+                        child: Image.asset(
+                          Assets.img_change_password,
+                          width: AppSizes.maxWidth * 0.058,
+                          fit: BoxFit.fill,
+                        ),
+                      ))
                 ],
+              )),
+        ))
+      ],
+    );
+  }
+
+  Widget _phoneNumber() {
+    return Row(
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: AppSizes.maxWidth * 0.02),
+          alignment: Alignment.centerLeft,
+          width: AppSizes.maxWidth * 0.18,
+          height: AppSizes.maxWidth * 0.097,
+          child: StrokeTextWidget(
+            text: "Sđt:",
+            size: AppSizes.maxWidth < 350 ? 12 : 14,
+            colorStroke: Color(0xFFD18A5A),
+          ),
+        ),
+        Expanded(
+            child: Container(
+          padding: EdgeInsets.only(left: 4.0),
+          height: AppSizes.maxHeight * 0.036,
+          decoration: BoxDecoration(
+              color: Color(0xFFD18A5A),
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(2, 0), // Shadow position
+                ),
+              ]),
+          child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "0924002700",
+                style: TextStyle(color: Colors.white),
               )),
         ))
       ],
@@ -220,58 +289,76 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
         Container(
           margin: EdgeInsets.only(left: AppSizes.maxWidth * 0.02),
           alignment: Alignment.centerLeft,
-            width: AppSizes.maxWidth * 0.16,
-             height: AppSizes.maxWidth * 0.097,
-             child: StrokeTextWidget(text: "Ranking:",size: AppSizes.maxWidth < 350 ? 12 : 14,colorStroke: Color(0xFFD18A5A),),),
+          width: AppSizes.maxWidth * 0.16,
+          height: AppSizes.maxWidth * 0.097,
+          child: StrokeTextWidget(
+            text: "Ranking:",
+            size: AppSizes.maxWidth < 350 ? 12 : 14,
+            colorStroke: Color(0xFFD18A5A),
+          ),
+        ),
         Expanded(
             child: Container(
           padding: EdgeInsets.only(left: 4.0),
           height: AppSizes.maxHeight * 0.036,
-    
           child: Container(
               alignment: Alignment.centerLeft,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                ScalableButton(
-                  onTap: () {
-                    _showRanking();
-                  },
-                  child: Row(
+                  ScalableButton(
+                    onTap: () {
+                      _showRanking();
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 4.0),
+                          height: AppSizes.maxWidth * 0.097,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(Assets.img_redblur_circle),
+                              StrokeTextWidget(
+                                text: "1vs1",
+                                size: AppSizes.maxWidth < 350 ? 8 : 10,
+                                colorStroke: Color(0xFFD18A5A),
+                              )
+                            ],
+                          ),
+                        ),
+                        StrokeTextWidget(
+                          text: "1.254",
+                          size: AppSizes.maxWidth < 350 ? 16 : 20,
+                          colorStroke: Color(0xFFD18A5A),
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
                     children: [
                       Container(
                         margin: EdgeInsets.only(right: 4.0),
                         height: AppSizes.maxWidth * 0.097,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(Assets.img_redblur_circle),
-                          StrokeTextWidget(text: "1vs1",size: AppSizes.maxWidth < 350 ? 8: 10,colorStroke: Color(0xFFD18A5A),)
-                        ],
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(Assets.img_green_circle),
+                            StrokeTextWidget(
+                              text: "2vs2",
+                              size: AppSizes.maxWidth < 350 ? 8 : 10,
+                              colorStroke: Color(0xFFD18A5A),
+                            )
+                          ],
+                        ),
                       ),
-                      
-                      ),
-                      StrokeTextWidget(text: "1.254",size: AppSizes.maxWidth < 350 ? 16: 20,colorStroke: Color(0xFFD18A5A),)
+                      StrokeTextWidget(
+                        text: "---",
+                        size: AppSizes.maxWidth < 350 ? 16 : 20,
+                        colorStroke: Color(0xFFD18A5A),
+                      )
                     ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(right: 4.0),
-                      height: AppSizes.maxWidth * 0.097,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(Assets.img_green_circle),
-                        StrokeTextWidget(text: "2vs2",size: AppSizes.maxWidth < 350 ? 8: 10,colorStroke: Color(0xFFD18A5A),)
-                      ],
-                    ),
-                    
-                    ),
-                    StrokeTextWidget(text: "---",size: AppSizes.maxWidth < 350 ? 16: 20,colorStroke: Color(0xFFD18A5A),)
-                  ],
-                )
+                  )
                 ],
               )),
         ))
@@ -281,14 +368,14 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
 
   void _showRanking() {
     showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return StatefulBuilder(
-                        builder: (BuildContext context,
-                            void Function(void Function()) setState) {
-                          return RankingScreen();
-                        },
-                      );
-                    });
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return RankingScreen();
+            },
+          );
+        });
   }
 }

@@ -1,4 +1,7 @@
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/interface/base_bloc.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -27,13 +30,25 @@ class LoginBloc extends BaseBloc {
 
   final _errorUserName = BehaviorSubject<String>();
   ValueStream<String> get outputErrorUserName => _errorUserName.stream;
-  setErrorPassword(String event) => set(_errorPassword, event);
+  setErrorUserName(String event) => set(_errorUserName, event);
 
   final _errorPassword = BehaviorSubject<String>();
   ValueStream<String> get outputErrorPassword => _errorPassword.stream;
-  setErrorUserName(String event) => set(_errorUserName, event);
+  setErrorPassword(String event) => set(_errorPassword, event);
 
   final _error = BehaviorSubject<String>();
   ValueStream<String> get outputError => _error.stream;
   setErrorString(String event) => set(_error, event);
+
+  final _errorLogin = BehaviorSubject<String>();
+  ValueStream<String> get outputErrorLogin => _errorLogin.stream;
+  setErrorLogin(String event) => set(_errorLogin, event);
+
+  setupLogin(UserModel responseModel) {
+    Globals.prefs!.setBool(SharedPrefsKey.is_login, true);
+    Globals.prefs!.setString(SharedPrefsKey.username, responseModel.fullName);
+    Globals.prefs!.setString(SharedPrefsKey.password, responseModel.password);
+    Globals.prefs!.setString(SharedPrefsKey.phone_number, responseModel.phoneNumber);
+    Globals.prefs!.setString(SharedPrefsKey.id_user, responseModel.id);
+  }
 }
