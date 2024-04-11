@@ -34,7 +34,7 @@ class SharedPrefs {
 
   dispose() {
     var key = [
-      SharedPrefsKey.username,
+      SharedPrefsKey.id_user,
     ];
 
     var value = <dynamic>[];

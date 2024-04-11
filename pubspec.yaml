@@ -25,6 +25,7 @@ dependencies:
   firebase_auth: ^4.19.0
   shared_preferences: any
   flutter_screenutil: any
+  pointycastle: ^3.8.0
 
 dev_dependencies:
   flutter_test:
