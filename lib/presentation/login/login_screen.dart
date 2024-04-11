@@ -1,7 +1,9 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
+import 'package:chicken_combat/presentation/register/PhoneRegisterScreen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
@@ -48,7 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Color(0xFFFACA44),
               child: Center(
                 child: InkWell(
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PhoneRegisterScreen()))
+                  },
                   child: RichText(
                       text: TextSpan(
                           text: "Bạn chưa có tài khoản?",
@@ -85,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
     }
 
-    CollectionReference users = FirebaseFirestore.instance.collection('userdata');
+    CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
     await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
