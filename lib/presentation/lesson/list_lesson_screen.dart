@@ -13,7 +13,7 @@ class ListLessonScreen extends StatefulWidget {
 }
 
 class _ListLessonScreenState extends State<ListLessonScreen> {
-  List<String> _function = ["Speaking", "Listening", "Writing", "Reading"];
+  List<String> _function = ["Speaking", "Listening", "Reading"];
   @override
   void initState() {
     super.initState();
@@ -48,18 +48,17 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
     return itemList;
   }
 
-  Widget _map(int styleId, String style) {
+  Widget _map(int typeId, String type) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: styleId == 0,
-        blueColor: styleId == 1,
-        yellowColor: styleId == 2,
-        redBlurColor: styleId == 3,
-        child: Text(style, style: TextStyle(fontSize: 16, color: Colors.white)),
+        orangeColor: typeId == 0,
+        blueColor: typeId == 1,
+        redBlurColor: typeId == 2,
+        child: Text(type, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: () async {
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ListMapLessonScreen()));
+              MaterialPageRoute(builder: (context) => ListMapLessonScreen(type: type.toLowerCase(),isLesson: true,)));
         },
       ),
     );

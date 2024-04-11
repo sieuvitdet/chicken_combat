@@ -214,13 +214,8 @@ class CustomTextField extends StatelessWidget {
                         ]
                       : [
                           if (inputFormatters != null) ...inputFormatters!,
-                          EmailInputFormatter(),
-                          FilteringTextInputFormatter.allow(RegExp(
-                              "[0-9a-zA-Z ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềếểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ/]")),
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'[0-9a-zA-Z!@#$%^&*]')),
-                          FilteringTextInputFormatter.allow(RegExp(
-                              "[0-9a-zA-Z ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềếểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]"))
+                              RegExp(r'[0-9a-zA-Z!@#$%^&*]'))
                         ],
                   onChanged: onChanged,
                   autofocus: autofocus ?? false,

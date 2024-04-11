@@ -16,7 +16,7 @@ static int currentNote = 0;
 
 static late SharedPrefs prefs;
 
- void showPopup(BuildContext context,{Function? onTapClose,Function? onTapContinous,Function? onTapExit,Function? onTapPlayBack}) {
+ void showPopup(BuildContext context,{Function? onTapClose,Function? onTapContinous,Function? onTapExit}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {

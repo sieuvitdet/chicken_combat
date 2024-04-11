@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              GlobalSetting.prefs.getString(SharedPrefsKey.username),
+                              "Đứcccccccc",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white),

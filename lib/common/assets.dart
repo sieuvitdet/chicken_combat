@@ -105,6 +105,7 @@ class Assets {
   static final String img_mountain_snow = "assets/images/img_mountain_snow.png";
   static final String img_mountain_snow_left = "assets/images/img_mountain_snow_left.png";
   static final String img_mountain_snow_right = "assets/images/img_mountain_snow_right.png";
+  static final String img_star_white = "assets/images/img_star_white.png";
 
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";

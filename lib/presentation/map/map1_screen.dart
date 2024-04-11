@@ -6,13 +6,17 @@ import 'package:chicken_combat/presentation/examination/map_listening_examinatio
 import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
+import 'package:chicken_combat/presentation/lesson/map_listening_lesson_screen.dart';
+import 'package:chicken_combat/presentation/lesson/map_speaking_lesson_screen.dart';
+import 'package:chicken_combat/presentation/lesson/map_writing_lesson_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_widget.dart';
 import 'package:flutter/material.dart';
 
 class Map1Screen extends StatefulWidget {
   final String? type;
-  Map1Screen({this.type});
+  final bool isLesson;
+  Map1Screen({this.type, required this.isLesson});
   @override
   State<Map1Screen> createState() => _Map1ScreenState();
 }
@@ -122,25 +126,26 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
             top: calculate(_animation.value).dy,
             left: calculate(_animation.value).dx,
             child: Transform(
-              alignment: Alignment.center,
-              transform: location % 2 == 0
-                  ? Matrix4.rotationY(0)
-                  : Matrix4.rotationY(pi),
-              child: AnimatedBuilder(
-                animation: _animation1,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset:
-                        _animation1.value * 200, // Adjust the curve radius here
-                    child: child,
-                  );
-                },
-                child: Image.asset(Assets.chicken_flapping_swing_gif,
+                alignment: Alignment.center,
+                transform: location % 2 == 0
+                    ? Matrix4.rotationY(0)
+                    : Matrix4.rotationY(pi),
+                child: AnimatedBuilder(
+                  animation: _animation1,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: _animation1.value *
+                          200, // Adjust the curve radius here
+                      child: child,
+                    );
+                  },
+                  child: Image.asset(
+                    Assets.chicken_flapping_swing_gif,
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.18,
                     height: AppSizes.maxHeight * 0.11,
-              ),
-            )),
+                  ),
+                )),
           ),
         ],
       ),
@@ -196,7 +201,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
             );
           },
           child: Group_Mountain(
-            heightMountain: AppSizes.maxHeight*0.132,
+            heightMountain: AppSizes.maxHeight * 0.132,
             isLeft: i % 2 == 0,
             horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
             count: i + 1,
@@ -205,18 +210,28 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
                 return;
               }
               bool? result = null;
-              if (widget.type != "" && widget.type == "reading") {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapReadingExaminationScreen()));
-              } else if (widget.type != "" && widget.type == "listening") {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapListeningExaminationScreen()));
-              } else if (widget.type != "" && widget.type == "speaking") {
-               result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapSpeakingExaminationScreen()));
-              }  else if (widget.type != "" && widget.type == "writing") {
-               result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapWritingExaminationScreen()));
+              if (widget.isLesson) {
+                if (widget.type != "" && widget.type == "reading") {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapReadingExaminationScreen()));
+                } else if (widget.type != "" && widget.type == "listening") {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapListeningExaminationScreen()));
+                } else if (widget.type != "" && widget.type == "speaking") {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapSpeakingExaminationScreen()));
+                }
+              } else {
+                if (widget.type != "" && widget.type == "reading") {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapWritingLessonScreen()));
+                } else if (widget.type != "" && widget.type == "listening") {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapListeningLessonScreen()));
+                } else if (widget.type != "" && widget.type == "speaking") {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapSpeakingLessonScreen()));
+                }
               }
 
               if (result != null && result == true && i == location) {
@@ -229,7 +244,6 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
                   _controller.forward();
                 }
               }
-              
             },
             isCactus: i == 0,
             // isChicken: i == 0,
@@ -273,13 +287,15 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
 
   Path drawPath() {
     Path path = Path();
-    double bottomChicken = AppSizes.maxHeight < 800 ? AppSizes.maxHeight*0.14 : AppSizes.maxHeight*0.12;
+    double bottomChicken = AppSizes.maxHeight < 800
+        ? AppSizes.maxHeight * 0.14
+        : AppSizes.maxHeight * 0.12;
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
     double bottom =
         heightContent - bottomChicken - AppSizes.maxHeight * multiple;
     double left = currentPadding * AppSizes.maxWidth / 414;
     double nextleft = nextPadding * AppSizes.maxWidth / 414;
-    double width = AppSizes.maxWidth*0.42;
+    double width = AppSizes.maxWidth * 0.42;
     double maxWidth = AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
     if (location == 0) {
@@ -378,29 +394,27 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
       backgroundColor: Color(0xffFFF0AB),
       body: Responsive(
         mobile: SingleChildScrollView(
-          controller: _scrollController,
-          physics: ClampingScrollPhysics(),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [_buildBottom(), _buildContent()],
-          )),
-          tablet: SingleChildScrollView(
-          controller: _scrollController,
-          physics: ClampingScrollPhysics(),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [_buildBottom(), _buildContent()],
-          )),
-          desktop: SingleChildScrollView(
-          controller: _scrollController,
-          physics: ClampingScrollPhysics(),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [_buildBottom(), _buildContent()],
-          )),
-          
-      )
-       ,
+            controller: _scrollController,
+            physics: ClampingScrollPhysics(),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [_buildBottom(), _buildContent()],
+            )),
+        tablet: SingleChildScrollView(
+            controller: _scrollController,
+            physics: ClampingScrollPhysics(),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [_buildBottom(), _buildContent()],
+            )),
+        desktop: SingleChildScrollView(
+            controller: _scrollController,
+            physics: ClampingScrollPhysics(),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [_buildBottom(), _buildContent()],
+            )),
+      ),
     );
   }
 }

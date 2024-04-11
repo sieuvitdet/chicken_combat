@@ -6,14 +6,14 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
 
-class MapReadingLessonScreen extends StatefulWidget {
-  const MapReadingLessonScreen({super.key});
+class MapReadingExaminationAnswerScreen extends StatefulWidget {
+  const MapReadingExaminationAnswerScreen({super.key});
 
   @override
-  State<MapReadingLessonScreen> createState() => _MapReadingLessonScreenState();
+  State<MapReadingExaminationAnswerScreen> createState() => _MapReadingExaminationAnswerScreenState();
 }
 
-class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with WidgetsBindingObserver {
+class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminationAnswerScreen> with WidgetsBindingObserver {
   String text =
       "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
       "Welcome to our random topic! Get ready  to explo";
@@ -119,13 +119,6 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
               left: 16,
               right: 16,
               child: Image(image: AssetImage(Assets.img_line_table))),
-          Positioned(
-              bottom: 16,
-              right: 24,
-              child: Text(
-                "$page/6",
-                style: TextStyle(color: Colors.white),
-              ))
         ],
       ),
     );
@@ -216,7 +209,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
 
                         },
                         onTapExit: () {
-                          Navigator.of(context)..pop()..pop(false);
+                          Navigator.of(context)..pop()..pop()..pop(false);
                         },
                         onTapContinous: () {
                           Navigator.of(context).pop();

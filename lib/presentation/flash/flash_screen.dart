@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -37,7 +38,7 @@ class _FlashScreenState extends State<FlashScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(seconds: 3));
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+          .push(MaterialPageRoute(builder: (context) => HomeScreen()));
     });
   }
 

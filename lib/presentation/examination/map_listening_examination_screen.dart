@@ -4,7 +4,6 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
-import 'package:chicken_combat/widgets/dialog_menu_action_widget.dart';
 import 'package:flutter/material.dart';
 
 class MapListeningExaminationScreen extends StatefulWidget {
@@ -247,15 +246,11 @@ class _MapListeningExaminationScreenState
                         onTap: () {
                           GlobalSetting.shared.showPopup(context,onTapClose: () {
                             Navigator.of(context).pop();
-              
                           },
                           onTapExit: () {
-                            Navigator.of(context)..pop()..pop()..pop();
+                            Navigator.of(context)..pop()..pop(false);
                           },
                           onTapContinous: () {
-                            Navigator.of(context).pop();
-                          },
-                          onTapPlayBack:() {
                             Navigator.of(context).pop();
                           });
                         },

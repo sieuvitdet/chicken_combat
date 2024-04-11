@@ -1,12 +1,16 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/presentation/writing_stuty/writing_study_screen.dart';
+import 'package:chicken_combat/presentation/map/map1_screen.dart';
+import 'package:chicken_combat/presentation/map/map2_screen.dart';
+import 'package:chicken_combat/presentation/map/map3_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
 
 class ListMapLessonScreen extends StatefulWidget {
-  const ListMapLessonScreen({super.key});
+  final String type;
+  final bool isLesson;
+  ListMapLessonScreen({super.key, this.type = "", required this.isLesson});
 
   @override
   State<ListMapLessonScreen> createState() => _ListMapLessonScreenState();
@@ -83,14 +87,15 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
         onTap: () async {
           switch (level) {
             case 0:
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => WritingStudyScreen()));
+            Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Map1Screen(type: widget.type,isLesson: widget.isLesson,)));
             case 1:
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => WritingStudyScreen()));
+                    builder: (context) => Map2Screen(type: widget.type,isLesson: widget.isLesson)));
+              break;
             case 2:
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => WritingStudyScreen()));
+            Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Map3Screen(type: widget.type,isLesson: widget.isLesson)));
               break;
             default:
           }

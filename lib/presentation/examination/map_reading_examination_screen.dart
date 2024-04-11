@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
-import 'package:chicken_combat/widgets/dialog_menu_action_widget.dart';
 import 'package:flutter/material.dart';
 
 class MapReadingExaminationScreen extends StatefulWidget {
@@ -74,7 +74,6 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
     return Column(
       children: [
         _body(),
-        ..._listAnswer(),
         Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
         Container(
           height: AppSizes.bottomHeight,
@@ -86,6 +85,7 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
   Widget _body() {
     return Expanded(
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Column(
             children: [
@@ -121,24 +121,15 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
               right: 16,
               child: Image(image: AssetImage(Assets.img_line_table))),
           Positioned(
-              bottom: 16,
-              right: 24,
-              child: Text(
-                "$page/6",
-                style: TextStyle(color: Colors.white),
-              ))
+              top: -AppSizes.maxHeight*0.03,
+              left: AppSizes.maxWidth*0.1,
+              child: Image.asset(Assets.img_cloud_big,width: AppSizes.maxWidth*0.15,))
         ],
       ),
     );
   }
 
-  List<Widget> _listAnswer() {
-    List<Widget> itemList = [];
-    for (int i = 0; i < 4; i++) {
-      itemList.add(_answer(i));
-    }
-    return itemList;
-  }
+  
 
   Widget _itemReading() {
     return Column(
@@ -157,17 +148,6 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
     );
   }
 
-  Widget _answer(int i, {Function? ontap}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: CustomButtomImageColorWidget(
-        redBlurColor: true,
-        child:
-            Text("Đáp án", style: TextStyle(fontSize: 24, color: Colors.white)),
-        onTap: ontap,
-      ),
-    );
-  }
 
   Widget _buildButton() {
     return Container(
@@ -177,9 +157,8 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
         child:
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
-          page += 1;
-          splitText(text2);
-          setState(() {});
+          Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapReadingExaminationAnswerScreen()));
         },
       ),
     );
@@ -217,12 +196,9 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
 
                         },
                         onTapExit: () {
-                          Navigator.of(context)..pop()..pop()..pop();
+                          Navigator.of(context)..pop()..pop(false);
                         },
                         onTapContinous: () {
-                          Navigator.of(context).pop();
-                        },
-                        onTapPlayBack:() {
                           Navigator.of(context).pop();
                         });
                       },
