@@ -23,6 +23,7 @@ dependencies:
   rxdart: ^0.27.4
   intl: ^0.17.0
   firebase_auth: ^4.19.0
+  shared_preferences: any
 
 dev_dependencies:
   flutter_test:

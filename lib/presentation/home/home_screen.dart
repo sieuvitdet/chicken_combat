@@ -4,6 +4,8 @@ import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
@@ -83,12 +85,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Đuc trannnnnnnnmnnnnnn",
+                              GlobalSetting.prefs.getString(SharedPrefsKey.username),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white),
                             ),
-                            Text("Level 100000000000",
+                            Text("Level 1",
                             overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white))

@@ -57,34 +57,30 @@ class _DialogRulesRewardWidgetState extends State<DialogRulesRewardWidget> {
                           text: TextSpan(
                             children: [
                               WidgetSpan(
-                                child: StrokeTextWidget(
-                                  text: "Cột mốc:\n",
-                                  size: 14,
-                                  colorStroke: Color(0xFF8F1E23),
+                                child: Text(
+                                   "Cột mốc\n",
+                                   style: TextStyle(fontSize: 16,color: Colors.black),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
                               WidgetSpan(
-                                child: StrokeTextWidget(
-                                  text: "Mức 1: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng\n",
-                                  size: 14,
-                                  colorStroke: Color(0xFF8F1E23),
+                                child: Text(
+                                   "Mức 1: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng",
+                                   style: TextStyle(fontSize: 16,color: Colors.black),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
                               WidgetSpan(
-                                child: StrokeTextWidget(
-                                  text: "Mức 2: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng\n",
-                                  size: 14,
-                                  colorStroke: Color(0xFF8F1E23),
+                                child: Text(
+                                   "Mức 1: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng",
+                                   style: TextStyle(fontSize: 16,color: Colors.black),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
                               WidgetSpan(
-                                child: StrokeTextWidget(
-                                  text: "Mức 3: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng\n",
-                                  size: 14,
-                                  colorStroke: Color(0xFF8F1E23),
+                                child: Text(
+                                   "Mức 1: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng",
+                                   style: TextStyle(fontSize: 16,color: Colors.black),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
