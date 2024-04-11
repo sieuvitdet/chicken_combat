@@ -174,7 +174,7 @@ class CustomTextField extends StatelessWidget {
                   controller: controller ?? TextEditingController(),
                   selectionControls: selectionControls,
                   keyboardType: isPhone ?? false
-                      ? TextInputType.phone
+                      ? TextInputType.number
                       : (obscureText ?? false
                           ? TextInputType.visiblePassword
                           : (keyboardType ?? TextInputType.text)),

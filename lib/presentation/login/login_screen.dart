@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chicken_combat/common/assets.dart';
 import 'dart:async';
 
@@ -7,7 +9,7 @@ import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
 import 'package:chicken_combat/presentation/register/PhoneRegisterScreen.dart';
-import 'package:chicken_combat/utils/shared_pref_key.dart';
+import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/utils/validator.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -46,7 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
       @override
   void dispose() {
     _userNameController.dispose();
+    _userNameNode.dispose();
     _passwordController.dispose();
+    _passwordNode.dispose();
     super.dispose();
   }
 
@@ -81,6 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login(String _phone, String _password) async {
+    final String key = _phone;
+    final String originalString = _password;
+
+    // Mã hóa chuỗi
+    String encryptedString = GenerateHash.encryptString(originalString, key);
+    print("Encrypted String: $encryptedString");
+
     CustomNavigator.showProgressDialog(context);
     if (_phone.isEmpty || _password.isEmpty) {
       print('Phone or password is Empty');
@@ -93,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
-        if (user.id == _phone && user.password == _password) {
+        if (user.id == _phone && user.password == encryptedString) {
           _bloc.setupLogin(user);
           print('User ID: ${user.id}');
           print('User Phone Number: ${user.phoneNumber}');
@@ -127,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     initialData: false,
                     builder: (context, snapshot1) {
                       return CustomTextField(
-                        hintText: "Số điện thoại",
+                        hintText: "Tên tài khoản",
                         hintStyle: AppTextStyles.style13GreyW400,
                         controller: _userNameController,
                         focusNode: _userNameNode,
@@ -141,7 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           _userNameController.clear(),
                           _bloc.setUserName(false),
                         },
-                        isPhone: true,
                         require: false,
                         limitInput: 10,
                         textInputAction: TextInputAction.next,
@@ -168,17 +178,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     return CustomTextField(
                       hintText: "Nhập mật khẩu",
                       hintStyle: AppTextStyles.style13GreyW400,
-                      suffixIcon: snapshot.data!
-                          ? Assets.img_eye_close
-                          : Assets.img_eye_open,
                       controller: _passwordController,
                       focusNode: _passwordNode,
                       enableBorder: onFocusPassword,
-                      error: snapshot1.data,
+                      radius: 30.0,
+                      suffixIcon: snapshot.data!
+                          ? Assets.img_eye_close
+                          : Assets.img_eye_open,
                       backgroundColor: AppColors.whiteColor,
                       suffixIconColor: AppColors.grey15,
+                      error: snapshot1.data,
                       obscureText: snapshot.data,
-                      radius: 30.0,
                       // require: false,
                       onSuffixIconTap: () => _bloc.setPassword(!snapshot.data!),
                       onChanged: (event) {
@@ -186,7 +196,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         _bloc.setErrorPassword('');
                       },
                       onSubmitted: (_) => {},
-                      isPassWord: true,
                     );
                   },
                 );
@@ -367,4 +376,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  }
+
+
+
+}
