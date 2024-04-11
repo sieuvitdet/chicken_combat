@@ -7,13 +7,13 @@ import 'package:chicken_combat/presentation/examination/map_listening_examinatio
 import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
-import 'package:chicken_combat/widgets/group_mountain_sea_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_snow_widget.dart';
 import 'package:flutter/material.dart';
 
 class Map3Screen extends StatefulWidget {
   final String? type;
-  Map3Screen({this.type});
+  final bool isLesson;
+  Map3Screen({this.type,required this.isLesson});
 
   @override
   State<Map3Screen> createState() => _Map3ScreenState();

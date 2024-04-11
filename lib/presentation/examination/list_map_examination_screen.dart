@@ -1,9 +1,5 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
-import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
-import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
-import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/presentation/map/map2_screen.dart';
 import 'package:chicken_combat/presentation/map/map3_screen.dart';
@@ -13,7 +9,8 @@ import 'package:flutter/material.dart';
 
 class ListMapExaminationScreen extends StatefulWidget {
   final String type;
-  ListMapExaminationScreen({super.key, this.type = ""});
+  final bool isLesson;
+  ListMapExaminationScreen({super.key,required this.type,required this.isLesson});
 
   @override
   State<ListMapExaminationScreen> createState() =>
@@ -22,6 +19,7 @@ class ListMapExaminationScreen extends StatefulWidget {
 
 class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
   int numberMap = 5;
+  
 
   List<int> _listMapInt = [];
   @override
@@ -92,16 +90,14 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
           switch (level) {
             case 0:
             Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map1Screen(type: widget.type)));
-
-            
+                    builder: (context) => Map1Screen(type: widget.type,isLesson: widget.isLesson,)));
             case 1:
               Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map2Screen(type: widget.type)));
+                    builder: (context) => Map2Screen(type: widget.type,isLesson: widget.isLesson)));
               break;
             case 2:
             Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map3Screen(type: widget.type)));
+                    builder: (context) => Map3Screen(type: widget.type,isLesson: widget.isLesson)));
               break;
             default:
           }

@@ -257,17 +257,53 @@ class _MapWritingExaminationScreenState
               right: 16,
               child: Image(image: AssetImage(Assets.img_line_table))),
           Positioned(
-              bottom: AppSizes.maxHeight*0.02,
+              bottom: AppSizes.maxHeight * 0.02,
               left: 0,
               right: 0,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(Assets.ic_previous_page,width: AppSizes.maxWidth*0.058,fit: BoxFit.contain,),
+                  ScalableButton(
+                      onTap: () {
+                        if (page <= 0) {
+                          return;
+                        }
+                        setState(() {
+                          page--;
+                          _anwser1.text = _listStt[(page * 4)].anwser ?? "";
+                          _anwser2.text = _listStt[(page * 4) + 1].anwser ?? "";
+                          _anwser3.text = _listStt[(page * 4) + 2].anwser ?? "";
+                          _anwser4.text = _listStt[(page * 4) + 3].anwser ?? "";
+                        });
+                      },
+                      child: Image.asset(
+                        Assets.ic_previous_page,
+                        width: AppSizes.maxWidth * 0.058,
+                        fit: BoxFit.contain,
+                      )),
                   Text(
-                "${page + 1}/${pages.length}",
-                style: TextStyle(color: Colors.white),
-              ),
-              Image.asset(Assets.ic_next_page,width: AppSizes.maxWidth*0.058,fit: BoxFit.contain,),
+                    "${page + 1}/${pages.length}",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  ScalableButton(
+                      onTap: () {
+
+                        if (page >= pages.length - 1) {
+                          return;
+                        }
+                        page += 1;
+                        _anwser1.text = _listStt[(page * 4)].anwser ?? "";
+                        _anwser2.text = _listStt[(page * 4) + 1].anwser ?? "";
+                        _anwser3.text = _listStt[(page * 4) + 2].anwser ?? "";
+                        _anwser4.text = _listStt[(page * 4) + 3].anwser ?? "";
+
+                        setState(() {});
+                      },
+                      child: Image.asset(
+                        Assets.ic_next_page,
+                        width: AppSizes.maxWidth * 0.058,
+                        fit: BoxFit.contain,
+                      )),
                 ],
               )),
           if (isTextOverflow)
@@ -369,8 +405,8 @@ class _MapWritingExaminationScreenState
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
         orangeColor: true,
-        child:
-            Text((page == pages.length - 1) ? "Final" : "Next", style: TextStyle(fontSize: 24, color: Colors.white)),
+        child: Text((page == pages.length - 1) ? "Final" : "Next",
+            style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           if (page >= pages.length - 1) {
             return;
@@ -394,45 +430,25 @@ class _MapWritingExaminationScreenState
       bottom: false,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(  
+        child: Scaffold(
             appBar: AppBar(
                 backgroundColor: Colors.transparent,
-                leading: IconTheme(
-                  data: IconThemeData(size: 24.0), // Set the size here
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      if (page <= 0) {
-                        return;
-                      }
-                      setState(() {
-                        page--;
-                        _anwser1.text = _listStt[(page * 4)].anwser ?? "";
-                        _anwser2.text = _listStt[(page * 4) + 1].anwser ?? "";
-                        _anwser3.text = _listStt[(page * 4) + 2].anwser ?? "";
-                        _anwser4.text = _listStt[(page * 4) + 3].anwser ?? "";
-                      });
-                    },
-                  ),
-                ),
+                leading: SizedBox.shrink(),
                 actions: [
                   Padding(
                     padding: EdgeInsets.only(right: 16),
                     child: GestureDetector(
                         onTap: () {
-                         GlobalSetting.shared.showPopup(context,onTapClose: () {
-                          Navigator.of(context).pop();
-
-                        },
-                        onTapExit: () {
-                          Navigator.of(context)..pop()..pop(true);
-                        },
-                        onTapContinous: () {
-                          Navigator.of(context).pop();
-                        },
-                        onTapPlayBack:() {
-                          Navigator.of(context).pop();
-                        });
+                          GlobalSetting.shared.showPopup(context,
+                              onTapClose: () {
+                            Navigator.of(context).pop();
+                          }, onTapExit: () {
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop(false);
+                          }, onTapContinous: () {
+                            Navigator.of(context).pop();
+                          });
                         },
                         child: Image.asset(Assets.ic_menu, height: 24)),
                   )
@@ -446,16 +462,16 @@ class _MapWritingExaminationScreenState
             body: Responsive(
               mobile: Stack(
                 alignment: Alignment.center,
-              children: [_buildBackground(), _buildContent()],
-            ),
-            tablet: Stack(
-              alignment: Alignment.center,
-              children: [_buildBackground(), _buildContent()],
-            ),
-            desktop: Stack(
-              alignment: Alignment.center,
-              children: [_buildBackground(), _buildContent()],
-            ),
+                children: [_buildBackground(), _buildContent()],
+              ),
+              tablet: Stack(
+                alignment: Alignment.center,
+                children: [_buildBackground(), _buildContent()],
+              ),
+              desktop: Stack(
+                alignment: Alignment.center,
+                children: [_buildBackground(), _buildContent()],
+              ),
             )),
       ),
     );

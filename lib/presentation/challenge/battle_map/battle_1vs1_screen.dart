@@ -621,8 +621,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               ..pop();
           }, onTapContinous: () {
             Navigator.of(context).pop();
-          }, onTapPlayBack: () {
-            Navigator.of(context).pop();
           });
         },
         child: ImageIcon(

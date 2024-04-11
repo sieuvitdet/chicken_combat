@@ -14,7 +14,8 @@ import 'package:flutter/material.dart';
 
 class Map2Screen extends StatefulWidget {
   final String? type;
-  Map2Screen({this.type});
+  final bool isLesson;
+  Map2Screen({this.type,required this.isLesson});
 
   @override
   State<Map2Screen> createState() => _Map2ScreenState();

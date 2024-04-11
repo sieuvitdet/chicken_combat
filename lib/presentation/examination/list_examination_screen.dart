@@ -13,7 +13,7 @@ class ListExaminationScreen extends StatefulWidget {
 }
 
 class _ListExaminationScreenState extends State<ListExaminationScreen> {
-  List<String> _function = ["Speaking", "Listening", "Writing", "Reading"];
+  List<String> _function = ["Speaking", "Listening", "Reading"];
   @override
   void initState() {
     super.initState();
@@ -46,18 +46,17 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
     return itemList;
   }
 
-  Widget _map(int styleId, String type) {
+  Widget _map(int typeId, String type) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: styleId == 0,
-        blueColor: styleId == 1,
-        yellowColor: styleId == 2,
-        redBlurColor: styleId == 3,
+        orangeColor: typeId == 0,
+        blueColor: typeId == 1,
+        redBlurColor: typeId == 2,
         child: Text(type, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: () async {
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ListMapExaminationScreen(type: type.toLowerCase(),)));
+              MaterialPageRoute(builder: (context) => ListMapExaminationScreen(type: type.toLowerCase(),isLesson: false,)));
         },
       ),
     );
