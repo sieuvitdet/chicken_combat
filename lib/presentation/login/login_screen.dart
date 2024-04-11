@@ -43,61 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
     _scrollController = ScrollController();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
-        body: Center(
-          child: Container(
-            width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Stack(
-              children: [
-                _buildBackground(),
-                _body(),
-              ],
-            ),
-          ),
-        ),
-        // body: Responsive(mobile: _body(),tablet: _body(),desktop: _body(),),
-        bottomNavigationBar: Container(
-              height: 80,
-              color: Color(0xFFFACA44),
-              child: Center(
-                child: InkWell(
-                  onTap: () => {
-                    Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PhoneRegisterScreen()))
-                  },
-                  child: RichText(
-                      text: TextSpan(
-                          text: "Bạn chưa có tài khoản?",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Itim",
-                              color: Colors.white),
-                          children: [
-                        TextSpan(
-                            text: "  " + "Đăng ký",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFE84C3D)))
-                      ])),
-                ),
-              ),
-            ),
-      ),
-    );
-    @override
+      @override
   void dispose() {
     _userNameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
   bool checkValidInputField() {
     FocusScope.of(context).unfocus();
     _bloc.setErrorUserName('');
@@ -455,4 +407,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
+  }
