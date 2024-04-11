@@ -46,9 +46,9 @@ class LoginBloc extends BaseBloc {
 
   setupLogin(UserModel responseModel) {
     Globals.prefs!.setBool(SharedPrefsKey.is_login, true);
-    Globals.prefs!.setString(SharedPrefsKey.username, responseModel.fullName);
+    // Globals.prefs!.setString(SharedPrefsKey.username, responseModel.fullName);
     Globals.prefs!.setString(SharedPrefsKey.password, responseModel.password);
-    Globals.prefs!.setString(SharedPrefsKey.phone_number, responseModel.phoneNumber);
+    // Globals.prefs!.setString(SharedPrefsKey.phone_number, responseModel.phoneNumber);
     Globals.prefs!.setString(SharedPrefsKey.id_user, responseModel.id);
   }
 }

@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:chicken_combat/common/assets.dart';
-import 'dart:async';
-
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/user_auth_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
@@ -68,24 +65,14 @@ class _LoginScreenState extends State<LoginScreen> {
       _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
       check = false;
     } else if (_passwordController.text.trim() == "") {
-      if (!Validators().isValidPhone(_userNameController.text.trim())) {
-        _bloc.setErrorUserName("Số điện thoại không đúng định dạng");
-      }
       _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
       check = false;
-    } else {
-      if (!Validators().isValidPhone(_userNameController.text.trim())) {
-        _bloc.setErrorUserName("Số điện thoại không đúng định dạng");
-        check = false;
-      } else {
-        check = true;
-      }
     }
     return check;
   }
 
-  void login(String _phone, String _password) async {
-    final String key = _phone;
+  void login(String _username, String _password) async {
+    final String key = _username;
     final String originalString = _password;
 
     // Mã hóa chuỗi
@@ -93,23 +80,22 @@ class _LoginScreenState extends State<LoginScreen> {
     print("Encrypted String: $encryptedString");
 
     CustomNavigator.showProgressDialog(context);
-    if (_phone.isEmpty || _password.isEmpty) {
+    if (_username.isEmpty || _password.isEmpty) {
       print('Phone or password is Empty');
       return;
     }
     CollectionReference users =
         FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
-    await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
+    await users.doc(_username).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
       if (documentSnapshot.exists) {
         print('Document exists on the database');
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
-        if (user.id == _phone && user.password == encryptedString) {
-          _bloc.setupLogin(user);
+        if (user.password == encryptedString) {
+          // _bloc.setupLogin(user);
           print('User ID: ${user.id}');
-          print('User Phone Number: ${user.phoneNumber}');
+          print('User Phone Number: ${user.username}');
           print('User Password: ${user.password}');
-          print('User Full Name: ${user.fullName}');
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen()));
         } else {
