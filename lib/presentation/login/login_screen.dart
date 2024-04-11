@@ -80,20 +80,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return check;
   }
 
-  Future<void> addUser() {
-    CollectionReference users =
-        FirebaseFirestore.instance.collection('userdata');
-    return users
-        .doc("0559237978")
-        .set({
-          'name': "Gà đỏ", // John Doe
-          'password': "123456", // Stokes and Sons
-          'phone': "0559237978" // 42
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
-  }
-
   void login(String _phone, String _password) async {
     CustomNavigator.showProgressDialog(context);
     if (_phone.isEmpty || _password.isEmpty) {
@@ -101,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     CollectionReference users =
-        FirebaseFirestore.instance.collection('userdata');
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
     await users.doc(_phone).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
       if (documentSnapshot.exists) {
@@ -113,16 +99,16 @@ class _LoginScreenState extends State<LoginScreen> {
           print('User Phone Number: ${user.phoneNumber}');
           print('User Password: ${user.password}');
           print('User Full Name: ${user.fullName}');
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => HomeScreen()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomeScreen()));
         } else {
-          _bloc.setErrorLogin("aaaa");
+          _bloc.setErrorLogin("Số điện thoại hoặc mật khẩu không đúng.");
         }
       } else {
-        _bloc.setErrorLogin("bbbbbb");
+        _bloc.setErrorLogin("Số điện thoại không tồn tại.");
       }
     }).catchError((error) {
-      _bloc.setErrorLogin("ccccc");
+      _bloc.setErrorLogin("${error}");
     });
   }
 
@@ -280,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             _login(),
-            _comeinNow()
+            _comeInNow()
           ],
         ),
       ),
@@ -296,16 +282,12 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text("Đăng nhập",
                   style: TextStyle(fontSize: 24, color: Colors.white))),
           onTap: () {
-                if (checkValidInputField())
-                  {
-                    login(_userNameController.text, _passwordController.text);
-                  }
-
+                if (checkValidInputField()) { login(_userNameController.text, _passwordController.text); }
               }),
     );
   }
 
-  Widget _comeinNow() {
+  Widget _comeInNow() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: CustomButtomImageColorWidget(
@@ -338,8 +320,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     @override
   Widget build(BuildContext context) {
-    CollectionReference users =
-        FirebaseFirestore.instance.collection('userdata');
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -352,39 +332,19 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 _buildBackground(),
                 _body(),
-                FutureBuilder<DocumentSnapshot>(
-                  future: users.doc("0924002700").get(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text("Something went wrong");
-                    }
-
-                    if (snapshot.hasData && !snapshot.data!.exists) {
-                      return Text("Document does not exist");
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      Map<String, dynamic> data =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      return Text(
-                          "Full Name: ${data['name']} phone: ${data['phone']}");
-                    }
-
-                    return Text("loading");
-                  },
-                )
               ],
             ),
           ),
         ),
-        // body: Responsive(mobile: _body(),tablet: _body(),desktop: _body(),),
         bottomNavigationBar: Container(
           height: 80,
           color: Color(0xFFFACA44),
           child: Center(
             child: InkWell(
-              onTap: addUser,
+              onTap: () => {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PhoneRegisterScreen()))
+              },
               child: RichText(
                   text: TextSpan(
                       text: "Bạn chưa có tài khoản?",
