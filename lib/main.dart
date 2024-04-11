@@ -1,3 +1,4 @@
+import 'package:chicken_combat/common/config.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/flash/flash_screen.dart';
 import 'package:chicken_combat/widgets/custom_expanedable_draggable_fab_widget.dart';
@@ -10,6 +11,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Config.getPreferences();
   runApp(const MyApp());
 }
 

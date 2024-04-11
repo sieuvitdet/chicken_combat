@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
@@ -19,9 +20,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  UserModel? _userModel;
+
   @override
   void initState() {
     super.initState();
+    parseUserModelFormSharePref();
+  }
+
+  void parseUserModelFormSharePref() {
+      _userModel?.id =  GlobalSetting.prefs.getString(SharedPrefsKey.id_user);
+      _userModel?.username =  GlobalSetting.prefs.getString(SharedPrefsKey.username);
+      _userModel?.level =  GlobalSetting.prefs.getString(SharedPrefsKey.level);
+      _userModel?.financeId =  GlobalSetting.prefs.getString(SharedPrefsKey.finance_id);
+      _userModel?.avatar =  GlobalSetting.prefs.getString(SharedPrefsKey.avatar);
   }
 
   Widget _function() {
@@ -85,12 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              GlobalSetting.prefs.getString(SharedPrefsKey.username),
+                              _userModel!.username,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white),
                             ),
-                            Text("Level 1",
+                            Text(_userModel!.level,
                             overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white))

@@ -1,14 +1,12 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/user_auth_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
 import 'package:chicken_combat/presentation/register/PhoneRegisterScreen.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/utils.dart';
-import 'package:chicken_combat/utils/validator.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
@@ -92,10 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print('Document exists on the database');
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
         if (user.password == encryptedString) {
-          // _bloc.setupLogin(user);
-          print('User ID: ${user.id}');
-          print('User Phone Number: ${user.username}');
-          print('User Password: ${user.password}');
+           _bloc.setupLogin(user);
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen()));
         } else {
