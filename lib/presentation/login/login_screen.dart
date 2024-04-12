@@ -4,7 +4,7 @@ import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
-import 'package:chicken_combat/presentation/register/PhoneRegisterScreen.dart';
+import 'package:chicken_combat/presentation/register/register_screen.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -101,20 +101,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }).catchError((error) {
       _bloc.setErrorLogin("${error}");
     });
-  }
-
-  Future<void> addUser() {
-    CollectionReference users =
-    FirebaseFirestore.instance.collection('userdata');
-    return users
-        .doc("Gà Đỏ")
-        .set({
-      'name': "Gà đỏ", // John Doe
-      'password': "123456", // Stokes and Sons
-      'phone': "0559237978" // 42
-    })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
   }
 
    Widget _inputForm() {
@@ -346,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: InkWell(
               onTap: () => {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PhoneRegisterScreen()))
+                    builder: (context) => RegisterScreen(isGuest: false)))
               },
               child: RichText(
                   text: TextSpan(
