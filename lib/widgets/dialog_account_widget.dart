@@ -1,7 +1,9 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/presentation/ranking/ranking_screen.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
 import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
@@ -16,13 +18,21 @@ class DialogAccountWidget extends StatefulWidget {
 }
 
 class _DialogAccountWidgetState extends State<DialogAccountWidget> {
+
+UserModel? _userModel;
+   @override
+  void initState() {
+    super.initState();
+    _userModel = Globals.currentUser;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
         child: Container(
-          width: AppSizes.maxWidth * 0.838,
+          width: AppSizes.maxWidth * 0.868,
           height: AppSizes.maxHeight * 0.5,
           child: Stack(
             alignment: Alignment.center,
@@ -30,7 +40,8 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
               Image.asset(
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
-                height: AppSizes.maxHeight * 0.49,
+                 width: AppSizes.maxWidth * 0.888,
+                height: AppSizes.maxHeight * 0.5,
               ),
               Column(
                 children: [
@@ -62,7 +73,6 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                         _level(),
                         _nameAccount(),
                         _passWord(),
-                        _phoneNumber(),
                         _ranking(),
                         Container(height: AppSizes.maxHeight * 0.02),
                         CustomButtomImageColorWidget(
@@ -238,45 +248,6 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                         ),
                       ))
                 ],
-              )),
-        ))
-      ],
-    );
-  }
-
-  Widget _phoneNumber() {
-    return Row(
-      children: [
-        Container(
-          margin: EdgeInsets.only(left: AppSizes.maxWidth * 0.02),
-          alignment: Alignment.centerLeft,
-          width: AppSizes.maxWidth * 0.18,
-          height: AppSizes.maxWidth * 0.097,
-          child: StrokeTextWidget(
-            text: "Sđt:",
-            size: AppSizes.maxWidth < 350 ? 12 : 14,
-            colorStroke: Color(0xFFD18A5A),
-          ),
-        ),
-        Expanded(
-            child: Container(
-          padding: EdgeInsets.only(left: 4.0),
-          height: AppSizes.maxHeight * 0.036,
-          decoration: BoxDecoration(
-              color: Color(0xFFD18A5A),
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(2, 0), // Shadow position
-                ),
-              ]),
-          child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "0924002700",
-                style: TextStyle(color: Colors.white),
               )),
         ))
       ],

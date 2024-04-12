@@ -19,7 +19,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.868,
-          height: AppSizes.maxHeight * 0.3,
+          height: AppSizes.maxHeight * 0.35,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -27,7 +27,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
                 Assets.img_bg_popup_confirm,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.868,
-                height: AppSizes.maxHeight * 0.28,
+                height: AppSizes.maxHeight * 0.33,
               ),
               Column(
                 children: [

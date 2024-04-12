@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: ontap as void Function()?,
       child: Container(
-        height: AppSizes.maxHeight * 0.055,
+        height: AppSizes.maxHeight * 0.06,
         width: AppSizes.maxWidth * 0.18,
         decoration: BoxDecoration(
             color: Color(0xFF97381A),

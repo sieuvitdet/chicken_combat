@@ -6,8 +6,10 @@ import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/register/register_bloc.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +107,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _bloc.setErrorRePassword("Mật khẩu từ 4 đến 6 ký tự");
           check = false;
         } else {
-          if  (_passwordController.text.trim() != _rePasswordController.text.trim()) {
+          if (_passwordController.text.trim() !=
+              _rePasswordController.text.trim()) {
             _bloc.setErrorRePassword("Mật khẩu không trùng khớp");
             check = false;
           }
@@ -137,44 +140,71 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future<bool> _registerWithFinanceId(String _userName, String _password, String financeId) async {
+  Future<bool> _registerWithFinanceId(
+      String _userName, String _password, String financeId) async {
     try {
-      CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
-      await users.doc(StringUtils.convertToLowerCase(_userName)).set({
-        'username': _userName,
+      CollectionReference users =
+          FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+      await users.doc(_userName).set({
+        'username': _userNameController.text,
         'password': _password,
-        'level': '1',//Mặc định 1
+        'level': '1', //Mặc định 1
         'financeId': financeId,
-        'avatar':'1' //Mặc định 1
+        'avatar': '1' //Mặc định 1
       });
+      CustomNavigator.hideProgressDialog();
       return true;
     } catch (error) {
+      CustomNavigator.hideProgressDialog();
       print("Error: $error");
       return false;
+      
     }
   }
 
+  void showPopup(String _username, String _password) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return CustomDialogWithTitleButtonWidget(
+                title: "Đăng ký tài khoản thành công!",
+                ontap: () {
+                  print(_username);
+    print(_password);
+                  Navigator.of(context)
+                    ..pop()
+                    ..pop([_username, _password]);
+                },
+              );
+            },
+          );
+        });
+  }
+
   void _addFinanceDocument(String _userName) async {
-    CollectionReference finance = FirebaseFirestore.instance.collection('finance');
-    DocumentReference newDocRef = await finance.add({
-      'gold':'0',
-      'diamond':'0',
-      'userId': _userName
-    });
+    CustomNavigator.showProgressDialog(context);
+    CollectionReference finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    DocumentReference newDocRef =
+        await finance.add({'gold': '0', 'diamond': '0', 'userId': _userName});
     String financeId = newDocRef.id;
     // Sau đó, đăng ký người dùng và chuyển đưa financeId
-    final String key = _userNameController.text.trim();
+    final String key = _userName;
     final String originalString = _rePasswordController.text.trim();
     String encryptedString = GenerateHash.encryptString(originalString, key);
     print("Encrypted String: $encryptedString");
-    bool registrationResult = await _registerWithFinanceId(_userName, encryptedString, financeId);
+    bool registrationResult =
+        await _registerWithFinanceId(_userName, encryptedString, financeId);
     if (registrationResult) {
       print('Đăng ký thành công');
+      showPopup(_userName, originalString);
     } else {
       _bloc.setErrorRegister('Không thể cập nhật thông tin ví');
     }
   }
-
 
   Widget _body() {
     return SingleChildScrollView(
@@ -224,7 +254,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fontSize: 24, color: Colors.white))),
                       onTap: () async {
                         if (checkValidInputField()) {
-                          String userName = StringUtils.convertToLowerCase(_userNameController.text.trim());
+                          String userName = StringUtils.convertToLowerCase(
+                              _userNameController.text);
                           if (await _validateUserName(userName)) {
                             _addFinanceDocument(userName);
                           } else {
@@ -236,7 +267,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
             )));
   }
-
+ 
   Widget _inputForm() {
     return Container(
       child: Column(

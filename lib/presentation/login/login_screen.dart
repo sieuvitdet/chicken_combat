@@ -6,6 +6,7 @@ import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
 import 'package:chicken_combat/presentation/register/register_screen.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
+import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -70,17 +71,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login(String _username, String _password) async {
-    final String key = _username;
+    final String userName = _username;
+    print(_username);
+    String key = StringUtils.convertToLowerCase(userName);
     final String originalString = _password;
     // Mã hóa chuỗi
     String encryptedString = GenerateHash.encryptString(originalString, key);
+    print(userName);
     print("Encrypted String: $encryptedString");
     CustomNavigator.showProgressDialog(context);
     CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
-    await users.doc(_username).get().then((DocumentSnapshot documentSnapshot) {
+    await users.doc(key).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
       if (documentSnapshot.exists) {
-        print('Document exists on the database');
+        print('Document exists on the database'); 
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
         if (user.password == encryptedString) {
            _bloc.setupLogin(user);
@@ -324,9 +328,12 @@ class _LoginScreenState extends State<LoginScreen> {
           color: Color(0xFFFACA44),
           child: Center(
             child: InkWell(
-              onTap: () => {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => RegisterScreen(isGuest: false)))
+              onTap: () async {
+               List<String>? _result = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => RegisterScreen(isGuest: false)));
+                    if (_result != null && _result.length > 1) {
+                      login(_result[0],_result[1]);
+                    }
               },
               child: RichText(
                   text: TextSpan(
