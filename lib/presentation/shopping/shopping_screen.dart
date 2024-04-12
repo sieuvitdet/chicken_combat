@@ -114,6 +114,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         bought: false,
         isUsed: false,
         isDiamond: true));
+        _listItemPremiumShop.add(ItemShopModel(
+        asset: Assets.img_gift_gacha,
+        isHot: true,
+        bought: false,
+        isUsed: false,
+        isDiamond: true));
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }

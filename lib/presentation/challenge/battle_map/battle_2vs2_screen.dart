@@ -44,8 +44,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
   double _topWaterShot = 0.0;
   bool? isEnemyWin = null;
   bool? waterShotLeftToRight = null;
-  bool _isTomato = true;
+  bool _isTomato = false;
   bool _startDelayed = false;
+
+  double maxWidthTomato = 0.0;
   // int currentVolume = 5;
   // int currentNote = 5;
 
@@ -61,6 +63,9 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14
           : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
     }
+    maxWidthTomato = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _configAnimation();
       _configWaterShotAnimation();
@@ -100,7 +105,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           if (_currentMyBlood == 0) {
             showPopupWin(isWin: false);
           } else {
-            _start = 30;
+            _start = 5;
             _startTimer();
           }
         });
@@ -126,7 +131,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           if (_currentEnemyBlood == 0) {
             showPopupWin(isWin: true);
           } else {
-            _start = 30;
+            _start = 5;
             _startTimer();
           }
         });
@@ -204,7 +209,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           Future.delayed(Duration(seconds: 3), () {
             setState(() {
               _startDelayed = false; // Reset the flag
-              _start = 30; // Reset the timer value
+              _start = 5;
+              _timer.cancel(); // Reset the timer value
             });
             _startTimer(); // Start the timer again
           });
@@ -291,9 +297,15 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
               left: calculateLeftToRight(_animationWaterLeftToRight.value).dx,
               child: Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.rotationY(0),
-                  child: Image.asset(
+                  transform: Matrix4.rotationY(pi),
+                  child: calculateLeftToRight(_animationWaterLeftToRight.value).dx <= (maxWidthTomato - (maxWidthTomato*0.5)) ? Image.asset(
                     _isTomato ? Assets.img_tomato : Assets.img_water_shot,
+                    fit: BoxFit.contain,
+                    width: _isTomato
+                        ? AppSizes.maxWidth * 0.1
+                        : AppSizes.maxWidth * 0.06,
+                  ): Image.asset(
+                    _isTomato ? Assets.img_tomato_broken : Assets.img_water_shot,
                     fit: BoxFit.contain,
                     width: _isTomato
                         ? AppSizes.maxWidth * 0.1
@@ -311,9 +323,15 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
               left: calculateRightToLeft(_animationWaterRightToLeft.value).dx,
               child: Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.rotationY(pi),
-                  child: Image.asset(
+                  transform: Matrix4.rotationY(0),
+                  child:calculateRightToLeft(_animationWaterRightToLeft.value).dx >= (maxWidthTomato - (maxWidthTomato*0.55)) ? Image.asset(
                     _isTomato ? Assets.img_tomato : Assets.img_water_shot,
+                    fit: BoxFit.contain,
+                    width: _isTomato
+                        ? AppSizes.maxWidth * 0.1
+                        : AppSizes.maxWidth * 0.06,
+                  ):  Image.asset(
+                    _isTomato ? Assets.img_tomato_broken : Assets.img_water_shot,
                     fit: BoxFit.contain,
                     width: _isTomato
                         ? AppSizes.maxWidth * 0.1

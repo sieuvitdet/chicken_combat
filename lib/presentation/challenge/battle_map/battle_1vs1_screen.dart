@@ -41,7 +41,9 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   double _topWaterShot = 0.0;
   bool? isEnemyWin = null;
   bool? waterShotLeftToRight = null;
-  bool _isTomato = false;
+  bool _isTomato = true;
+
+  double maxWidthTomato = 0.0;
   // int currentVolume = 5;
   // int currentNote = 5;
 
@@ -53,6 +55,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     } else {
       _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
     }
+
+    maxWidthTomato = AppSizes.maxWidthTablet > 0
+        ? AppSizes.maxWidthTablet
+        : AppSizes.maxWidth;
     // _configAnimation();
     // _configWaterShotAnimation();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -251,9 +257,17 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               left: calculateLeftToRight(_animationWaterLeftToRight.value).dx,
               child: Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.rotationY(0),
-                  child: Image.asset(
+                  transform: Matrix4.rotationY(pi),
+                  child:
+                  calculateLeftToRight(_animationWaterLeftToRight.value).dx <= (maxWidthTomato - (maxWidthTomato*0.5)) ?
+                   Image.asset(
                     _isTomato ? Assets.img_tomato : Assets.img_water_shot,
+                    fit: BoxFit.contain,
+                    width: _isTomato
+                        ? AppSizes.maxWidth * 0.1
+                        : AppSizes.maxWidth * 0.06,
+                  ) : Image.asset(
+                    _isTomato ? Assets.img_tomato_broken : Assets.img_water_shot,
                     fit: BoxFit.contain,
                     width: _isTomato
                         ? AppSizes.maxWidth * 0.1
@@ -272,8 +286,15 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               child: Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.rotationY(pi),
-                  child: Image.asset(
+                  child: calculateRightToLeft(_animationWaterRightToLeft.value).dx >= (maxWidthTomato - (maxWidthTomato*0.55)) ?
+                  Image.asset(
                     _isTomato ? Assets.img_tomato : Assets.img_water_shot,
+                    fit: BoxFit.contain,
+                    width: _isTomato
+                        ? AppSizes.maxWidth * 0.1
+                        : AppSizes.maxWidth * 0.06,
+                  ) :  Image.asset(
+                    _isTomato ? Assets.img_tomato_broken : Assets.img_water_shot,
                     fit: BoxFit.contain,
                     width: _isTomato
                         ? AppSizes.maxWidth * 0.1
@@ -577,7 +598,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                 isWin: isWin,
                 ontapExit: () {
                   Navigator.of(context)
-                    ..pop()
                     ..pop()
                     ..pop()
                     ..pop()

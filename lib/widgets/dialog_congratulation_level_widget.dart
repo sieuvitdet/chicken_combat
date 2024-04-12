@@ -1,6 +1,7 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,13 +20,15 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth*0.838,
-          height: AppSizes.maxHeight*0.47,
+          height: AppSizes.maxHeight * 0.44,
           child: Stack(
             alignment: Alignment.center,
             children: [
               Image.asset(
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
+                width: AppSizes.maxWidth * 0.838,
+                height: AppSizes.maxHeight * 0.45,
               ),
               Column(
                 children: [
@@ -40,7 +43,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
                   ),
                   Expanded(
                       child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: AppSizes.maxHeight*0.0268),
+                    padding: EdgeInsets.symmetric(horizontal: AppSizes.maxWidth*0.04, vertical: AppSizes.maxHeight*0.01),
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50.0),
@@ -56,6 +59,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
                       children: [
                         _threeStar(),
                         _gif(),
+                        SizedBox(height: 8.0),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: _listAction())
@@ -63,7 +67,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
                     ),
                   )),
                   SizedBox(
-                    height: 24,
+                    height: AppSizes.maxHeight*0.0268,
                   )
                 ],
               ),
@@ -78,24 +82,35 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Transform.rotate(
+        Column(
+          children: [
+            Transform.rotate(
           angle: -20 * 3.14 / 180,
           child: Image.asset(
             Assets.img_star,
             width: AppSizes.maxWidth*0.167,
           ),
         ),
+        SizedBox(height: 24,)
+          ],
+        ),
         Column(
           children: [
              _starWhite(),
-            Container(
-              height: 24,
-            )
+            StrokeTextWidget(text: "9.0",size: AppSizes.maxWidth < 350 ? 30 : 40,colorStroke: Color(0xFF974026),)
           ],
         ),
-        Transform.rotate(
+        Column(
+          children: [
+            Transform.rotate(
           angle: 20 * 3.14 / 180,
-          child:  _starWhite()
+          child: Image.asset(
+            Assets.img_star_white,
+            width: AppSizes.maxWidth*0.167,
+          ),
+        ),
+        SizedBox(height: 24,)
+          ],
         ),
       ],
     );
@@ -110,8 +125,9 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
 
   Widget _gif() {
     return Container(
-      height: AppSizes.maxHeight*0.07,
-      margin: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+      height: AppSizes.maxHeight * 0.0725,
+      margin: EdgeInsets.symmetric(
+          horizontal: AppSizes.maxHeight * 0.0386),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         color: Color(0xFFB96747),
@@ -127,9 +143,11 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
                 child: Text("Your Reward:",
                     style: TextStyle(
                         color: Color(0xFFB96747),
-                        fontWeight: FontWeight.bold))),
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppSizes.maxWidth < 350 ? 12 : 16))),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppSizes.maxWidth * 0.058),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [_gold(), _dimond()],
@@ -146,14 +164,19 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
       children: [
         Image.asset(
           Assets.ic_coin,
-          width: 24,
+          width: AppSizes.maxWidth * 0.05,
+          height: AppSizes.maxWidth * 0.05,
           fit: BoxFit.fill,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(
+            left: AppSizes.maxWidth * 0.019,
+          ),
           child: Text(
             "100",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
           ),
         )
       ],
@@ -165,14 +188,17 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
       children: [
         Image.asset(
           Assets.ic_diamond,
-          width: 24,
+          width: AppSizes.maxWidth * 0.05,
+          height: AppSizes.maxWidth * 0.05,
           fit: BoxFit.fill,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: AppSizes.maxWidth * 0.019),
           child: Text(
             "100",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
           ),
         )
       ],
@@ -182,7 +208,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
   List<Widget> _listAction() {
     List<Widget> _list = [];
     _list.add(_itemPlaygame());
-    _list.add(SizedBox(width: 48,));
+    _list.add(SizedBox(width: AppSizes.maxWidth*0.116,));
     _list.add(_itemExit());
     return _list;
   }
@@ -194,15 +220,12 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
             onTap: () {},
             child: Image.asset(
               Assets.ic_playgame_popup,
-              width: 48,
+              width:  AppSizes.maxWidth*0.116,
               fit: BoxFit.fill,
             )),
-        Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Text(
-            "Tiếp tục",
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
+        Text(
+          "Tiếp tục",
+          style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],
     );
@@ -216,16 +239,13 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
           onTap: ontapExit as void Function()?,
           child: Image.asset(
             Assets.ic_exit_popup,
-            width: 48,
+            width:  AppSizes.maxWidth*0.116,
             fit: BoxFit.fill,
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Text(
-            "Thoát",
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
+        Text(
+          "Thoát",
+          style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],
     );

@@ -163,13 +163,6 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
               left: 16,
               right: 16,
               child: Image(image: AssetImage(Assets.img_line_table))),
-          Positioned(
-              bottom: 16,
-              right: 24,
-              child: Text(
-                "$page/6",
-                style: TextStyle(color: Colors.white),
-              )),
           if (isTextOverflow)
             Positioned(
                 bottom: 40,

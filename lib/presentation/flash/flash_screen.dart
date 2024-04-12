@@ -38,7 +38,7 @@ class _FlashScreenState extends State<FlashScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(seconds: 3));
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+          .push(MaterialPageRoute(builder: (context) => HomeScreen()));
     });
   }
 
