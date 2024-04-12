@@ -1,11 +1,14 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingScreen extends StatefulWidget {
-  const ShoppingScreen({super.key});
+  final FinanceModel financeModel;
+
+  ShoppingScreen({required this.financeModel});
 
   @override
   State<ShoppingScreen> createState() => _ShoppingScreenState();
@@ -466,7 +469,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Center(child: _number(200)),
+          Center(child: _number(widget.financeModel.gold)),
           _coinNow(),
         ],
       ),
@@ -480,14 +483,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Center(child: _number(100)),
+          Center(child: _number(widget.financeModel.diamond)),
           _diamondNow(),
         ],
       ),
     );
   }
 
-  Widget _number(int number) {
+  Widget _number(String number) {
     return Container(
       height: 24,
       width: 70,

@@ -1,6 +1,7 @@
 
 import 'dart:math';
 
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/utils/shared_pref.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
 import 'package:chicken_combat/widgets/dialog_menu_action_widget.dart';
@@ -74,6 +75,7 @@ static late SharedPrefs prefs;
 
 class Globals {
   static SharedPrefs? prefs;
+  static UserModel? currentUser;
 }
 
 

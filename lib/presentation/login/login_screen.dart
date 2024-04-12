@@ -72,16 +72,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void login(String _username, String _password) async {
     final String key = _username;
     final String originalString = _password;
-
     // Mã hóa chuỗi
     String encryptedString = GenerateHash.encryptString(originalString, key);
     print("Encrypted String: $encryptedString");
-
     CustomNavigator.showProgressDialog(context);
-    if (_username.isEmpty || _password.isEmpty) {
-      print('Phone or password is Empty');
-      return;
-    }
     CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
     await users.doc(_username).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
@@ -90,13 +84,13 @@ class _LoginScreenState extends State<LoginScreen> {
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
         if (user.password == encryptedString) {
            _bloc.setupLogin(user);
-          Navigator.of(context).push(MaterialPageRoute(
+           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen()));
         } else {
-          _bloc.setErrorLogin("Số điện thoại hoặc mật khẩu không đúng.");
+          _bloc.setErrorLogin("Tên đăng nhập hoặc mật khẩu không đúng.");
         }
       } else {
-        _bloc.setErrorLogin("Số điện thoại không tồn tại.");
+        _bloc.setErrorLogin("Tên đăng nhập không tồn tại.");
       }
     }).catchError((error) {
       _bloc.setErrorLogin("${error}");

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 class StringUtils {
-  String generateRandomName() {
+  static String generateRandomName() {
     List<String> availableNames = [
       'Táo', 'Mít', 'Bưởi', 'Sapo', 'Dứa', 'Bơ', 'Dừa', 'Bòn Bon', 'Ổi', 'Khoai',
       'Cà rốt', 'Ớt', 'Bí Ngô', 'Cà Phê', 'Thóc', 'Ngô', 'Bắp', 'Đậu Đậu', 'Nếp',
@@ -16,7 +16,11 @@ class StringUtils {
     return fullName;
   }
 
-  String convertToLowerCase(String input) {
+  static String convertToLowerCase(String input) {
     return input.toLowerCase();
+  }
+
+  static List<String> convertDynamicListToStringList(List<dynamic> dynamicList) {
+    return dynamicList.map((element) => element.toString()).toList();
   }
 }
