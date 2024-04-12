@@ -12,11 +12,7 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
-<<<<<<< HEAD
-import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
-=======
 import 'package:cloud_firestore/cloud_firestore.dart';
->>>>>>> b871f9d12900a6dfdad76e5bc8bc8d4300e0c947
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -94,9 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return StatefulBuilder(
                               builder: (BuildContext context,
                                   void Function(void Function()) setState) {
-                                return DialogCongratulationLevelWidget(ontapExit: () {
-                                  Navigator.of(context).pop();
-                                },);
+                                return DialogAccountWidget();
                               },
                             );
                           });
