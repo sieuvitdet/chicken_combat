@@ -1,5 +1,7 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
@@ -10,7 +12,11 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
+<<<<<<< HEAD
 import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
+=======
+import 'package:cloud_firestore/cloud_firestore.dart';
+>>>>>>> b871f9d12900a6dfdad76e5bc8bc8d4300e0c947
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,19 +29,26 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   UserModel? _userModel;
+  FinanceModel? _financeModel;
 
   @override
   void initState() {
     super.initState();
-    parseUserModelFormSharePref();
+    _userModel = Globals.currentUser;
+    _getFinance(_userModel!.financeId);
   }
 
-  void parseUserModelFormSharePref() {
-      _userModel?.id =  GlobalSetting.prefs.getString(SharedPrefsKey.id_user);
-      _userModel?.username =  GlobalSetting.prefs.getString(SharedPrefsKey.username);
-      _userModel?.level =  GlobalSetting.prefs.getString(SharedPrefsKey.level);
-      _userModel?.financeId =  GlobalSetting.prefs.getString(SharedPrefsKey.finance_id);
-      _userModel?.avatar =  GlobalSetting.prefs.getString(SharedPrefsKey.avatar);
+  void _getFinance(String _id) async {
+    CollectionReference finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    await finance.doc(_id).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+        _financeModel = FinanceModel.fromSnapshot(documentSnapshot);
+        setState(() {});
+      }
+    }).catchError((error) {
+      print("${error}");
+    });
   }
 
   Widget _function() {
@@ -101,12 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                            "Duc",
+                              _userModel!.username,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white),
                             ),
-                            Text("Level 1",
+                            Text('Level ${_userModel!.level}',
                             overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white))
@@ -120,10 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Row(
             children: [
-              _itemRow("200", Assets.ic_coin, ontap: () {
+              _itemRow(_financeModel?.gold ?? '0', Assets.ic_coin, ontap: () {
               }),
               SizedBox(width: 4),
-              _itemRow("2000", Assets.ic_diamond, ontap: () {}),
+              _itemRow(_financeModel?.diamond ?? '0', Assets.ic_diamond, ontap: () {}),
               SizedBox(width: 4),
               _itemRow("Cửa hàng", Assets.ic_shop, ontap: () {
                 showDialog(
@@ -132,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return StatefulBuilder(
                         builder: (BuildContext context,
                             void Function(void Function()) setState) {
-                          return ShoppingScreen();
+                          return ShoppingScreen(financeModel: _financeModel!,);
                         },
                       );
                     });

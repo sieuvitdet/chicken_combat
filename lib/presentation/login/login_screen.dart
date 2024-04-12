@@ -4,7 +4,7 @@ import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
-import 'package:chicken_combat/presentation/register/PhoneRegisterScreen.dart';
+import 'package:chicken_combat/presentation/register/register_screen.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -72,16 +72,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void login(String _username, String _password) async {
     final String key = _username;
     final String originalString = _password;
-
     // Mã hóa chuỗi
     String encryptedString = GenerateHash.encryptString(originalString, key);
     print("Encrypted String: $encryptedString");
-
     CustomNavigator.showProgressDialog(context);
-    if (_username.isEmpty || _password.isEmpty) {
-      print('Phone or password is Empty');
-      return;
-    }
     CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
     await users.doc(_username).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
@@ -90,31 +84,17 @@ class _LoginScreenState extends State<LoginScreen> {
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
         if (user.password == encryptedString) {
            _bloc.setupLogin(user);
-          Navigator.of(context).push(MaterialPageRoute(
+           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen()));
         } else {
-          _bloc.setErrorLogin("Số điện thoại hoặc mật khẩu không đúng.");
+          _bloc.setErrorLogin("Tên đăng nhập hoặc mật khẩu không đúng.");
         }
       } else {
-        _bloc.setErrorLogin("Số điện thoại không tồn tại.");
+        _bloc.setErrorLogin("Tên đăng nhập không tồn tại.");
       }
     }).catchError((error) {
       _bloc.setErrorLogin("${error}");
     });
-  }
-
-  Future<void> addUser() {
-    CollectionReference users =
-    FirebaseFirestore.instance.collection('userdata');
-    return users
-        .doc("Gà Đỏ")
-        .set({
-      'name': "Gà đỏ", // John Doe
-      'password': "123456", // Stokes and Sons
-      'phone': "0559237978" // 42
-    })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
   }
 
    Widget _inputForm() {
@@ -346,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: InkWell(
               onTap: () => {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PhoneRegisterScreen()))
+                    builder: (context) => RegisterScreen(isGuest: false)))
               },
               child: RichText(
                   text: TextSpan(

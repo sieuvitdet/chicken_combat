@@ -1,12 +1,17 @@
+import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  late String id;
-  late String username;
-  late String password;
-  late String level;
-  late String financeId;
-  late String avatar;
+   String id;
+   String username;
+   String password;
+   String level;
+   String financeId;
+   String avatar;
+   String useColor;
+   String useSkin;
+   List<dynamic> bag;
+   List<String> bags;
 
   UserModel({
     required this.id,
@@ -15,7 +20,10 @@ class UserModel {
     required this.level,
     required this.financeId,
     required this.avatar,
-  });
+    required this.useColor,
+    required this.useSkin,
+    required this.bag,
+  }) : bags = StringUtils.convertDynamicListToStringList(bag);
 
   factory UserModel.fromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
@@ -26,6 +34,9 @@ class UserModel {
       level: data?['level'] ?? '',
       financeId: data?['financeId'] ?? '',
       avatar: data?['avatar'] ?? '',
+      useColor: data?['useColor'] ?? '',
+      useSkin: data?['useSkin'] ?? '',
+      bag: data?['bag'] ?? [],
     );
   }
 }
