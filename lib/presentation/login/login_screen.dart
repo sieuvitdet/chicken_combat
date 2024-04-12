@@ -82,8 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Phone or password is Empty');
       return;
     }
-    CollectionReference users =
-        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
     await users.doc(_username).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
       if (documentSnapshot.exists) {
@@ -102,6 +101,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }).catchError((error) {
       _bloc.setErrorLogin("${error}");
     });
+  }
+
+  Future<void> addUser() {
+    CollectionReference users =
+    FirebaseFirestore.instance.collection('userdata');
+    return users
+        .doc("Gà Đỏ")
+        .set({
+      'name': "Gà đỏ", // John Doe
+      'password': "123456", // Stokes and Sons
+      'phone': "0559237978" // 42
+    })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
   }
 
    Widget _inputForm() {

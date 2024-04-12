@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyCkY1eamy8DJnoM6sEzo_dypCzF7tog2yU</string>
+	<string>AIzaSyDwyLGsqx4VXW-9bbEdIAtG0tn_UalMkec</string>
 	<key>GCM_SENDER_ID</key>
-	<string>662203684781</string>
+	<string>230523064998</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.chickenCombat.RunnerTests</string>
+	<string>com.example.chickenCombat</string>
 	<key>PROJECT_ID</key>
-	<string>chickenleaningai</string>
+	<string>hocgiagacon</string>
 	<key>STORAGE_BUCKET</key>
-	<string>chickenleaningai.appspot.com</string>
+	<string>hocgiagacon.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:662203684781:ios:d12aa3795314158a387324</string>
+	<string>1:230523064998:ios:b7e1153991d0388455da67</string>
 </dict>
 </plist>
