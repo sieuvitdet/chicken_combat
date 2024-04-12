@@ -40,12 +40,16 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
   late AnimationController _controller1;
   late Animation<Offset> _animation1;
 
+  late AnimationController _controller2;
+  late Animation<Offset> _animation2;
+
   @override
   void initState() {
     super.initState();
     _configUI();
     _configChickkenDance();
     _configMapShake();
+    _configMapShakeReverse();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
@@ -94,6 +98,22 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
     ).animate(
       CurvedAnimation(
         parent: _controller1,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  void _configMapShakeReverse() {
+    _controller2 = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..repeat(reverse: true);
+    _animation2 = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(-0.05, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller2,
         curve: Curves.easeInOut,
       ),
     );
@@ -198,7 +218,7 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
                 animation: _animation1,
                 builder: (context, child) {
                   return Transform.translate(
-                    offset:
+                    offset:(i%2 == 0) ? _animation2.value * 200 :
                         _animation1.value * 200, // Adjust the curve radius here
                     child: child,
                   );

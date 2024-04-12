@@ -98,12 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _userModel!.username,
+                            "Duc",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white),
                             ),
-                            Text(_userModel!.level,
+                            Text("Level 1",
                             overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(color: Colors.white))
