@@ -75,14 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
     bool check = true;
     if (_userNameController.text.trim() == "" &&
         _passwordController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorUserName("Vui lòng nhập tên đăng nhập");
       _bloc.setErrorPassword("Vui lòng nhập mật khẩu");
       check = false;
     } else if (_userNameController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorUserName("Vui lòng tên đăng nhập");
       check = false;
     } else if (_passwordController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorUserName("Vui lòng tên đăng nhập");
       check = false;
     }
     return check;
