@@ -27,7 +27,7 @@ dependencies:
   shared_preferences: any
   flutter_screenutil: any
   pointycastle: ^3.8.0
-  flutter_tts: ^4.0.2
+  flutter_tts: ^3.0.0
 
 dev_dependencies:
   flutter_test:
