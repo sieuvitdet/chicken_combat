@@ -31,32 +31,34 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _userModel = Globals.currentUser;
-    _getFinance(_userModel!.financeId);
-     getStore();
-    getMaps();
+    _initializeData();
   }
 
-  void _getFinance(String _id) async {
+  Future<void> _initializeData() async {
+    await _getFinance(_userModel!.financeId);
+    await getStore();
+    await getMaps();
+  }
+
+  Future<void> _getFinance(String _id) async {
     CollectionReference finance =
-        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
-    await finance.doc(_id).get().then((DocumentSnapshot documentSnapshot) {
+    FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    finance.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
-        _financeModel = FinanceModel.fromSnapshot(documentSnapshot);
-        Globals.financeUser = _financeModel;
-        setState(() {});
+        setState(() {
+          _financeModel = FinanceModel.fromSnapshot(documentSnapshot);
+          Globals.financeUser = _financeModel;
+        });
       }
-    }).catchError((error) {
-      print("${error}");
     });
   }
 
-  void getStore() async {
+  Future<void> getStore() async {
     Globals.listStore.clear();
     FirebaseFirestore.instance
         .collection(FirebaseEnum.store)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
+        .snapshots().listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         StoreModel storeModel = StoreModel.fromSnapshot(doc);
         Globals.listStore.add(storeModel);
@@ -64,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void getMaps() async {
+  Future<void> getMaps() async {
     List<MapModel> maps = [];
     Globals.mapsModel.clear();
     FirebaseFirestore.instance
