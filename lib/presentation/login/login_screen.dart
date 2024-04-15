@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/course/listening/ask_listening_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
@@ -42,20 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _bloc = LoginBloc(context);
     _scrollController = ScrollController();
-  }
-
-  Future<void> _test() async {
-    FirebaseDatabase database = FirebaseDatabase(
-      app: Firebase.app(),
-      databaseURL: 'https://hocgiagacon-default-rtdb.asia-southeast1.firebasedatabase.app/',
-    );
-    final ref = database.ref();
-    final snapshot = await ref.get();
-    if (snapshot.exists) {
-      print(snapshot.value);
-    } else {
-      print('No data available.');
-    }
   }
 
   @override
@@ -297,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
             child: Text("Vào ngay",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: _test
+        onTap: () {}
           // showDialog(
           //     context: context,
           //     builder: (BuildContext context) {

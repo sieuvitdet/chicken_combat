@@ -1,10 +1,18 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/course/listening/ask_listening_model.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MapListeningExaminationScreen extends StatefulWidget {
   const MapListeningExaminationScreen({super.key});
@@ -16,27 +24,82 @@ class MapListeningExaminationScreen extends StatefulWidget {
 
 class _MapListeningExaminationScreenState
     extends State<MapListeningExaminationScreen> with WidgetsBindingObserver {
-  String text =
-      "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready  to explo";
+  String text = "";
 
-  String text2 =
-      "Welcome  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready  to explore some interesting questions we've prepared for you.";
+  String text2 = "";
 
   List<String> parts = [];
   List<String> anwsers = [];
   var _isKeyboardVisible = false;
   int page = 1;
   bool isListening = false;
+  final FlutterTts flutterTts = FlutterTts();
 
   CarouselController buttonCarouselController = CarouselController();
+  late AskListeningModel listeningAsk;
+  List<AskListeningModel> listeningAsks = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     splitText(text);
+    _loadAsks();
+    _checkMicrophonePermission();
+  }
+
+
+// Hàm kiểm tra quyền truy cập microphone
+  Future<void> _checkMicrophonePermission() async {
+    // Kiểm tra trạng thái quyền truy cập microphone
+    PermissionStatus permissionStatus = await Permission.microphone.status;
+
+    // Kiểm tra trạng thái quyền và xử lý tương ứng
+    if (permissionStatus.isDenied) {
+      // Nếu quyền bị từ chối, yêu cầu quyền
+      await Permission.microphone.request();
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Nếu quyền bị từ chối vĩnh viễn, mở cài đặt để người dùng cấp quyền
+      openAppSettings();
+    }
+  }
+
+  Future<void> _loadAsks() async {
+    List<AskListeningModel> loadedAsks = await _getAsk();
+    Random random = Random();
+    int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
+    setState(() {
+      listeningAsks = loadedAsks;
+      listeningAsk = loadedAsks[randomNumber];
+      text = listeningAsk.answer;
+    });
+  }
+
+  Future<List<AskListeningModel>> _getAsk() async {
+    List<AskListeningModel> listeningList = [];
+
+    try {
+      FirebaseDatabase database = FirebaseDatabase(
+        app: Firebase.app(),
+        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
+      );
+      final ref = database.ref(FirebaseEnum.listening + FirebaseEnum.level1);
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List) {
+          for (var item in data) {
+            AskListeningModel model = AskListeningModel.fromJson(item);
+            listeningList.add(model);
+          }
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print('Error fetching and parsing data: $e');
+    }
+    return listeningList;
   }
 
   void splitText(String text) {
@@ -93,6 +156,10 @@ class _MapListeningExaminationScreenState
         children: [
           GestureDetector(
             onTap: () {
+              !isListening ? _speak(listeningAsk.question1
+                  + listeningAsk.question2
+                  + listeningAsk.question3
+                  + listeningAsk.question4) : _stop();
               print("record");
               setState(() {
                 isListening = !isListening;
@@ -160,9 +227,25 @@ class _MapListeningExaminationScreenState
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
     for (int i = 0; i < 4; i++) {
-      itemList.add(_answer(i));
+      itemList.add(_answer(i, ontap: () {}));
     }
     return itemList;
+  }
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage('en-US'); // Thiết lập ngôn ngữ
+    await flutterTts.setPitch(0.7); // Thiết lập cường độ giọng nói
+    await flutterTts.setSpeechRate(0.4); // Thiết lập tốc độ giọng nói
+    await flutterTts.setVolume(1); // Thiết lập âm lượng
+    await flutterTts.speak(text); // Chuyển văn bản thành giọng nói
+    flutterTts.setCompletionHandler(() {
+      isListening = !isListening;
+      setState(() {});
+    });
+  }
+
+  Future<void> _stop() async {
+    await flutterTts.stop();
   }
 
   Widget _itemReading() {
