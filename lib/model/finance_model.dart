@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FinanceModel {
   String id;
-  String gold;
-  String diamond;
+  int gold;
+  int diamond;
   String uuid;
 
   FinanceModel({

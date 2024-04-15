@@ -19,7 +19,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.868,
-          height: AppSizes.maxHeight * 0.35,
+          height: AppSizes.maxHeight * 0.38,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -27,14 +27,14 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
                 Assets.img_bg_popup_confirm,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.868,
-                height: AppSizes.maxHeight * 0.33,
+                height: AppSizes.maxHeight * 0.4,
               ),
               Column(
                 children: [
                   Container(height: AppSizes.maxHeight * 0.0535),
                   Expanded(
                       child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: AppSizes.maxHeight*0.0267),
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50.0),
@@ -53,7 +53,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
                           size: AppSizes.maxWidth < 350 ? 16 : 24,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 16),
+                          padding: EdgeInsets.only(top: AppSizes.maxHeight*0.03),
                           child: _btnBottom(),
                         )
                       ],

@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
 import 'package:chicken_combat/widgets/dialog_random_gift_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingScreen extends StatefulWidget {
@@ -277,7 +280,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                         : ScalableButton(
                             onTap: () {
                               if (tab == 2 &&
-                                  model.asset == Assets.img_gift_gacha) {
+                                  model.asset == Assets.img_gift_gacha &&
+                                  (Globals.financeUser!.diamond >= 10)) {
                                 final random = Random();
                                 int i = random.nextInt(100);
                                 if (i >= 90 && i <= 100) {
@@ -291,10 +295,24 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 } else {
                                   type = "gold";
                                 }
+                                Globals.financeUser!.diamond -= 10;
+                                _updateFinance(
+                                    Globals.currentUser?.financeId ?? "",
+                                    Globals.financeUser?.diamond ?? 0);
+
                                 GlobalSetting.shared.showPopupWithContext(
                                     context,
                                     DialogRandomGiftWidget(
                                       type: type,
+                                      ontap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ));
+                              } else {
+                                GlobalSetting.shared.showPopupWithContext(
+                                    context,
+                                    CustomDialogWithTitleButtonWidget(
+                                      title: "Vui lòng tiềm kiếm thêm kim cương để mua vật phẩm này!",
                                       ontap: () {
                                         Navigator.of(context).pop();
                                       },
@@ -415,7 +433,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Center(child: _number(widget.financeModel.gold)),
+          Center(child: _number("${widget.financeModel.gold}")),
           _coinNow(),
         ],
       ),
@@ -429,7 +447,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Center(child: _number(widget.financeModel.diamond)),
+          Center(child: _number("${widget.financeModel.diamond}")),
           _diamondNow(),
         ],
       ),
@@ -478,6 +496,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       width: 32,
       height: 32,
     );
+  }
+
+  Future<void> _updateFinance(String _id, int diamond) async {
+    CollectionReference _finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+    return _finance
+        .doc(_id)
+        .update({'diamond': diamond})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Widget _buildContent() {

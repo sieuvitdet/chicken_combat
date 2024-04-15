@@ -163,10 +163,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Row(
             children: [
-              _itemRow(_financeModel?.gold ?? '0', Assets.ic_coin,
+              _itemRow("${_financeModel?.gold ?? 0}", Assets.ic_coin,
                   ontap: () {}),
               SizedBox(width: 4),
-              _itemRow(_financeModel?.diamond ?? '0', Assets.ic_diamond,
+              _itemRow("${_financeModel?.diamond ?? 0}", Assets.ic_diamond,
                   ontap: () {}),
               SizedBox(width: 4),
               _itemRow("Cửa hàng", Assets.ic_shop, ontap: () {

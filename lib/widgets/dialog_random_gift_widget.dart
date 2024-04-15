@@ -2,25 +2,52 @@ import 'dart:math';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/finance_model.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class DialogRandomGiftWidget extends StatelessWidget {
-  final Function? ontap;
+// class DialogRandomGiftWidget extends StatelessWidget {
+//   final Function? ontap;
+//   final String type;
+
+//   DialogRandomGiftWidget({this.ontap, required this.type});
+
+ 
+// }
+
+
+class DialogRandomGiftWidget extends StatefulWidget {
+
+    final Function? ontap;
   final String type;
 
   DialogRandomGiftWidget({this.ontap, required this.type});
 
-  Widget build(BuildContext context) {
+  @override
+  State<DialogRandomGiftWidget> createState() => _DialogRandomGiftWidgetState();
+}
+
+class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
+
+
+  @override
+   Widget build(BuildContext context) {
     String content = "";
     int gold = 0;
     String chicken = Assets.getRandomImage();
     String chickenPremium = Assets.getRandomImagePremium();
     final random = Random();
-    switch (type) {
+    switch (widget.type) {
       case "gold":
         gold = random.nextInt(10) + 20;
+        Globals.financeUser?.gold += gold;
+
+        _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
+
         content = "Chúc mừng bạn nhận được ${gold} vàng";
         break;
       case "chicken":
@@ -76,9 +103,9 @@ class DialogRandomGiftWidget extends StatelessWidget {
                         )),
                     child: Column(
                       children: [
-                        if (type == "gold") _buildGold(gold),
-                        if (type == "chicken") _buildChickenReward(chicken),
-                        if (type == "chicken_premium")
+                        if (widget.type == "gold") _buildGold(gold),
+                        if (widget.type == "chicken") _buildChickenReward(chicken),
+                        if (widget.type == "chicken_premium")
                           _buildChickenPremiumReward(chickenPremium),
                         SizedBox(height: 8.0),
                         StrokeTextWidget(
@@ -145,7 +172,7 @@ class DialogRandomGiftWidget extends StatelessWidget {
 
   Widget _btnBottom() {
     return CustomButtomImageColorWidget(
-      onTap: ontap,
+      onTap: widget.ontap,
       orangeColor: true,
       child: Center(
         child: StrokeTextWidget(
@@ -155,5 +182,16 @@ class DialogRandomGiftWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _updateFinance(String _id, int gold) async {
+    CollectionReference _finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+  return _finance
+    .doc(_id)
+    .update({'gold': gold})
+    .then((value) => print("User Updated"))
+    .catchError((error) => print("Failed to update user: $error"));
+
   }
 }
