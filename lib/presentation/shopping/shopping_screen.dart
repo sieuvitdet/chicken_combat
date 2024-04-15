@@ -314,7 +314,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         children: [
           Image(
             image: AssetImage(Assets.img_background_item_shop),
-            height: 124,
+            height: AppSizes.maxHeight*0.14,
+            width: (AppSizes.maxWidth * 0.775) / 3,
             fit: BoxFit.fill,
           ),
           Container(
@@ -326,7 +327,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     child: Center(
                         child: Image.asset(
                       asset!,
-                      // width: AppSizes.maxWidth * 0.1,
+                      fit: BoxFit.fill,
                       height: AppSizes.maxHeight * 0.07,
                     ))),
                 Expanded(
@@ -359,6 +360,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                             onTap: () {
                               
                               if (tab == 2 && asset == Assets.img_gift_gacha) {
+
+                                for (int n=0; n< 1000 ;n++) {
                                 count += 1;
                                 final random = Random();
                                 int i = random.nextInt(100);
@@ -366,24 +369,26 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                   type = "chicken";
 
                                   int j = random.nextInt(100);
-                                  if (j >= 70 && j <= 100) {
+                                  if (j >= 95 && j <= 100) {
                                     type = "chicken_premium";
                                     print("Nhận gà hiếm");
                                     print(count);
+                                    return
                                     count = 0;
                                   }
                                 } else {
                                   type = "gold";
                                  
                                 }
-                                GlobalSetting.shared.showPopupWithContext(
-                                    context,
-                                    DialogRandomGiftWidget(
-                                      type: type,
-                                      ontap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ));
+                                 }
+                                // GlobalSetting.shared.showPopupWithContext(
+                                //     context,
+                                //     DialogRandomGiftWidget(
+                                //       type: type,
+                                //       ontap: () {
+                                //         Navigator.of(context).pop();
+                                //       },
+                                //     ));
                               }
                             },
                             child: Stack(
@@ -392,7 +397,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 Center(
                                     child: Image.asset(
                                   Assets.img_button_coin_shop,
-                                  width: 66,
+                                  width: AppSizes.maxWidth*0.16,
                                   fit: BoxFit.fill,
                                 )),
                                 Row(
@@ -421,11 +426,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           ),
           if (isHot ?? false)
             Positioned(
-                top: -5,
-                left: -2,
+                top: -AppSizes.maxWidth*0.01,
+                left: -AppSizes.maxWidth*0.008,
                 child: Image.asset(
                   Assets.img_hot_item,
-                  width: ((AppSizes.maxWidth * 0.7 - 24) / 3) / 1.8,
+                  fit: BoxFit.fill,
+                  width: AppSizes.maxWidth*0.1,
                 ))
         ],
       ),
