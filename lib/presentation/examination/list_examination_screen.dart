@@ -1,22 +1,28 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/maps/course_map_model.dart';
+import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/examination/list_map_examination_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
 
 class ListExaminationScreen extends StatefulWidget {
-  const ListExaminationScreen({super.key});
+  CourseMapsModel mapModel;
 
+  ListExaminationScreen({required this.mapModel});
   @override
   State<ListExaminationScreen> createState() => _ListExaminationScreenState();
 }
 
 class _ListExaminationScreenState extends State<ListExaminationScreen> {
-  List<String> _function = ["Speaking", "Listening", "Reading"];
+  List<String> _function = ["Speaking", "Listening", "Reading", "Writing"];
+  late CourseMapsModel mapsModel;
+
   @override
   void initState() {
     super.initState();
+    mapsModel = widget.mapModel;
   }
 
   Widget _buildBackground() {
@@ -53,10 +59,26 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
         orangeColor: typeId == 0,
         blueColor: typeId == 1,
         redBlurColor: typeId == 2,
+        greenColor: typeId == 3,
         child: Text(type, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: () async {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ListMapExaminationScreen(type: type.toLowerCase(),isLesson: false,)));
+          List<UserMapModel> items = [];
+          switch (typeId) {
+            case 0:
+              items = mapsModel.speakingCourses;
+            case 1:
+              items = mapsModel.listeningCourses;
+            case 2:
+              items = mapsModel.readingCourses;
+            case 3:
+              items = mapsModel.writingCourses;
+          }
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ListMapExaminationScreen(
+                    type: type.toLowerCase(),
+                    isLesson: false,
+                    items: items,
+                  )));
         },
       ),
     );

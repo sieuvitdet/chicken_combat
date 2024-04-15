@@ -172,6 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'bag' : bag,
         'useColor' : 'CO01',
         'useSkin' : '',
+        'score' : '0',
         'courseMaps' : courseMapsData,
         'checkingMaps' : courseMapsData
       });

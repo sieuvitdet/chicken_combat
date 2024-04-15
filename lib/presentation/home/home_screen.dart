@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
         _financeModel = FinanceModel.fromSnapshot(documentSnapshot);
+        Globals.financeUser = _financeModel;
         setState(() {});
       }
     }).catchError((error) {
@@ -91,7 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }),
           _action(1, "Kiểm tra", () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ListExaminationScreen()));
+                builder: (context) => ListExaminationScreen(
+                    mapModel: _userModel!.checkingMapModel)));
           }),
           _action(2, "Thử thách", () {
             Navigator.of(context).push(

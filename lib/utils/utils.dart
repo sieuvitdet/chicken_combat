@@ -1,6 +1,7 @@
 
 import 'dart:math';
 
+import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/maps/map_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
@@ -91,6 +92,7 @@ static late SharedPrefs prefs;
 class Globals {
   static SharedPrefs? prefs;
   static UserModel? currentUser;
+  static FinanceModel? financeUser;
   static List<MapModel> mapsModel = [];
   static List<StoreModel> listStore = [];
 }

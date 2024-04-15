@@ -260,11 +260,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                   child: StrokeTextWidget(
                                     text: tab == 1
                                         ? Globals.currentUser?.useColor ==
-                                                model.asset
+                                                model.id
                                             ? "Đã dùng"
                                             : "Sử dụng"
-                                        : Globals.currentUser?.useColor ==
-                                                model.asset
+                                        : Globals.currentUser?.useSkin ==
+                                                model.id
                                             ? "Đã dùng"
                                             : "Sử dụng",
                                     size: 12,
