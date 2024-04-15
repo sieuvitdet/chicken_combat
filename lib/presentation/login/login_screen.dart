@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/course/listening/ask_listening_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
@@ -11,8 +12,9 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
-import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -34,6 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
   ScrollController _scrollController = ScrollController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  DatabaseReference ref = FirebaseDatabase.instance.ref();
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _scrollController = ScrollController();
   }
 
-      @override
+  @override
   void dispose() {
     _userNameController.dispose();
     _userNameNode.dispose();
@@ -57,14 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
     bool check = true;
     if (_userNameController.text.trim() == "" &&
         _passwordController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorUserName("Vui lòng nhập tên đăng nhập");
       _bloc.setErrorPassword("Vui lòng nhập mật khẩu");
       check = false;
     } else if (_userNameController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorUserName("Vui lòng tên đăng nhập");
       check = false;
     } else if (_passwordController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập số điện thoại");
+      _bloc.setErrorUserName("Vui lòng tên đăng nhập");
       check = false;
     }
     return check;
@@ -72,15 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void login(String _username, String _password) async {
     final String userName = _username;
-    print(_username);
     String key = StringUtils.convertToLowerCase(userName);
     final String originalString = _password;
     // Mã hóa chuỗi
     String encryptedString = GenerateHash.encryptString(originalString, key);
-    print(userName);
     print("Encrypted String: $encryptedString");
     CustomNavigator.showProgressDialog(context);
-    CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    CollectionReference users = firestore.collection(FirebaseEnum.userdata);
     await users.doc(key).get().then((DocumentSnapshot documentSnapshot) {
       CustomNavigator.hideProgressDialog();
       if (documentSnapshot.exists) {
@@ -282,25 +284,24 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
             child: Text("Vào ngay",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return StatefulBuilder(
-                  builder: (BuildContext context,
-                      void Function(void Function()) setState) {
-                    return DialogConfirmWidget(
-                      cancel: () {
-                        Navigator.of(context).pop();
-                      },
-                      agree: () {
-                        Navigator.of(context).pop(true);
-                      },
-                    );
-                  },
-                );
-              });
-        },
+        onTap: () {}
+          // showDialog(
+          //     context: context,
+          //     builder: (BuildContext context) {
+          //       return StatefulBuilder(
+          //         builder: (BuildContext context,
+          //             void Function(void Function()) setState) {
+          //           return DialogConfirmWidget(
+          //             cancel: () {
+          //               Navigator.of(context).pop();
+          //             },
+          //             agree: () {
+          //               Navigator.of(context).pop(true);
+          //             },
+          //           );
+          //         },
+          //       );
+          //     });
       ),
     );
   }

@@ -1,12 +1,15 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class FlashScreen extends StatefulWidget {
   const FlashScreen({super.key});
@@ -25,6 +28,8 @@ class _FlashScreenState extends State<FlashScreen>
   late AnimationController _controller2;
   late Animation<Offset> _animation2;
 
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   @override
   void dispose() {
     _controller1.dispose();
@@ -35,17 +40,36 @@ class _FlashScreenState extends State<FlashScreen>
   void initState() {
     super.initState();
     _configAnamation();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(seconds: 3));
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoginScreen()));
-    });
+    if (Globals.prefs!.getBool(SharedPrefsKey.is_login)) {
+      CollectionReference users = firestore.collection(FirebaseEnum.userdata);
+      users
+          .doc(Globals.prefs!.getString(SharedPrefsKey.id_user))
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await Future.delayed(Duration(seconds: 3));
+            print('Document exists on the database');
+            UserModel user = UserModel.fromSnapshot(documentSnapshot);
+            Globals.currentUser = user;
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeScreen()));
+          });
+        }
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(Duration(seconds: 3));
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+      });
+    }
   }
 
   void _configAnamation() {
     _controller1 = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 6),
+      duration: Duration(seconds: 10),
     )..repeat(reverse: true);
     _animation1 = Tween<Offset>(
       begin: Offset.zero,
@@ -59,7 +83,7 @@ class _FlashScreenState extends State<FlashScreen>
 
     _controller2 = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 5),
     )..repeat(reverse: true);
     _animation2 = Tween<Offset>(
       begin: Offset(0, 1),

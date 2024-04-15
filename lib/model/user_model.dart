@@ -1,6 +1,8 @@
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'maps/user_map_model.dart';
+
 class UserModel {
    String id;
    String username;
@@ -11,7 +13,9 @@ class UserModel {
    String useColor;
    String useSkin;
    List<dynamic> bag;
+   List<dynamic> maps;
    List<String> bags;
+   List<UserMapModel> mapsCo;
 
   UserModel({
     required this.id,
@@ -23,7 +27,9 @@ class UserModel {
     required this.useColor,
     required this.useSkin,
     required this.bag,
-  }) : bags = StringUtils.convertDynamicListToStringList(bag);
+    required this.maps,
+  }) :  bags = StringUtils.convertDynamicListToStringList(bag),
+        mapsCo = UserMapModel.convertDynamicListToUserMapModelList(maps);
 
   factory UserModel.fromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
@@ -37,6 +43,7 @@ class UserModel {
       useColor: data?['useColor'] ?? '',
       useSkin: data?['useSkin'] ?? '',
       bag: data?['bag'] ?? [],
+      maps: data?['maps'] ?? [],
     );
   }
 }
