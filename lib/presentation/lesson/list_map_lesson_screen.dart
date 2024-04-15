@@ -1,8 +1,11 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/maps/map_model.dart';
+import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/presentation/map/map2_screen.dart';
 import 'package:chicken_combat/presentation/map/map3_screen.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,21 +13,25 @@ import 'package:flutter/material.dart';
 class ListMapLessonScreen extends StatefulWidget {
   final String type;
   final bool isLesson;
-  ListMapLessonScreen({super.key, this.type = "", required this.isLesson});
+  List<UserMapModel> items = [];
+
+  ListMapLessonScreen({super.key, this.type = "", required this.isLesson, required this.items});
 
   @override
   State<ListMapLessonScreen> createState() => _ListMapLessonScreenState();
 }
 
 class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
-  int numberMap = 5;
 
-  List<int> _listMapInt = [];
+  List<MapModel> _listMap = [];
+  List<UserMapModel> itemMaps = [];
+
   @override
   void initState() {
     super.initState();
-    _listMapInt = List.generate(numberMap, (index) => index);
-    print(_listMapInt);
+    itemMaps = widget.items;
+    _listMap = Globals.mapsModel;
+    _listMap = List.generate(_listMap.length, (index) => _listMap[index]);
   }
 
   @override
@@ -46,36 +53,38 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
           width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.18,
         ),
-        ..._listMap()
+        ..._listMaps()
       ],
     );
   }
 
-  List<Widget> _listMap() {
+  List<Widget> _listMaps() {
     List<Widget> itemList = [];
-    for (int i = 0; i < numberMap; i++) {
-      itemList.add(_map(i, _listMapInt[i] == 3 || _listMapInt[i] == 4));
+    for (int i = 0; i < _listMap.length; i++) {
+      String mapId = _listMap[i].id;
+      bool isLock = !itemMaps.any((userMap) => userMap.collectionMap == mapId);
+      itemList.add(_map(i, _listMap[i], isLock));
     }
     return itemList;
   }
 
-  Widget _map(int level, bool isLock) {
+  Widget _map(int index, MapModel model, bool isLock) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: level == 0,
-        blueColor: level == 1,
-        redBlurColor: level == 2,
+        orangeColor: index == 0 && !isLock,
+        blueColor: index == 1 && !isLock,
+        redBlurColor: index == 2 && !isLock,
         child: Stack(
           children: [
             Center(
-              child: Text("Map ${level + 1}",
+              child: Text(model.namemap,
                   style: TextStyle(fontSize: 18, color: Colors.white)),
             ),
             Positioned(
                 top: 0,
                 bottom: 0,
-                right: AppSizes.maxWidth / 3,
+                right: AppSizes.maxWidth / 5,
                 child: (isLock)
                     ? ImageIcon(
                         AssetImage(Assets.ic_block),
@@ -85,7 +94,10 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
           ],
         ),
         onTap: () async {
-          switch (level) {
+          if (isLock) {
+            return;
+          }
+          switch (index) {
             case 0:
             Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => Map1Screen(type: widget.type,isLesson: widget.isLesson,)));

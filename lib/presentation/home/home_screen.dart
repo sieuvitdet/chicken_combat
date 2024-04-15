@@ -2,12 +2,12 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
+import 'package:chicken_combat/model/maps/map_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
-import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _userModel = Globals.currentUser;
     _getFinance(_userModel!.financeId);
      getStore();
+    getMaps();
   }
 
   void _getFinance(String _id) async {
@@ -59,6 +60,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void getMaps() async {
+    List<MapModel> maps = [];
+    Globals.mapsModel.clear();
+    FirebaseFirestore.instance
+        .collection(FirebaseEnum.maps)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        maps.add(MapModel.fromSnapshot(doc));
+      });
+      Globals.mapsModel = maps;
+    });
+  }
+
   Widget _function() {
     return Container(
       width: AppSizes.maxWidth,
@@ -66,8 +81,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           _action(0, "Bài học", () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ListLessonScreen()));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ListLessonScreen(
+                      courseMapModel: _userModel!.courseMapModel,
+                    )));
           }),
           _action(1, "Kiểm tra", () {
             Navigator.of(context).push(MaterialPageRoute(

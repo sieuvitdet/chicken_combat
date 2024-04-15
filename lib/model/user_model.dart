@@ -15,8 +15,10 @@ class UserModel {
    String useSkin;
    List<dynamic> bag;
    List<dynamic> courseMaps;
+   List<dynamic> checkingMaps;
    List<String> bags;
    CourseMapsModel courseMapModel;
+   CourseMapsModel checkingMapModel;
 
   UserModel({
     required this.id,
@@ -29,8 +31,10 @@ class UserModel {
     required this.useSkin,
     required this.bag,
     required this.courseMaps,
+    required this.checkingMaps,
   }) :  bags = StringUtils.convertDynamicListToStringList(bag),
-        courseMapModel = CourseMapsModel.fromUserMapModelList(UserMapModel.convertDynamicListToUserMapModelList(courseMaps));
+        courseMapModel = CourseMapsModel.fromUserMapModelList(UserMapModel.convertDynamicListToUserMapModelList(courseMaps)),
+        checkingMapModel = CourseMapsModel.fromUserMapModelList(UserMapModel.convertDynamicListToUserMapModelList(checkingMaps));
 
   factory UserModel.fromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
@@ -45,6 +49,7 @@ class UserModel {
       useSkin: data?['useSkin'] ?? '',
       bag: data?['bag'] ?? [],
       courseMaps: data?['courseMaps'] ?? [],
+      checkingMaps: data?['checkingMaps'] ?? [],
     );
   }
 }
