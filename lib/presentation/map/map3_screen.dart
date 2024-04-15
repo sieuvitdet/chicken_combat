@@ -124,6 +124,7 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
     _scrollController.dispose();
     _controller1.dispose();
     _controller.dispose();
+    _controller2.dispose();
     super.dispose();
   }
 
@@ -291,7 +292,7 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
 
   Path drawPath() {
     Path path = Path();
-    double bottomChicken = AppSizes.maxHeight*0.09;
+    double bottomChicken = AppSizes.maxHeight < 850 ? AppSizes.maxHeight*0.15 : AppSizes.maxHeight*0.09;
     double bottom = heightContent - bottomChicken - AppSizes.maxHeight * multiple;
     double left = currentPadding * AppSizes.maxWidth / 414;
     double nextleft = nextPadding * AppSizes.maxWidth / 414;
