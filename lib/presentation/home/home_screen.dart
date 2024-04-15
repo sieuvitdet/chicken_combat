@@ -199,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 text,
                 maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: AppSizes.maxWidth < 350 ? 10.0 : 14.0),

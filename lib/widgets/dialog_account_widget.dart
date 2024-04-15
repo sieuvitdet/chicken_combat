@@ -142,7 +142,7 @@ UserModel? _userModel;
           child: Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Level 3",
+                "Level ${_userModel?.level ?? 1}",
                 style: TextStyle(color: Colors.white),
               )),
         ))
@@ -181,7 +181,7 @@ UserModel? _userModel;
           child: Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                "LocDY",
+                "${_userModel?.username ?? ""}",
                 style: TextStyle(color: Colors.white),
               )),
         ))
@@ -299,7 +299,7 @@ UserModel? _userModel;
                           ),
                         ),
                         StrokeTextWidget(
-                          text: "1.254",
+                          text: "---",
                           size: AppSizes.maxWidth < 350 ? 16 : 20,
                           colorStroke: Color(0xFFD18A5A),
                         )

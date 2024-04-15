@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/finance_model.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_random_gift_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +23,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   List<ItemShopModel> _listItemColorShop = [];
   List<ItemShopModel> _listItemPremiumShop = [];
   int tab = 0;
+  int count = 0;
+  String type = "";
 
   @override
   void initState() {
@@ -117,7 +123,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         bought: false,
         isUsed: false,
         isDiamond: true));
-        _listItemPremiumShop.add(ItemShopModel(
+    _listItemPremiumShop.add(ItemShopModel(
         asset: Assets.img_gift_gacha,
         isHot: true,
         bought: false,
@@ -127,9 +133,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
+  // TODO: 100 rng, result : 90-100 -> ga
+  //100 rng , result: 95-100, ga hiem
+
   Widget _listTabUnSelect() {
     return Positioned(
-        top: AppSizes.maxHeight*0.128,
+        top: AppSizes.maxHeight * 0.128,
         right: 0,
         left: 0,
         child: Row(
@@ -148,7 +157,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       children: [
                         Image.asset(
                           Assets.img_tab_button_unselected_shop,
-                          height: AppSizes.maxHeight*0.054,
+                          height: AppSizes.maxHeight * 0.054,
                           width: (AppSizes.maxWidth * 0.65) / 3,
                           fit: BoxFit.fitWidth,
                         ),
@@ -172,7 +181,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       children: [
                         Image.asset(
                           Assets.img_tab_button_unselected_shop,
-                          height: AppSizes.maxHeight*0.054,
+                          height: AppSizes.maxHeight * 0.054,
                           width: (AppSizes.maxWidth * 0.65) / 3,
                           fit: BoxFit.fitWidth,
                         ),
@@ -196,7 +205,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       children: [
                         Image.asset(
                           Assets.img_tab_button_unselected_shop,
-                          height: AppSizes.maxHeight*0.054,
+                          height: AppSizes.maxHeight * 0.054,
                           width: (AppSizes.maxWidth * 0.65) / 3,
                           fit: BoxFit.fitWidth,
                         ),
@@ -228,7 +237,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       ScalableButton(
                         child: Image.asset(
                           Assets.img_tab_button_selected_shop,
-                         height: AppSizes.maxHeight * 0.065,
+                          height: AppSizes.maxHeight * 0.065,
                           width: (AppSizes.maxWidth * 0.6) / 3,
                           fit: BoxFit.contain,
                         ),
@@ -331,7 +340,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 Center(
                                     child: Image.asset(
                                   Assets.img_bg_money_shop,
-                                  height: AppSizes.maxHeight*0.038,
+                                  height: AppSizes.maxHeight * 0.038,
                                   width: (AppSizes.maxWidth * 0.7) / 3,
                                   fit: BoxFit.fill,
                                 )),
@@ -347,6 +356,36 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                             ),
                           )
                         : ScalableButton(
+                            onTap: () {
+                              
+                              if (tab == 2 && asset == Assets.img_gift_gacha) {
+                                count += 1;
+                                final random = Random();
+                                int i = random.nextInt(100);
+                                if (i >= 90 && i <= 100) {
+                                  type = "chicken";
+
+                                  int j = random.nextInt(100);
+                                  if (j >= 70 && j <= 100) {
+                                    type = "chicken_premium";
+                                    print("Nhận gà hiếm");
+                                    print(count);
+                                    count = 0;
+                                  }
+                                } else {
+                                  type = "gold";
+                                 
+                                }
+                                GlobalSetting.shared.showPopupWithContext(
+                                    context,
+                                    DialogRandomGiftWidget(
+                                      type: type,
+                                      ontap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ));
+                              }
+                            },
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
@@ -508,7 +547,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         decoration: BoxDecoration(
             color: Colors.red, borderRadius: BorderRadius.circular(8.0)),
         alignment: Alignment.center,
-        child: Text("$number",style: TextStyle(fontSize: 12,color: Colors.white)),
+        child: Text("$number",
+            style: TextStyle(fontSize: 12, color: Colors.white)),
       ),
     );
   }
@@ -561,7 +601,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             _listTabUnSelect(),
             Container(
               width: AppSizes.maxWidth * 0.8,
-              margin: EdgeInsets.only(top: AppSizes.maxHeight*0.167, bottom: 40),
+              margin:
+                  EdgeInsets.only(top: AppSizes.maxHeight * 0.167, bottom: 40),
               padding: EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 color: Color(0xFF157BAC),

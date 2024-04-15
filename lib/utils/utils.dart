@@ -70,6 +70,19 @@ static late SharedPrefs prefs;
         });
   }
 
+  void showPopupWithContext(BuildContext context,Widget screen) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return screen;
+            },
+          );
+        });
+  }
+
 
 }
 

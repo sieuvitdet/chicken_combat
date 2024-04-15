@@ -421,7 +421,7 @@ class _RankingScreenState extends State<RankingScreen> {
                 bottom: AppSizes.maxHeight * 0.016,
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  height: AppSizes.maxHeight * 0.0825,
+                  height: AppSizes.maxHeight * 0.09,
                   width: AppSizes.maxWidth * 0.88,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(

@@ -74,7 +74,7 @@ class GroupMountainSnow extends StatelessWidget {
 
   Widget _snowMan() {
     return Positioned(
-        bottom: heightMountain + (AppSizes.maxHeight > 800 ?AppSizes.maxHeight * 0.018 : AppSizes.maxHeight * 0.01),
+        bottom: heightMountain + (AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.018 : AppSizes.maxHeight * 0.04),
         right: AppSizes.maxWidth * 0.02,
         child: Container(
           child: Image(
@@ -87,7 +87,7 @@ class GroupMountainSnow extends StatelessWidget {
 
   Widget _start() {
     return Positioned(
-        bottom: heightMountain + (AppSizes.maxHeight > 800 ?AppSizes.maxHeight * 0.022 : AppSizes.maxHeight * 0.015),
+        bottom: heightMountain + (AppSizes.maxHeight > 850 ?AppSizes.maxHeight * 0.022 : AppSizes.maxHeight * 0.06),
         right: AppSizes.maxWidth * 0.34,
         child: Container(
           child: Image(

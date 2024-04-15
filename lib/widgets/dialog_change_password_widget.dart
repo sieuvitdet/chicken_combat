@@ -47,6 +47,7 @@ class _DialogChangePasswordWidgetState
                   Assets.img_background_popup,
                   fit: BoxFit.fill,
                   height: AppSizes.maxHeight * 0.49,
+                  width: AppSizes.maxWidth * 0.838,
                 ),
                 Column(
                   children: [
@@ -79,7 +80,7 @@ class _DialogChangePasswordWidgetState
                           _oldPass(),
                           _newPass(),
                           _newPassWordAgain(),
-                          Container(height: 60),
+                          Container(height: AppSizes.maxHeight*0.065),
                           CustomButtomImageColorWidget(
                             orangeColor: true,
                             child: Center(

@@ -27,14 +27,15 @@ class DialogMenuActionWidget extends StatelessWidget {
       body: Center(
           child: Container( 
             width: AppSizes.maxWidth*0.838,
-            height: AppSizes.maxHeight*0.47,
+            height: AppSizes.maxHeight*0.5,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Image.asset(
                   Assets.img_background_popup,
                   fit: BoxFit.fill,
-                  height: AppSizes.maxHeight*0.49,
+                  height: AppSizes.maxHeight*0.52,
+                  width: AppSizes.maxWidth*0.838,
                 ),
                 Column(
                   children: [

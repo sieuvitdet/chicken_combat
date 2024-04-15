@@ -213,6 +213,9 @@ class Assets {
     Assets.img_hat_scholar,
     Assets.img_breath_machine,
     Assets.img_mask,
+  ];
+
+  static final List<String> imagesGiftPremium = [
     Assets.gif_chicken_brown,
     Assets.img_chicken_bear_white_premium,
     Assets.img_chicken_lovely,
@@ -222,5 +225,10 @@ class Assets {
   static String getRandomImage() {
     final random = Random();
     return imagesGift[random.nextInt(imagesGift.length)];
+  }
+
+  static String getRandomImagePremium() {
+    final random = Random();
+    return imagesGift[random.nextInt(imagesGiftPremium.length)];
   }
 }

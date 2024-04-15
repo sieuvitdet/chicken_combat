@@ -25,6 +25,7 @@ class _DialogRulesRewardWidgetState extends State<DialogRulesRewardWidget> {
               Image.asset(
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
+                width: AppSizes.maxWidth * 0.8,
                 height: AppSizes.maxHeight * 0.49,
               ),
               Column(
