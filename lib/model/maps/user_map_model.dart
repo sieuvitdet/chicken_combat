@@ -1,10 +1,12 @@
 class UserMapModel {
   String collectionMap;
   String level;
+  String isCourse;
 
   UserMapModel({
     required this.collectionMap,
     required this.level,
+    required this.isCourse,
   });
 
   static List<UserMapModel> convertDynamicListToUserMapModelList(List<dynamic> dynamicList) {
@@ -13,6 +15,7 @@ class UserMapModel {
       return UserMapModel(
         collectionMap: map['collectionMap'] ?? '',
         level: map['level'] ?? '',
+        isCourse: map['isCourse'] ?? '',
       );
     }).toList();
   }
