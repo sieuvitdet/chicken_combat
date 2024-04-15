@@ -1,5 +1,10 @@
 import 'dart:math';
 
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/utils/string_utils.dart';
+import 'package:chicken_combat/utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Assets {
   //image
   static final String img_cactus = "assets/images/img_cactus.png";
@@ -231,4 +236,20 @@ class Assets {
     final random = Random();
     return imagesGift[random.nextInt(imagesGiftPremium.length)];
   }
+
+  // static String getImageByCode(String code) {
+  //   switch (code) {
+  //     case "CO01":
+        
+  //       break;
+  //     default:
+  //   }
+  // }
+
+
+  
+
+
+
+
 }
