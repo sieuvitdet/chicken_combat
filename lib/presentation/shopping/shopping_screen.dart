@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/finance_model.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_random_gift_widget.dart';
@@ -19,122 +20,36 @@ class ShoppingScreen extends StatefulWidget {
 }
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
-  List<ItemShopModel> _listItemSkinShop = [];
-  List<ItemShopModel> _listItemColorShop = [];
-  List<ItemShopModel> _listItemPremiumShop = [];
+  List<StoreModel> _listItemSkinShop = [];
+  List<StoreModel> _listItemColorShop = [];
+  List<StoreModel> _listItemPremiumShop = [];
   int tab = 0;
-  int count = 0;
   String type = "";
 
   @override
   void initState() {
     super.initState();
     //Skin
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken,
-        isHot: true,
-        bought: true,
-        isUsed: true,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_green,
-        isHot: true,
-        bought: true,
-        isUsed: false,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_black,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_blue,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_red,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_white_0,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_green,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemColorShop.add(ItemShopModel(
-        asset: Assets.img_chicken_brown,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-//Hat
-    _listItemSkinShop.add(ItemShopModel(
-        asset: Assets.img_hat_scholar,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemSkinShop.add(ItemShopModel(
-        asset: Assets.img_breath_machine,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-    _listItemSkinShop.add(ItemShopModel(
-        asset: Assets.img_mask,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: false));
-//Premium
-    _listItemPremiumShop.add(ItemShopModel(
-        asset: Assets.gif_chicken_brown,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: true));
-    _listItemPremiumShop.add(ItemShopModel(
-        asset: Assets.img_chicken_bear_white_premium,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: true));
-    _listItemPremiumShop.add(ItemShopModel(
-        asset: Assets.img_chicken_lovely,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: true));
+    for (var store in Globals.listStore) {
+      if (store.key == StoreModelEnum.color) {
+        _listItemColorShop.add(store);
+      } else if (store.key == StoreModelEnum.skin) {
+        _listItemSkinShop.add(store);
+      } else if (store.key == StoreModelEnum.diamond) {
+        _listItemPremiumShop.add(store);
+      }
+    }
 
-    _listItemPremiumShop.add(ItemShopModel(
-        asset: Assets.img_chicken_brown_circleface_premium,
-        isHot: false,
-        bought: false,
-        isUsed: false,
-        isDiamond: true));
-    _listItemPremiumShop.add(ItemShopModel(
+    _listItemPremiumShop.add(StoreModel(
+        id: "",
         asset: Assets.img_gift_gacha,
-        isHot: true,
-        bought: false,
-        isUsed: false,
-        isDiamond: true));
+        isHotSale: true,
+        cast: "10",
+        type: "0",
+        key: StoreModelEnum.diamond));
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
-
-  // TODO: 100 rng, result : 90-100 -> ga
-  //100 rng , result: 95-100, ga hiem
 
   Widget _listTabUnSelect() {
     return Positioned(
@@ -300,12 +215,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         ));
   }
 
-  Widget _item(int tab,
-      {bool? isDiamond,
-      bool? isHot,
-      bool? bought,
-      bool? isUsed,
-      String? asset}) {
+  Widget _item(int tab, StoreModel model) {
     return Container(
       width: (AppSizes.maxWidth * 0.775) / 3,
       height: AppSizes.maxHeight * 0.14,
@@ -314,7 +224,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         children: [
           Image(
             image: AssetImage(Assets.img_background_item_shop),
-            height: AppSizes.maxHeight*0.14,
+            height: AppSizes.maxHeight * 0.14,
             width: (AppSizes.maxWidth * 0.775) / 3,
             fit: BoxFit.fill,
           ),
@@ -326,13 +236,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     flex: 4,
                     child: Center(
                         child: Image.asset(
-                      asset!,
+                      model.asset!,
                       fit: BoxFit.fill,
                       height: AppSizes.maxHeight * 0.07,
                     ))),
                 Expanded(
                     flex: 3,
-                    child: (bought ?? false)
+                    child: (Globals.currentUser?.bags.contains(model.id)) ??
+                            false
                         ? ScalableButton(
                             onTap: () {},
                             child: Stack(
@@ -347,8 +258,15 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 )),
                                 Center(
                                   child: StrokeTextWidget(
-                                    text:
-                                        isUsed ?? false ? "Đã dùng" : "Sử dụng",
+                                    text: tab == 1
+                                        ? Globals.currentUser?.useColor ==
+                                                model.asset
+                                            ? "Đã dùng"
+                                            : "Sử dụng"
+                                        : Globals.currentUser?.useColor ==
+                                                model.asset
+                                            ? "Đã dùng"
+                                            : "Sử dụng",
                                     size: 12,
                                     colorStroke: Colors.green,
                                   ),
@@ -358,11 +276,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           )
                         : ScalableButton(
                             onTap: () {
-                              
-                              if (tab == 2 && asset == Assets.img_gift_gacha) {
-
-                                for (int n=0; n< 1000 ;n++) {
-                                count += 1;
+                              if (tab == 2 &&
+                                  model.asset == Assets.img_gift_gacha) {
                                 final random = Random();
                                 int i = random.nextInt(100);
                                 if (i >= 90 && i <= 100) {
@@ -372,23 +287,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                   if (j >= 95 && j <= 100) {
                                     type = "chicken_premium";
                                     print("Nhận gà hiếm");
-                                    print(count);
-                                    return
-                                    count = 0;
                                   }
                                 } else {
                                   type = "gold";
-                                 
                                 }
-                                 }
-                                // GlobalSetting.shared.showPopupWithContext(
-                                //     context,
-                                //     DialogRandomGiftWidget(
-                                //       type: type,
-                                //       ontap: () {
-                                //         Navigator.of(context).pop();
-                                //       },
-                                //     ));
+                                GlobalSetting.shared.showPopupWithContext(
+                                    context,
+                                    DialogRandomGiftWidget(
+                                      type: type,
+                                      ontap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ));
                               }
                             },
                             child: Stack(
@@ -397,14 +307,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 Center(
                                     child: Image.asset(
                                   Assets.img_button_coin_shop,
-                                  width: AppSizes.maxWidth*0.16,
+                                  width: AppSizes.maxWidth * 0.16,
                                   fit: BoxFit.fill,
                                 )),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Image.asset(
-                                      isDiamond ?? false
+                                      model.type == "0"
                                           ? Assets.ic_diamond
                                           : Assets.ic_coin,
                                       width: 16,
@@ -413,7 +323,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                     Padding(
                                         padding: EdgeInsets.only(left: 4),
                                         child: StrokeTextWidget(
-                                          text: "200",
+                                          text: model.cast,
                                           size: 16,
                                         ))
                                   ],
@@ -424,14 +334,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               ],
             ),
           ),
-          if (isHot ?? false)
+          if (model.isHotSale)
             Positioned(
-                top: -AppSizes.maxWidth*0.01,
-                left: -AppSizes.maxWidth*0.008,
+                top: -AppSizes.maxWidth * 0.01,
+                left: -AppSizes.maxWidth * 0.008,
                 child: Image.asset(
                   Assets.img_hot_item,
                   fit: BoxFit.fill,
-                  width: AppSizes.maxWidth*0.1,
+                  width: AppSizes.maxWidth * 0.1,
                 ))
         ],
       ),
@@ -448,12 +358,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               children: List.generate(
                 _listItemSkinShop.length,
                 (index) {
-                  return _item(0,
-                      asset: _listItemSkinShop[index].asset,
-                      isDiamond: _listItemSkinShop[index].isDiamond,
-                      isHot: _listItemSkinShop[index].isHot,
-                      isUsed: _listItemSkinShop[index].isUsed,
-                      bought: _listItemSkinShop[index].bought);
+                  return _item(0, _listItemSkinShop[index]);
                 },
               ),
             ),
@@ -473,12 +378,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               children: List.generate(
                 _listItemColorShop.length,
                 (index) {
-                  return _item(1,
-                      asset: _listItemColorShop[index].asset,
-                      isDiamond: _listItemColorShop[index].isDiamond,
-                      isHot: _listItemColorShop[index].isHot,
-                      isUsed: _listItemColorShop[index].isUsed,
-                      bought: _listItemColorShop[index].bought);
+                  return _item(1, _listItemColorShop[index]);
                 },
               ),
             ),
@@ -498,12 +398,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               children: List.generate(
                 _listItemPremiumShop.length,
                 (index) {
-                  return _item(2,
-                      asset: _listItemPremiumShop[index].asset,
-                      isDiamond: _listItemPremiumShop[index].isDiamond,
-                      isHot: _listItemPremiumShop[index].isHot,
-                      isUsed: _listItemPremiumShop[index].isUsed,
-                      bought: _listItemPremiumShop[index].bought);
+                  return _item(2, _listItemPremiumShop[index]);
                 },
               ),
             ),
@@ -547,11 +442,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       width: 70,
       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
       decoration: BoxDecoration(
-          color: Colors.pink, borderRadius: BorderRadius.circular(8.0)),
+          color: Color(0xFFD13F06), borderRadius: BorderRadius.circular(8.0)),
       child: Container(
         margin: EdgeInsets.only(left: 20),
         decoration: BoxDecoration(
-            color: Colors.red, borderRadius: BorderRadius.circular(8.0)),
+            color: Color(0xFFB94416), borderRadius: BorderRadius.circular(8.0)),
         alignment: Alignment.center,
         child: Text("$number",
             style: TextStyle(fontSize: 12, color: Colors.white)),

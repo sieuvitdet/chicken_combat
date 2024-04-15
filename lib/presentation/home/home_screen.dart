@@ -2,6 +2,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
@@ -23,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   UserModel? _userModel;
   FinanceModel? _financeModel;
 
@@ -32,11 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _userModel = Globals.currentUser;
     _getFinance(_userModel!.financeId);
-     getStore();
+    getStore();
   }
 
   void _getFinance(String _id) async {
-    CollectionReference finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    CollectionReference finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
     await finance.doc(_id).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
@@ -48,14 +49,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-    void getStore() async {
+  void getStore() async {
+    Globals.listStore.clear();
     FirebaseFirestore.instance
-    .collection('store')
-    .get()
-    .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-            print(doc.id);
-        });
+        .collection(FirebaseEnum.store)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        StoreModel storeModel = StoreModel.fromSnapshot(doc);
+        Globals.listStore.add(storeModel);
+      });
     });
   }
 
@@ -108,41 +111,42 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                     },
                     child: Image(
-                      image: AssetImage(Assets.img_avatar), 
+                      image: AssetImage(Assets.img_avatar),
                       width: AppSizes.maxHeight * 0.055,
                       height: AppSizes.maxHeight * 0.055,
                     ),
                   ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 2),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _userModel!.username,
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 2),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _userModel!.username,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text('Level ${_userModel!.level}',
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text('Level ${_userModel!.level}',
-                            overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
                               style: TextStyle(color: Colors.white))
-                          ],
-                        ),
+                        ],
                       ),
-                    )
+                    ),
+                  )
                 ],
               ),
             ),
           ),
           Row(
             children: [
-              _itemRow(_financeModel?.gold ?? '0', Assets.ic_coin, ontap: () {
-              }),
+              _itemRow(_financeModel?.gold ?? '0', Assets.ic_coin,
+                  ontap: () {}),
               SizedBox(width: 4),
-              _itemRow(_financeModel?.diamond ?? '0', Assets.ic_diamond, ontap: () {}),
+              _itemRow(_financeModel?.diamond ?? '0', Assets.ic_diamond,
+                  ontap: () {}),
               SizedBox(width: 4),
               _itemRow("Cửa hàng", Assets.ic_shop, ontap: () {
                 showDialog(
@@ -151,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       return StatefulBuilder(
                         builder: (BuildContext context,
                             void Function(void Function()) setState) {
-                          return ShoppingScreen(financeModel: _financeModel!,);
+                          return ShoppingScreen(
+                            financeModel: _financeModel!,
+                          );
                         },
                       );
                     });
