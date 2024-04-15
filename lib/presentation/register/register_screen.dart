@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/register/register_bloc.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
@@ -140,17 +141,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  List<Map<String, dynamic>> convertUserMapModelListToMapList(List<UserMapModel> userMapModels) {
+    return userMapModels.map((userMapModel) => {
+      'collectionMap': userMapModel.collectionMap,
+      'level': userMapModel.level,
+      'isCourse': userMapModel.isCourse,
+    }).toList();
+  }
+
   Future<bool> _registerWithFinanceId(
       String _userName, String _password, String financeId) async {
+    List<String> bag = ['CO01'];
+    List<UserMapModel> courseMaps = [];
+    courseMaps.add(UserMapModel(collectionMap: 'MP01', level: '1', isCourse: 'listening'));
+    courseMaps.add(UserMapModel(collectionMap: 'MP01', level: '1', isCourse: 'reading'));
+    courseMaps.add(UserMapModel(collectionMap: 'MP01', level: '1', isCourse: 'writing'));
+    courseMaps.add(UserMapModel(collectionMap: 'MP01', level: '1', isCourse: 'speaking'));
+    List<Map<String, dynamic>> courseMapsData = convertUserMapModelListToMapList(courseMaps);
+
     try {
       CollectionReference users =
           FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
       await users.doc(_userName).set({
         'username': _userNameController.text,
         'password': _password,
         'level': '1', //Mặc định 1
         'financeId': financeId,
-        'avatar': '1' //Mặc định 1
+        'avatar': '1', //Mặc định 1
+        'bag' : bag,
+        'useColor' : 'CO01',
+        'useSkin' : '',
+        'courseMaps' : courseMapsData,
+        'checkingMaps' : courseMapsData
       });
       CustomNavigator.hideProgressDialog();
       return true;
