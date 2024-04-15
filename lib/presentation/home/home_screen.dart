@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initializeData() async {
     await _getFinance(_userModel!.financeId);
-    await getStore();
-    await getMaps();
+    await _getStore();
+    await _getMaps();
   }
 
   Future<void> _getFinance(String _id) async {
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> getStore() async {
+  Future<void> _getStore() async {
     Globals.listStore.clear();
     FirebaseFirestore.instance
         .collection(FirebaseEnum.store)
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> getMaps() async {
+  Future<void> _getMaps() async {
     List<MapModel> maps = [];
     Globals.mapsModel.clear();
     FirebaseFirestore.instance

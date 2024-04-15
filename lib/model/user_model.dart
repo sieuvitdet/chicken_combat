@@ -1,3 +1,4 @@
+import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -13,6 +14,7 @@ class UserModel {
    String avatar;
    String useColor;
    String useSkin;
+   RankingModel score;
    List<dynamic> bag;
    List<dynamic> courseMaps;
    List<dynamic> checkingMaps;
@@ -29,6 +31,7 @@ class UserModel {
     required this.avatar,
     required this.useColor,
     required this.useSkin,
+    required this.score,
     required this.bag,
     required this.courseMaps,
     required this.checkingMaps,
@@ -47,6 +50,10 @@ class UserModel {
       avatar: data?['avatar'] ?? '',
       useColor: data?['useColor'] ?? '',
       useSkin: data?['useSkin'] ?? '',
+      score: RankingModel(
+        PK11: data?['score']['PK11'] ?? 0,
+        PK22: data?['score']['PK22'] ?? 0,
+      ),
       bag: data?['bag'] ?? [],
       courseMaps: data?['courseMaps'] ?? [],
       checkingMaps: data?['checkingMaps'] ?? [],

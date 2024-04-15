@@ -1,5 +1,8 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/user_model.dart';
+import 'package:chicken_combat/utils/string_utils.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_reward_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -14,11 +17,12 @@ class RankingScreen extends StatefulWidget {
 
 class _RankingScreenState extends State<RankingScreen> {
   int tab = 0;
+  UserModel? _userModel;
 
   @override
   void initState() {
     super.initState();
-
+    _userModel = Globals.currentUser;
     WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
@@ -286,11 +290,11 @@ class _RankingScreenState extends State<RankingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       StrokeTextWidget(
-                          text: "LocDy",
+                          text: _userModel!.username,
                           size: AppSizes.maxWidth < 350 ? 10 : 13,
                           colorStroke: Color(0xFF8F1E23)),
                       StrokeTextWidget(
-                          text: "level 1000",
+                          text: "Level ${_userModel!.level}",
                           size: AppSizes.maxWidth < 350 ? 10 : 13,
                           colorStroke: Color(0xFF7F613E)),
                       StrokeTextWidget(
@@ -332,7 +336,7 @@ class _RankingScreenState extends State<RankingScreen> {
                   ]),
               child: Center(
                 child: StrokeTextWidget(
-                    text: "50.135",
+                    text: StringUtils.formatNumber(_userModel!.score.PK11),
                     size: AppSizes.maxWidth < 350 ? 13 : 16,
                     colorStroke: Color(0xFF157BAC)),
               ),

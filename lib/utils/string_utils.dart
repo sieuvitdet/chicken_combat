@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
 class StringUtils {
   static String generateRandomName() {
     List<String> availableNames = [
@@ -22,5 +24,10 @@ class StringUtils {
 
   static List<String> convertDynamicListToStringList(List<dynamic> dynamicList) {
     return dynamicList.map((element) => element.toString()).toList();
+  }
+
+  static String formatNumber(int number) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(number);
   }
 }
