@@ -23,6 +23,7 @@ class ShoppingScreen extends StatefulWidget {
 }
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
+  FinanceModel? _financeModel;
   List<StoreModel> _listItemSkinShop = [];
   List<StoreModel> _listItemColorShop = [];
   List<StoreModel> _listItemPremiumShop = [];
@@ -51,7 +52,23 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         type: "0",
         key: StoreModelEnum.diamond));
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _getFinance(Globals.currentUser?.financeId ?? "");
+    });
+  }
+
+   Future<void> _getFinance(String _id) async {
+    CollectionReference finance =
+    FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    finance.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+        setState(() {
+          _financeModel = FinanceModel.fromSnapshot(documentSnapshot);
+          Globals.financeUser = _financeModel;
+        });
+      }
+    });
   }
 
   Widget _listTabUnSelect() {
@@ -433,7 +450,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Center(child: _number("${widget.financeModel.gold}")),
+          Center(child: _number("${Globals.financeUser?.gold ?? 0}")),
           _coinNow(),
         ],
       ),
@@ -447,7 +464,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Center(child: _number("${widget.financeModel.diamond}")),
+          Center(child: _number("${Globals.financeUser?.diamond ?? 0}")),
           _diamondNow(),
         ],
       ),
