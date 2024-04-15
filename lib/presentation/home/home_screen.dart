@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _userModel = Globals.currentUser;
     _getFinance(_userModel!.financeId);
+     getStore();
   }
 
   void _getFinance(String _id) async {
@@ -44,6 +45,17 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }).catchError((error) {
       print("${error}");
+    });
+  }
+
+    void getStore() async {
+    FirebaseFirestore.instance
+    .collection('store')
+    .get()
+    .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+            print(doc.id);
+        });
     });
   }
 

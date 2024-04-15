@@ -43,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _bloc = LoginBloc(context);
     _scrollController = ScrollController();
-    getStore();
   }
 
   @override
@@ -101,17 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }).catchError((error) {
       _bloc.setErrorLogin("${error}");
-    });
-  }
-
-  void getStore() async {
-    FirebaseFirestore.instance
-    .collection('store')
-    .get()
-    .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-            print(doc.id);
-        });
     });
   }
 
