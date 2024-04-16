@@ -32,7 +32,7 @@ class _RankingScreenState extends State<RankingScreen> {
     _userModel = Globals.currentUser;
     _currentScore = widget.currentScore;
     _rankingScore = widget.rankingScore??[];
-
+    _rankingScore.sort((a, b) => b.PK11.compareTo(a.PK11));
   }
 
   int getPositionById(List<RankingModel> list, String id) {
