@@ -41,7 +41,6 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // splitText(text);
     _loadAsks();
   }
 
@@ -53,7 +52,7 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
       _asks = loadedAsks;
       _ask = loadedAsks[randomNumber];
       answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
-      text = _ask.question;
+      text = _ask.Question;
     });
   }
 

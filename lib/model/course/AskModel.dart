@@ -1,14 +1,16 @@
 class AskModel {
-  String question;
-  String correct;
+  String Question;
+  String Answer;
+  String Script;
   String A;
   String B;
   String C;
   String D;
 
   AskModel({
-    required this.question,
-    required this.correct,
+    required this.Question,
+    required this.Answer,
+    required this.Script,
     required this.A,
     required this.B,
     required this.C,
@@ -17,8 +19,9 @@ class AskModel {
 
   factory AskModel.fromJson(Map<dynamic, dynamic>? json) {
     return AskModel(
-      question: json?['question'] ?? '',
-      correct: json?['correct'] ?? '',
+      Question: json?['Question'] ?? '',
+      Answer: json?['Answer'] ?? '',
+      Script: json?['Script'] ?? '',
       A: json?['A'] ?? '',
       B: json?['B'] ?? '',
       C: json?['C'] ?? '',
