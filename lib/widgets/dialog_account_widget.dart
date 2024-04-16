@@ -1,13 +1,17 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/presentation/ranking/ranking_screen.dart';
+import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
 import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class DialogAccountWidget extends StatefulWidget {
@@ -19,11 +23,37 @@ class DialogAccountWidget extends StatefulWidget {
 
 class _DialogAccountWidgetState extends State<DialogAccountWidget> {
 
-UserModel? _userModel;
+  UserModel? _userModel;
+  RankingModel? _currentScore;
+  List<RankingModel> _rankingScore = [];
+
    @override
   void initState() {
     super.initState();
     _userModel = Globals.currentUser;
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _getScore();
+  }
+
+  Future<void> _getScore() async {
+    CollectionReference score =
+        FirebaseFirestore.instance.collection(FirebaseEnum.score);
+    await score.get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        RankingModel model = RankingModel.fromSnapshot(doc);
+        _rankingScore.add(model);
+      });
+      if (_rankingScore.isNotEmpty) {
+        _currentScore = _rankingScore.firstWhere((ranking) => ranking.id == _userModel?.score);
+      }
+      setState(() {
+
+      });
+    });
   }
 
   @override
@@ -159,7 +189,7 @@ UserModel? _userModel;
           width: AppSizes.maxWidth * 0.17,
           height: AppSizes.maxWidth * 0.097,
           child: StrokeTextWidget(
-            text: "Tên tk:",
+            text: "Tên TK:",
             size: AppSizes.maxWidth < 350 ? 12 : 16,
             colorStroke: Color(0xFFD18A5A),
           ),
@@ -223,7 +253,7 @@ UserModel? _userModel;
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "***********",
+                    "******",
                     style: TextStyle(color: Colors.white),
                   ),
                   GestureDetector(
@@ -292,15 +322,15 @@ UserModel? _userModel;
                               Image.asset(Assets.img_redblur_circle),
                               StrokeTextWidget(
                                 text: "1vs1",
-                                size: AppSizes.maxWidth < 350 ? 8 : 10,
+                                size: AppSizes.maxWidth < 350 ? 6 : 8,
                                 colorStroke: Color(0xFFD18A5A),
                               )
                             ],
                           ),
                         ),
                         StrokeTextWidget(
-                          text: "---",
-                          size: AppSizes.maxWidth < 350 ? 16 : 20,
+                          text: '${StringUtils.formatNumber(_currentScore?.PK11 ?? 0)}',
+                          size: AppSizes.maxWidth < 350 ? 10 : 14,
                           colorStroke: Color(0xFFD18A5A),
                         )
                       ],
@@ -317,15 +347,15 @@ UserModel? _userModel;
                             Image.asset(Assets.img_green_circle),
                             StrokeTextWidget(
                               text: "2vs2",
-                              size: AppSizes.maxWidth < 350 ? 8 : 10,
+                              size: AppSizes.maxWidth < 350 ? 6 : 8,
                               colorStroke: Color(0xFFD18A5A),
                             )
                           ],
                         ),
                       ),
                       StrokeTextWidget(
-                        text: "---",
-                        size: AppSizes.maxWidth < 350 ? 16 : 20,
+                        text: '${StringUtils.formatNumber(_currentScore?.PK22 ?? 0)}',
+                        size: AppSizes.maxWidth < 350 ? 10 : 14,
                         colorStroke: Color(0xFFD18A5A),
                       )
                     ],
@@ -344,7 +374,7 @@ UserModel? _userModel;
           return StatefulBuilder(
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
-              return RankingScreen();
+              return RankingScreen(currentScore: _currentScore, rankingScore: _rankingScore,);
             },
           );
         });

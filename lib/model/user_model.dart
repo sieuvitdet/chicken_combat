@@ -14,7 +14,8 @@ class UserModel {
    String avatar;
    String useColor;
    String useSkin;
-   RankingModel score;
+   String score;
+   // RankingModel score;
    List<dynamic> bag;
    List<dynamic> courseMaps;
    List<dynamic> checkingMaps;
@@ -50,10 +51,11 @@ class UserModel {
       avatar: data?['avatar'] ?? '',
       useColor: data?['useColor'] ?? '',
       useSkin: data?['useSkin'] ?? '',
-      score: RankingModel(
-        PK11: data?['score']['PK11'] ?? 0,
-        PK22: data?['score']['PK22'] ?? 0,
-      ),
+      score: data?['score'] ?? '',
+      // score: RankingModel(
+      //   PK11: data?['score']['PK11'] ?? 0,
+      //   PK22: data?['score']['PK22'] ?? 0,
+      // ),
       bag: data?['bag'] ?? [],
       courseMaps: data?['courseMaps'] ?? [],
       checkingMaps: data?['checkingMaps'] ?? [],
