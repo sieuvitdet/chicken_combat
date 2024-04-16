@@ -36,7 +36,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
   late AskModel _ask;
   List<AskModel> _asks = [];
   List<String> answers = [];
-  int result = 0;
+  int? result;
 
   CarouselController buttonCarouselController = CarouselController();
 
