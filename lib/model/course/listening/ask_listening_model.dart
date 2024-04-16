@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class AskListeningModel {
   String awId;
   String answer;

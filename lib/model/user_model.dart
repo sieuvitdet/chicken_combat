@@ -52,10 +52,6 @@ class UserModel {
       useColor: data?['useColor'] ?? '',
       useSkin: data?['useSkin'] ?? '',
       score: data?['score'] ?? '',
-      // score: RankingModel(
-      //   PK11: data?['score']['PK11'] ?? 0,
-      //   PK22: data?['score']['PK22'] ?? 0,
-      // ),
       bag: data?['bag'] ?? [],
       courseMaps: data?['courseMaps'] ?? [],
       checkingMaps: data?['checkingMaps'] ?? [],

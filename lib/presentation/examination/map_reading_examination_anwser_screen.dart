@@ -1,9 +1,15 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/course/AskModel.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class MapReadingExaminationAnswerScreen extends StatefulWidget {
@@ -14,9 +20,7 @@ class MapReadingExaminationAnswerScreen extends StatefulWidget {
 }
 
 class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminationAnswerScreen> with WidgetsBindingObserver {
-  String text =
-      "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready  to explo";
+  String text = "";
 
   String text2 =
       "Welcome  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
@@ -30,11 +34,52 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
 
   CarouselController buttonCarouselController = CarouselController();
 
+  late AskModel _ask;
+  List<AskModel> _asks = [];
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     splitText(text);
+    _loadAsks();
+  }
+
+  Future<void> _loadAsks() async {
+    List<AskModel> loadedAsks = await _getAsk();
+    Random random = Random();
+    int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
+    setState(() {
+      _asks = loadedAsks;
+      _ask = loadedAsks[randomNumber];
+      text = _ask.question;
+    });
+  }
+
+  Future<List<AskModel>> _getAsk() async {
+    List<AskModel> readings = [];
+    try {
+      FirebaseDatabase database = FirebaseDatabase(
+        app: Firebase.app(),
+        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
+      );
+      final ref = database.ref(FirebaseEnum.reading);
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List) {
+          for (var item in data) {
+            AskModel model = AskModel.fromJson(item);
+            readings.add(model);
+          }
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print('Error fetching and parsing data: $e');
+    }
+    return readings;
   }
 
   void splitText(String text) {
@@ -140,6 +185,7 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
             child: Container(
               margin: EdgeInsets.only(left: 16, right: 24),
               child: RichText(
+                textAlign: TextAlign.start,
                 text: TextSpan(children: _listTextSpan()),
               ),
             ),
