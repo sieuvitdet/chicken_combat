@@ -149,6 +149,7 @@ class Assets {
       "assets/images/img_mountain_snow_right.png";
   static final String img_star_white = "assets/images/img_star_white.png";
   static final String img_gift_gacha = "assets/images/img_gift_gacha.png";
+  static final String img_bg_item_used = "assets/images/img_bg_item_used.png";
 
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";

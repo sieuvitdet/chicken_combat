@@ -253,33 +253,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xffFA9C20),
-      body: Responsive(
-        desktop: Center(
-          child: Container(
-            // width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Column(
-              children: [_info(), _body(), _function()],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Color(0xffFA9C20),
+        body: Responsive(
+          desktop: Center(
+            child: Container(
+              // width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Column(
+                children: [_info(), _body(), _function()],
+              ),
             ),
           ),
-        ),
-        mobile: Center(
-          child: Container(
-            // width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Column(
-              children: [_info(), _body(), _function()],
+          mobile: Center(
+            child: Container(
+              // width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Column(
+                children: [_info(), _body(), _function()],
+              ),
             ),
           ),
-        ),
-        tablet: Center(
-          child: Container(
-            // width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Column(
-              children: [_info(), _body(), _function()],
+          tablet: Center(
+            child: Container(
+              // width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Column(
+                children: [_info(), _body(), _function()],
+              ),
             ),
           ),
         ),
