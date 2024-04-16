@@ -9,7 +9,7 @@ class StoreModelEnum {
 
 class StoreModel {
   bool isHotSale;
-  String cast;
+  int cast;
   String key;
   String type;
   String id;

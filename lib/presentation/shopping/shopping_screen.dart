@@ -5,6 +5,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
@@ -33,7 +34,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   @override
   void initState() {
     super.initState();
-    //Skin
+    _initData();
+    _getUser(Globals.currentUser!.id);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _getFinance(Globals.currentUser?.financeId ?? "");
+    });
+  }
+
+  _initData() {
     for (var store in Globals.listStore) {
       if (store.key == StoreModelEnum.color) {
         _listItemColorShop.add(store);
@@ -43,23 +51,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         _listItemPremiumShop.add(store);
       }
     }
-
     _listItemPremiumShop.add(StoreModel(
         id: "",
         asset: Assets.img_gift_gacha,
         isHotSale: true,
-        cast: "10",
+        cast: 10,
         type: "0",
         key: StoreModelEnum.diamond));
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _getFinance(Globals.currentUser?.financeId ?? "");
-    });
   }
 
-   Future<void> _getFinance(String _id) async {
+  Future<void> _getFinance(String _id) async {
     CollectionReference finance =
-    FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
     finance.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
@@ -69,6 +72,111 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         });
       }
     });
+  }
+
+  Future<void> _updateStore(String _idUser, List<String> bags) async {
+    CollectionReference _user =
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
+    return _user
+        .doc(_idUser)
+        .update({'bag': bags})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> _getUser(String _idUser) async {
+    CollectionReference _user =
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    _user.doc(_idUser).snapshots().listen((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        setState(() {
+          UserModel user = UserModel.fromSnapshot(documentSnapshot);
+          Globals.currentUser = user;
+        });
+      }
+    });
+  }
+
+  _buyItem(StoreModel model) {
+    if (tab == 2) {
+      if (Globals.financeUser!.diamond >= model.cast) {
+        if (model.asset == Assets.img_gift_gacha) {
+          final random = Random();
+          int i = random.nextInt(100);
+          if (i >= 90 && i <= 100) {
+            type = "chicken";
+
+            int j = random.nextInt(100);
+            if (j >= 95 && j <= 100) {
+              type = "chicken_premium";
+              print("Nhận gà hiếm");
+            }
+          } else {
+            type = "gold";
+          }
+          Globals.financeUser!.diamond -= model.cast;
+          _updateFinance(Globals.currentUser?.financeId ?? "",
+              Globals.financeUser?.diamond ?? 0, "diamond");
+
+          GlobalSetting.shared.showPopupWithContext(
+              context,
+              DialogRandomGiftWidget(
+                type: type,
+                ontap: () {
+                  Navigator.of(context).pop();
+                },
+              ));
+        } else {
+          Globals.financeUser!.diamond -= model.cast;
+          _updateFinance(Globals.currentUser?.financeId ?? "",
+              Globals.financeUser?.diamond ?? 0, "diamond");
+
+          Globals.currentUser!.bags.add(model.id);
+
+          _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
+        }
+      } else {
+        GlobalSetting.shared.showPopupWithContext(
+            context,
+            CustomDialogWithTitleButtonWidget(
+              title: "Vui lòng tiềm kiếm thêm kim cương để mua vật phẩm này!",
+              ontap: () {
+                Navigator.of(context).pop();
+              },
+            ));
+      }
+    } else {
+      if ((Globals.financeUser!.gold >= model.cast)) {
+        Globals.financeUser!.gold -= model.cast;
+        _updateFinance(Globals.currentUser?.financeId ?? "",
+            Globals.financeUser?.gold ?? 0, "gold");
+
+        Globals.currentUser!.bags.add(model.id);
+
+        _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
+      } else {
+        GlobalSetting.shared.showPopupWithContext(
+            context,
+            CustomDialogWithTitleButtonWidget(
+              title: "Vui lòng tiềm kiếm thêm gold để mua vật phẩm này!",
+              ontap: () {
+                Navigator.of(context).pop();
+              },
+            ));
+      }
+    }
+  }
+
+  Future<void> _updateFinance(String _id, int diamond, String type) async {
+    CollectionReference _finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+    return _finance
+        .doc(_id)
+        .update({type: diamond})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Widget _listTabUnSelect() {
@@ -265,13 +373,19 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     child: (Globals.currentUser?.bags.contains(model.id)) ??
                             false
                         ? ScalableButton(
-                            onTap: () {},
+                            onTap: () {
+                              
+                            },
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
                                 Center(
                                     child: Image.asset(
-                                  Assets.img_bg_money_shop,
+                                  (Globals.currentUser?.useColor == model.id ||
+                                          Globals.currentUser?.useSkin ==
+                                              model.id)
+                                      ? Assets.img_bg_item_used
+                                      : Assets.img_bg_money_shop,
                                   height: AppSizes.maxHeight * 0.038,
                                   width: (AppSizes.maxWidth * 0.7) / 3,
                                   fit: BoxFit.fill,
@@ -296,45 +410,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           )
                         : ScalableButton(
                             onTap: () {
-                              if (tab == 2 &&
-                                  model.asset == Assets.img_gift_gacha &&
-                                  (Globals.financeUser!.diamond >= 10)) {
-                                final random = Random();
-                                int i = random.nextInt(100);
-                                if (i >= 90 && i <= 100) {
-                                  type = "chicken";
-
-                                  int j = random.nextInt(100);
-                                  if (j >= 95 && j <= 100) {
-                                    type = "chicken_premium";
-                                    print("Nhận gà hiếm");
-                                  }
-                                } else {
-                                  type = "gold";
-                                }
-                                Globals.financeUser!.diamond -= 10;
-                                _updateFinance(
-                                    Globals.currentUser?.financeId ?? "",
-                                    Globals.financeUser?.diamond ?? 0);
-
-                                GlobalSetting.shared.showPopupWithContext(
-                                    context,
-                                    DialogRandomGiftWidget(
-                                      type: type,
-                                      ontap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ));
-                              } else {
-                                GlobalSetting.shared.showPopupWithContext(
-                                    context,
-                                    CustomDialogWithTitleButtonWidget(
-                                      title: "Vui lòng tiềm kiếm thêm kim cương để mua vật phẩm này!",
-                                      ontap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ));
-                              }
+                              _buyItem(model);
                             },
                             child: Stack(
                               alignment: Alignment.center,
@@ -358,7 +434,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                     Padding(
                                         padding: EdgeInsets.only(left: 4),
                                         child: StrokeTextWidget(
-                                          text: model.cast,
+                                          text: "${model.cast}",
                                           size: 16,
                                         ))
                                   ],
@@ -513,17 +589,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       width: 32,
       height: 32,
     );
-  }
-
-  Future<void> _updateFinance(String _id, int diamond) async {
-    CollectionReference _finance =
-        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
-
-    return _finance
-        .doc(_id)
-        .update({'diamond': diamond})
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Widget _buildContent() {
