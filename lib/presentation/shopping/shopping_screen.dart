@@ -85,6 +85,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
+  Future<void> _updateUseSkinColor(String _idUser,String type) async {
+    CollectionReference _user =
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
+    return _user
+        .doc(_idUser)
+        .update({type:type == 'useColor' ? Globals.currentUser?.useColor ?? "" : Globals.currentUser?.useSkin ?? ""})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
   Future<void> _getUser(String _idUser) async {
     CollectionReference _user =
         FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
@@ -374,7 +385,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                             false
                         ? ScalableButton(
                             onTap: () {
-                              
+                              String type = "";
+                              if (tab == 0) {
+                                type = "useSkin";
+                                Globals.currentUser?.useSkin = model.id;
+                                Globals.currentUser?.useColor = "";
+                              } else {
+                                type = "useColor";
+                                Globals.currentUser?.useColor = model.id;
+                                Globals.currentUser?.useSkin = "";
+                              }
+                              _updateUseSkinColor(Globals.currentUser!.id,type);
                             },
                             child: Stack(
                               alignment: Alignment.center,
@@ -392,7 +413,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 )),
                                 Center(
                                   child: StrokeTextWidget(
-                                    text: tab == 1
+                                    text: tab == 1 || tab == 2
                                         ? Globals.currentUser?.useColor ==
                                                 model.id
                                             ? "Đã dùng"
@@ -402,7 +423,15 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                             ? "Đã dùng"
                                             : "Sử dụng",
                                     size: 12,
-                                    colorStroke: Colors.green,
+                                    colorStroke:  tab == 1 || tab == 2
+                                        ? Globals.currentUser?.useColor ==
+                                                model.id
+                                            ? Colors.grey
+                                            : Colors.green
+                                        : Globals.currentUser?.useSkin ==
+                                                model.id
+                                            ? Colors.grey
+                                            : Colors.green,
                                   ),
                                 )
                               ],

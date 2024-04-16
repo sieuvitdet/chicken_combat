@@ -354,7 +354,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                 padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: SingleChildScrollView(
                   child: Text(
-                    "Welcome to our random topic! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought ",
+                    "How are you today? ",
                     style: TextStyle(fontSize: 14, color: Colors.white),
                     textAlign: TextAlign.start,
                   ),
@@ -803,7 +803,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.amber,
         body: Responsive(mobile: Column(
           children: [
             _header(),
