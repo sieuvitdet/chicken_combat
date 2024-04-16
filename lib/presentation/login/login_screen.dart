@@ -1,6 +1,5 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/model/course/listening/ask_listening_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
@@ -13,7 +12,6 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -78,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final String userName = _username;
     String key = StringUtils.convertToLowerCase(userName);
     final String originalString = _password;
-    // Mã hóa chuỗi
     String encryptedString = GenerateHash.encryptString(originalString, key);
     print("Encrypted String: $encryptedString");
     CustomNavigator.showProgressDialog(context);
@@ -197,7 +194,6 @@ class _LoginScreenState extends State<LoginScreen> {
               }
             },
           ),
-          // _forgot_password(),
         ],
       ),
     );

@@ -3,6 +3,7 @@ class FirebaseEnum {
   static String userdata = 'userdata';
   static String finance = 'finance';
   static String maps = 'maps';
+  static String score = 'score';
   static String URL_REALTIME_DATABASE = 'https://hocgiagacon-default-rtdb.asia-southeast1.firebasedatabase.app';
   static String listening = '/listening';
   static String writing = '/writing';

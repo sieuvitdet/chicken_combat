@@ -150,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<bool> _registerWithFinanceId(
-      String _userName, String _password, String financeId) async {
+      String _userName, String _password, String financeId, String _score) async {
     List<String> bag = ['CO01'];
     List<UserMapModel> courseMaps = [];
     courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: '1', isCourse: 'listening'));
@@ -172,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'bag' : bag,
         'useColor' : 'CO01',
         'useSkin' : '',
-        'score' : '0',
+        'score' : _score,
         'courseMaps' : courseMapsData,
         'checkingMaps' : courseMapsData
       });
@@ -182,7 +182,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       CustomNavigator.hideProgressDialog();
       print("Error: $error");
       return false;
-      
     }
   }
 
@@ -208,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
   }
 
-  void _addFinanceDocument(String _userName) async {
+  void _addFinanceDocument(String _userName, String _score) async {
     CustomNavigator.showProgressDialog(context);
     CollectionReference finance =
         FirebaseFirestore.instance.collection(FirebaseEnum.finance);
@@ -221,13 +220,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String encryptedString = GenerateHash.encryptString(originalString, key);
     print("Encrypted String: $encryptedString");
     bool registrationResult =
-        await _registerWithFinanceId(_userName, encryptedString, financeId);
+        await _registerWithFinanceId(_userName, encryptedString, financeId, _score);
     if (registrationResult) {
       print('Đăng ký thành công');
       showPopup(_userName, originalString);
     } else {
       _bloc.setErrorRegister('Không thể cập nhật thông tin ví');
     }
+  }
+
+  void _addScore(String _userName) async {
+    CustomNavigator.showProgressDialog(context);
+    CollectionReference score =
+    FirebaseFirestore.instance.collection(FirebaseEnum.score);
+    DocumentReference newDocRef =
+    await score.add({'PK11': 0, 'PK22': 0, 'username': _userName});
+    String scoreId = newDocRef.id;
+    final String key = _userName;
+    final String originalString = _rePasswordController.text.trim();
+    String encryptedString = GenerateHash.encryptString(originalString, key);
+    print("Encrypted String: $encryptedString");
+    _addFinanceDocument(_userName, scoreId);
   }
 
   Widget _body() {
@@ -281,7 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           String userName = StringUtils.convertToLowerCase(
                               _userNameController.text);
                           if (await _validateUserName(userName)) {
-                            _addFinanceDocument(userName);
+                            _addScore(userName);
                           } else {
                             _bloc.setErrorUserName("Tên tài khoản đã tồn tại");
                           }

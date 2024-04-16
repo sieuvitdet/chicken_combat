@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
@@ -9,7 +10,10 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
 
 class RankingScreen extends StatefulWidget {
-  const RankingScreen({super.key});
+  final RankingModel? currentScore;
+  final List<RankingModel>? rankingScore;
+
+  RankingScreen({required this.currentScore, required this.rankingScore});
 
   @override
   State<RankingScreen> createState() => _RankingScreenState();
@@ -19,12 +23,23 @@ class _RankingScreenState extends State<RankingScreen> {
   int tab = 0;
   UserModel? _userModel;
 
+  RankingModel? _currentScore;
+  List<RankingModel> _rankingScore = [];
+
   @override
   void initState() {
     super.initState();
     _userModel = Globals.currentUser;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    _currentScore = widget.currentScore;
+    _rankingScore = widget.rankingScore??[];
+
   }
+
+  int getPositionById(List<RankingModel> list, String id) {
+    int index = list.indexWhere((element) => element.id == id);
+    return index + 1;
+  }
+
 
   Widget _listTabUnSelect() {
     return Positioned(
@@ -39,6 +54,7 @@ class _RankingScreenState extends State<RankingScreen> {
                     onTap: () {
                       setState(() {
                         tab = 0;
+                        _rankingScore.sort((a, b) => b.PK11.compareTo(a.PK11));
                       });
                     },
                     child: Stack(
@@ -62,6 +78,7 @@ class _RankingScreenState extends State<RankingScreen> {
                     onTap: () {
                       setState(() {
                         tab = 1;
+                        _rankingScore.sort((a, b) => b.PK22.compareTo(a.PK22));
                       });
                     },
                     child: Stack(
@@ -141,7 +158,7 @@ class _RankingScreenState extends State<RankingScreen> {
         ));
   }
 
-  Widget _item(int stt, {int score = 0, int tab = 0}) {
+  Widget _item(RankingModel item, int index) {
     return Container(
       width: AppSizes.maxWidth * 0.85,
       height: AppSizes.maxHeight * 0.07,
@@ -167,33 +184,33 @@ class _RankingScreenState extends State<RankingScreen> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (stt == 0)
+                            if (index == 0)
                               Image(
                                 image: AssetImage(Assets.ic_rank_gold),
                                 width: AppSizes.maxHeight * 0.035,
                                 height: AppSizes.maxHeight * 0.06,
                                 fit: BoxFit.contain,
                               ),
-                            if (stt == 1)
+                            if (index == 1)
                               Image(
                                 image: AssetImage(Assets.ic_rank_silver),
                                 width: AppSizes.maxHeight * 0.035,
                                 height: AppSizes.maxHeight * 0.06,
                                 fit: BoxFit.contain,
                               ),
-                            if (stt == 2)
+                            if (index == 2)
                               Image(
                                 image: AssetImage(Assets.ic_rank_bronze),
                                 width: AppSizes.maxHeight * 0.035,
                                 height: AppSizes.maxHeight * 0.06,
                                 fit: BoxFit.contain,
                               ),
-                            if (stt > 2)
+                            if (index > 2)
                               Container(
                                 width: AppSizes.maxHeight * 0.035,
                                 child: Center(
                                   child: StrokeTextWidget(
-                                      text: "${stt + 1}",
+                                      text: "${index + 1}",
                                       size: 16,
                                       colorStroke: Color(0xFF157BAC)),
                                 ),
@@ -208,7 +225,7 @@ class _RankingScreenState extends State<RankingScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               StrokeTextWidget(
-                                  text: "LocDy",
+                                  text: item.username,
                                   size: 12,
                                   colorStroke: Color(0xFF8F1E23)),
                               StrokeTextWidget(
@@ -253,7 +270,9 @@ class _RankingScreenState extends State<RankingScreen> {
                             ]),
                         child: Center(
                           child: StrokeTextWidget(
-                              text: "50.135",
+                              text: tab == 0
+                                  ? StringUtils.formatNumber(item.PK11)
+                                  : StringUtils.formatNumber(item.PK22),
                               size: 12,
                               colorStroke: Color(0xFF157BAC)),
                         ),
@@ -298,7 +317,7 @@ class _RankingScreenState extends State<RankingScreen> {
                           size: AppSizes.maxWidth < 350 ? 10 : 13,
                           colorStroke: Color(0xFF7F613E)),
                       StrokeTextWidget(
-                          text: "111",
+                          text: 'Rank ${getPositionById(_rankingScore, _currentScore?.id ?? '')}',
                           size: AppSizes.maxWidth < 350 ? 10 : 13,
                           colorStroke: Color(0xFF157BAC))
                     ],
@@ -336,7 +355,10 @@ class _RankingScreenState extends State<RankingScreen> {
                   ]),
               child: Center(
                 child: StrokeTextWidget(
-                    text: StringUtils.formatNumber(_userModel!.score.PK11),
+                    text:
+                    tab == 0
+                        ? StringUtils.formatNumber(_currentScore!.PK11)
+                        : StringUtils.formatNumber(_currentScore!.PK22),
                     size: AppSizes.maxWidth < 350 ? 13 : 16,
                     colorStroke: Color(0xFF157BAC)),
               ),
@@ -385,9 +407,9 @@ class _RankingScreenState extends State<RankingScreen> {
                     children: [
                       Expanded(
                         child: ListView.builder(
-                          itemCount: 15,
+                          itemCount: _rankingScore.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return _item(index);
+                            return _item(_rankingScore[index], index);
                           },
                         ),
                       ),
