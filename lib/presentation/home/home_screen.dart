@@ -12,6 +12,7 @@ import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/custom_expanedable_draggable_fab_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _getFinance(String _id) async {
     CollectionReference finance =
-    FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
     finance.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('Document exists on the database');
@@ -58,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Globals.listStore.clear();
     FirebaseFirestore.instance
         .collection(FirebaseEnum.store)
-        .snapshots().listen((QuerySnapshot querySnapshot) {
+        .snapshots()
+        .listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         StoreModel storeModel = StoreModel.fromSnapshot(doc);
         Globals.listStore.add(storeModel);

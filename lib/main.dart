@@ -1,6 +1,8 @@
 import 'package:chicken_combat/common/config.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/flash/flash_screen.dart';
+import 'package:chicken_combat/presentation/test/test.dart';
+import 'package:chicken_combat/widgets/background_cloud_map2_widget.dart';
 import 'package:chicken_combat/widgets/custom_expanedable_draggable_fab_widget.dart';
 import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
@@ -44,48 +46,44 @@ class MyApp extends StatelessWidget {
 }
 
 
-// class DragItem extends StatefulWidget {
-//   const DragItem({super.key});
+class DragItem extends StatefulWidget {
+  const DragItem({super.key});
 
-//   @override
-//   State<DragItem> createState() => _DragItemState();
-// }
+  @override
+  State<DragItem> createState() => _DragItemState();
+}
 
-// class _DragItemState extends State<DragItem> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       floatingActionButton: ExpandableDraggableFab(
-//           initialDraggableOffset:
-//               Offset(12, MediaQuery.of(context).size.height * 11 / 14),
-//           initialOpen: false,
-//           curveAnimation: Curves.easeOutSine,
-//           childrenBoxDecoration: BoxDecoration(
-//               color: Colors.black.withOpacity(0.35),
-//               borderRadius: BorderRadius.circular(10.0)),
-//           childrenCount: 1,
-//           distance: 10,
-//           childrenType: ChildrenType.columnChildren,
-//           childrenAlignment: Alignment.centerRight,
-//           childrenInnerMargin: EdgeInsets.all(15.0),
-//           closeWidget: Container(
-//               decoration: BoxDecoration(boxShadow: [
-//                 BoxShadow(
-//                   offset: Offset(0, 1),
-//                   blurRadius: 2,
-//                   color: Colors.black.withOpacity(0.3),
-//                 )
-//               ], shape: BoxShape.circle, color: Color(0xFF5F5F5F)),
-//               width: 60,
-//               height: 60,
-//               child: Icon(
-//                 Icons.clear,
-//                 size: 35,
-//                 color: Colors.white,
-//               )), children: [DialogConfirmWidget()],
+class _DragItemState extends State<DragItem> {
+
+  bool _isShowFloatingButton = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: _isShowFloatingButton ? DraggableStackWidget(
+          initialDraggableOffset:
+              Offset(12, MediaQuery.of(context).size.height * 11 / 14),
+              onTapAction: () {
+                print("ec");
+              },
+              onTapClose: () {
+                setState(() {
+                  _isShowFloatingButton = !_isShowFloatingButton;
+                });
+
+              },
           
-//         )
-//     );
-//   }
-// }
+        ) : Container(),
+
+        body: BackgroundCloudMap2Widget(heightContent: 1000),
+
+        
+    );
+  }
+}
 
