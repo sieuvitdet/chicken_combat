@@ -1,9 +1,15 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/course/AskModel.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class MapReadingLessonScreen extends StatefulWidget {
@@ -27,6 +33,10 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
   var _isKeyboardVisible = false;
   int page = 1;
   bool isListening = false;
+  late AskModel _ask;
+  List<AskModel> _asks = [];
+  List<String> answers = [];
+  int result = 0;
 
   CarouselController buttonCarouselController = CarouselController();
 
@@ -35,6 +45,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     splitText(text);
+    _loadAsks();
   }
 
   void splitText(String text) {
@@ -67,6 +78,44 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
       });
     }
     super.didChangeMetrics();
+  }
+
+   Future<void> _loadAsks() async {
+    List<AskModel> loadedAsks = await _getAsk();
+    Random random = Random();
+    int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
+    setState(() {
+      _asks = loadedAsks;
+      _ask = loadedAsks[randomNumber];
+      answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+      text = _ask.Question;
+    });
+  }
+
+  Future<List<AskModel>> _getAsk() async {
+    List<AskModel> readings = [];
+    try {
+      FirebaseDatabase database = FirebaseDatabase(
+        app: Firebase.app(),
+        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
+      );
+      final ref = database.ref(FirebaseEnum.reading);
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List) {
+          for (var item in data) {
+            AskModel model = AskModel.fromJson(item);
+            readings.add(model);
+          }
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print('Error fetching and parsing data: $e');
+    }
+    return readings;
   }
 
   Widget _buildContent() {
@@ -128,7 +177,11 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
     for (int i = 0; i < 4; i++) {
-      itemList.add(_answer(i));
+      itemList.add(_answer(answers.length > 0 ? answers[i] : "Đáp án",i, ontap: () {
+        setState(() {
+          result = i;
+        });
+      }));
     }
     return itemList;
   }
@@ -150,13 +203,14 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
     );
   }
 
-  Widget _answer(int i, {Function? ontap}) {
+  Widget _answer(String answer,int i, {Function? ontap}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        redBlurColor: true,
+        redBlurColor: i != result,
+        redColor: i == result,
         child:
-            Text("Đáp án", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text(answer, style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: ontap,
       ),
     );
@@ -164,6 +218,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
 
   Widget _buildButton() {
     return Container(
+      margin: EdgeInsets.only(top: 24.0),
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
         orangeColor: true,

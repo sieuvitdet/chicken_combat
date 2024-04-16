@@ -8,6 +8,7 @@ import 'package:chicken_combat/presentation/examination/map_reading_examination_
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_listening_lesson_screen.dart';
+import 'package:chicken_combat/presentation/lesson/map_reading_lesson_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_speaking_lesson_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_writing_lesson_screen.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -211,7 +212,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
                 return;
               }
               bool? result = null;
-              if (widget.isLesson) {
+              if (!widget.isLesson) {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapReadingExaminationAnswerScreen()));
@@ -225,7 +226,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
               } else {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapReadingExaminationAnswerScreen()));
+                      builder: (context) => MapReadingLessonScreen()));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningLessonScreen()));
