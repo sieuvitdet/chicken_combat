@@ -27,7 +27,6 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
       "Welcome to our random topic! Get ready  to explore some interesting questions we've prepared for you.";
 
   List<String> parts = [];
-  List<String> anwsers = [];
   var _isKeyboardVisible = false;
   int page = 1;
   bool isListening = false;
@@ -36,12 +35,13 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
 
   late AskModel _ask;
   List<AskModel> _asks = [];
+  List<String> answers = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    splitText(text);
+    // splitText(text);
     _loadAsks();
   }
 
@@ -52,6 +52,7 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
     setState(() {
       _asks = loadedAsks;
       _ask = loadedAsks[randomNumber];
+      answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
       text = _ask.question;
     });
   }
@@ -82,13 +83,13 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
     return readings;
   }
 
-  void splitText(String text) {
-    parts = text.split('');
-    anwsers.add("");
-    for (int i = 0; i < parts.length - 1; i++) {
-      anwsers.add("");
-    }
-  }
+  // void splitText(String text) {
+  //   parts = text.split('');
+  //   anwsers.add("");
+  //   for (int i = 0; i < parts.length - 1; i++) {
+  //     anwsers.add("");
+  //   }
+  // }
 
   List<InlineSpan> _listTextSpan() {
     List<InlineSpan> textSpans = [];
@@ -171,8 +172,8 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
 
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
-    for (int i = 0; i < 4; i++) {
-      itemList.add(_answer(i));
+    for (int i = 0; i < answers.length; i++) {
+      itemList.add(_answer(answers[i], i));
     }
     return itemList;
   }
@@ -195,13 +196,13 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
     );
   }
 
-  Widget _answer(int i, {Function? ontap}) {
+  Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
         redBlurColor: true,
         child:
-            Text("Đáp án", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text(answer, style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: ontap,
       ),
     );
@@ -216,7 +217,7 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           page += 1;
-          splitText(text2);
+          text2;
           setState(() {});
         },
       ),
