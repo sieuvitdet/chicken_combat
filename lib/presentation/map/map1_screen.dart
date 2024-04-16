@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
+import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
@@ -213,7 +214,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
               if (widget.isLesson) {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapReadingExaminationScreen()));
+                      builder: (context) => MapReadingExaminationAnswerScreen()));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningExaminationScreen()));
@@ -224,7 +225,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
               } else {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapWritingLessonScreen()));
+                      builder: (context) => MapReadingExaminationAnswerScreen()));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningLessonScreen()));

@@ -212,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     CollectionReference finance =
         FirebaseFirestore.instance.collection(FirebaseEnum.finance);
     DocumentReference newDocRef =
-        await finance.add({'gold': '0', 'diamond': '0', 'userId': _userName});
+        await finance.add({'gold': 0, 'diamond': 0, 'userId': _userName});
     String financeId = newDocRef.id;
     // Sau đó, đăng ký người dùng và chuyển đưa financeId
     final String key = _userName;
