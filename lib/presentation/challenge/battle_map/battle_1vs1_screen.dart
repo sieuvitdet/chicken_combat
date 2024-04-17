@@ -100,8 +100,21 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     }
   }
 
-  UserInfoRoom _currentInfo() {
-    return _room.users.first;
+  UserInfoRoom _currentInfo(bool printCurrentUser) {
+    UserInfoRoom? userInfo;
+
+    if (printCurrentUser) {
+      userInfo = _room.users.firstWhere(
+              (user) => user.userId == Globals.currentUser?.id,
+          orElse: () => throw Exception("Current user not found in room.")
+      );
+    } else {
+      userInfo = _room.users.firstWhere(
+              (user) => user.userId != Globals.currentUser?.id,
+          orElse: () => throw Exception("No other users found in room.")
+      );
+    }
+    return userInfo;
   }
 
   Future<void> removeRoomById(String roomId) async {
@@ -412,7 +425,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          _currentInfo().username,
+          _currentInfo(true).username,
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         (isEnemyWin != null && isEnemyWin!)
@@ -444,7 +457,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   shakeConstant: ShakeDefaultConstant1(),
                   autoPlay: true,
                   child: Image.asset(
-                    ExtendedAssets.getAssetByCode(_currentInfo().usecolor),
+                    ExtendedAssets.getAssetByCode(_currentInfo(true).usecolor),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.1,
                   ),
@@ -508,7 +521,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          _room.users[1].username,
+          _currentInfo(false).username,
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         (isEnemyWin != null && !isEnemyWin!)
@@ -536,7 +549,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   shakeConstant: ShakeDefaultConstant1(),
                   autoPlay: true,
                   child: Image.asset(
-                    ExtendedAssets.getAssetByCode(_room.users[1].usecolor),
+                    ExtendedAssets.getAssetByCode( _currentInfo(false).usecolor),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.1,
                   ),
