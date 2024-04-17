@@ -6,6 +6,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -443,7 +444,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   shakeConstant: ShakeDefaultConstant1(),
                   autoPlay: true,
                   child: Image.asset(
-                    Assets.img_chicken_black,
+                    ExtendedAssets.getAssetByCode(_currentInfo().usecolor),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.1,
                   ),
@@ -535,7 +536,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   shakeConstant: ShakeDefaultConstant1(),
                   autoPlay: true,
                   child: Image.asset(
-                    Assets.img_chicken_black,
+                    ExtendedAssets.getAssetByCode(_room.users[1].usecolor),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.1,
                   ),

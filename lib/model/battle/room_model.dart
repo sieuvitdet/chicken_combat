@@ -47,13 +47,15 @@ class RoomModel {
 class UserInfoRoom {
   String userId;
   String username;
+  String usecolor;
 
-  UserInfoRoom({required this.userId, required this.username});
+  UserInfoRoom({required this.userId, required this.username, required this.usecolor});
 
   static UserInfoRoom fromMap(Map<String, dynamic> map) {
     return UserInfoRoom(
       userId: map['userid'] as String,
       username: map['username'] as String,
+      usecolor: map['usecolor'] as String,
     );
   }
 

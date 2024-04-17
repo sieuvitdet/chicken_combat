@@ -8,7 +8,6 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'battle_map/battle_1vs1_screen.dart';
@@ -88,7 +87,13 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     Timestamp now = Timestamp.now();
     List<UserInfoRoom> initialUsers = [];
     if (Globals.currentUser?.id != null) {
-      initialUsers.add(UserInfoRoom(userId: Globals.currentUser!.id, username: Globals.currentUser!.username)); // Adjust according to actual user object fields
+      initialUsers.add(UserInfoRoom(
+          userId: Globals.currentUser!.id,
+          username: Globals.currentUser!.username,
+          usecolor: Globals.currentUser!.useSkin != ""
+              ? Globals.currentUser!.useSkin
+              : Globals.currentUser!
+                  .useColor)); // Adjust according to actual user object fields
     }
     RoomModel newRoom = RoomModel(
       id: '',
@@ -118,7 +123,12 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     } else {
       bool userAlreadyInRoom = emptyRoom.users.any((user) => user.userId == Globals.currentUser?.id);
       if (!userAlreadyInRoom && Globals.currentUser?.id != null) {
-        emptyRoom.users.add(UserInfoRoom(userId: Globals.currentUser!.id, username: Globals.currentUser!.username));
+        emptyRoom.users.add(UserInfoRoom(
+            userId: Globals.currentUser!.id,
+            username: Globals.currentUser!.username,
+            usecolor: Globals.currentUser!.useSkin != ""
+                ? Globals.currentUser!.useSkin
+                : Globals.currentUser!.useColor));
         await emptyRoom.updateUsers();
       }
       return RoomCheckResult(room: emptyRoom, isNew: false);
