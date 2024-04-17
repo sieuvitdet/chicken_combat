@@ -2,6 +2,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/challenge/loading_2vs2_challenge_screen.dart';
 import 'package:chicken_combat/presentation/challenge/loading_challenge_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,9 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () {
+      AudioManager.playRandomBackgroundMusic();
+    });
   }
 
   Widget _buildBackground() {
@@ -48,6 +52,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
             child: Text("1 vs 1",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
         onTap: () {
+          AudioManager.playSoundEffect(AudioFile.sound_tap);
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => LoadingChallegenScreen()));
         },
@@ -64,6 +69,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
             child: Text("2 vs 2",
                 style: TextStyle(fontSize: 24, color: Colors.white))),
         onTap: () {
+          AudioManager.playSoundEffect(AudioFile.sound_tap);
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => Loading2vs2ChallengeScreen()));
         },
@@ -73,27 +79,32 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFACA44),
-      body: Responsive(mobile: Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildBackground(),
-          _buildContent(),
-        ],
-      ),tablet: Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildBackground(),
-          _buildContent(),
-        ],
-      ),desktop: Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildBackground(),
-          _buildContent(),
-        ],
-      ),),
+    return PopScope(
+      onPopInvoked: (didPop) {
+        AudioManager.playBackgroundMusic(AudioFile.sound_background);
+      },
+      child: Scaffold(
+        backgroundColor: Color(0xFFFACA44),
+        body: Responsive(mobile: Stack(
+          fit: StackFit.expand,
+          children: [
+            _buildBackground(),
+            _buildContent(),
+          ],
+        ),tablet: Stack(
+          fit: StackFit.expand,
+          children: [
+            _buildBackground(),
+            _buildContent(),
+          ],
+        ),desktop: Stack(
+          fit: StackFit.expand,
+          children: [
+            _buildBackground(),
+            _buildContent(),
+          ],
+        ),),
+      ),
     );
   }
 }

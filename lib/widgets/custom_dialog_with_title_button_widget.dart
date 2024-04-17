@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,12 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
 
   Widget _btnBottom() {
     return CustomButtomImageColorWidget(
-      onTap: ontap,
+      onTap: () {
+        AudioManager.playSoundEffect(AudioFile.sound_tap);  // Play sound effect
+        if (ontap != null) {
+          ontap!();  // Call the provided onTap function if it exists
+        }
+      },
       orangeColor: true,
       child: Center(
         child: StrokeTextWidget(

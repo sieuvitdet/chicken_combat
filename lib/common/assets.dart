@@ -235,9 +235,19 @@ class Assets {
 }
 
 class AudioFile {
-  static final String sound_background = "assets/audio/sound_background.mp3";
-  static final String sound_pk1 = "assets/audio/sound_pk_1.mp3";
-  static final String sound_pk2 = "assets/audio/sound_pk_2.mp3";
-  static final String sound_pk3 = "assets/audio/sound_pk_3.mp3";
-  static final String sound_learning = "assets/audio/sound_learning.mp3";
+  static final String sound_background = "audio/sound_background.mp3";
+  static final String sound_pk1 = "audio/sound_pk_1.mp3";
+  static final String sound_pk2 = "audio/sound_pk_2.mp3";
+  static final String sound_pk3 = "audio/sound_pk_3.mp3";
+  static final String sound_learning = "audio/sound_learning.mp3";
+  static final String sound_tap = "audio/sound_tap.mp3";
+  static final String sound_map_1 = "audio/sound_map_1.mp3";
+  static final String sound_map_2 = "audio/sound_background_2.mp3";
+  static final String sound_map_3 = "audio/sound_background_3.mp3";
+  static final String sound_victory = "audio/sound_victory.mp3";
+  static final String sound_tomato_fly = "audio/sound_tomato_fly.mp3";
+  static final String sound_reward = "audio/sound_reward.mp3";
+  static final String sound_water = "audio/sound_water.mp3";
+  static final String sound_water_splash = "audio/sound_water_splash.mp3";
+  static final String sound_gun = "audio/sound_gun.mp3";
 }

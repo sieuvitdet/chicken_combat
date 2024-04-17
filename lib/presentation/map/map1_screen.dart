@@ -4,13 +4,11 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
-import 'package:chicken_combat/presentation/examination/map_reading_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
-import 'package:chicken_combat/presentation/examination/map_writing_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_listening_lesson_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_reading_lesson_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_speaking_lesson_screen.dart';
-import 'package:chicken_combat/presentation/lesson/map_writing_lesson_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +21,7 @@ class Map1Screen extends StatefulWidget {
   State<Map1Screen> createState() => _Map1ScreenState();
 }
 
-class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
+class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, WidgetsBindingObserver  {
   ScrollController _scrollController = ScrollController(keepScrollOffset: true);
   bool enableScroll = true;
   final random = Random();
@@ -53,6 +51,17 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
+    WidgetsBinding.instance.addObserver(this);
+    AudioManager.playBackgroundMusic(AudioFile.sound_map_1);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      AudioManager.pauseBackgroundMusic();
+    } else if (state == AppLifecycleState.resumed) {
+      AudioManager.resumeBackgroundMusic();
+    }
   }
 
   void _configUI() {
@@ -103,9 +112,11 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    AudioManager.stopBackgroundMusic();
     _scrollController.dispose();
     _controller1.dispose();
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

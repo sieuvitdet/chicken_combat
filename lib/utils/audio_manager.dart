@@ -1,67 +1,54 @@
-import 'package:chicken_combat/common/assets.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'dart:math';
 
 class AudioManager {
-  static final AudioManager _instance = AudioManager._internal();
+  static final AudioPlayer _backgroundAudioPlayer = AudioPlayer();
+  static final AudioPlayer _soundEffectPlayer = AudioPlayer();
 
-  factory AudioManager() {
-    return _instance;
-  }
+  static final List<String> soundFiles = [
+    "audio/sound_map_1.mp3",
+    "audio/sound_background_2.mp3",
+    "audio/sound_background_3.mp3"
+  ];
 
-  AudioManager._internal();
-
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-  double _volume = 1.0;
-
-  Future<void> init() async {
-    await _audioPlayer.setAsset(AudioFile.sound_background);
-    _audioPlayer.playerStateStream.listen((playerState) {
-      if (playerState.processingState == ProcessingState.completed) {
-        _audioPlayer.seek(Duration.zero);
-        _audioPlayer.play();
-      }
-    });
-  }
-
-  void dispose() {
-    _audioPlayer.dispose();
-  }
-
-  void play() {
-    _audioPlayer.play();
-  }
-
-  void pause() {
-    _audioPlayer.pause();
-  }
-
-  void stop() {
-    _audioPlayer.stop();
-  }
-
-  void changeAudio(String assetPath) async {
-    await _audioPlayer.setAsset(assetPath);
-    play();
-  }
-
-  bool isPlaying() {
-    return _audioPlayer.playing;
-  }
-
-  void handleAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      pause();
-    } else {
-      play();
+  static void playBackgroundMusic(String filePath) async {
+    await _backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+    try {
+      await _backgroundAudioPlayer.play(AssetSource(filePath));
+    } catch (e) {
+      print('Error playing sound: $e');
     }
   }
 
-  double get volume => _volume;
+  static void playRandomBackgroundMusic() async {
+    Random random = Random();
+    int index = random.nextInt(soundFiles.length);
+    String filePath = soundFiles[index];
+    await _backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+    try {
+      await _backgroundAudioPlayer.play(AssetSource(filePath));
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
+  }
 
-  set volume(double value) {
-    _volume = value.clamp(0.0, 1.0);
-    _audioPlayer.setVolume(_volume);
+  static void stopBackgroundMusic() async {
+    await _backgroundAudioPlayer.stop();
+  }
+
+  static void pauseBackgroundMusic() async {
+    await _backgroundAudioPlayer.pause();
+  }
+
+  static void resumeBackgroundMusic() async {
+    await _backgroundAudioPlayer.resume();
+  }
+
+  static void playSoundEffect(String filePath) async {
+    await _soundEffectPlayer.play(AssetSource(filePath));
+  }
+
+  static void setVolume(double volume) async {
+    await _backgroundAudioPlayer.setVolume(volume);
   }
 }

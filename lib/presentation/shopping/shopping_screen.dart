@@ -6,6 +6,7 @@ import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
@@ -135,6 +136,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               DialogRandomGiftWidget(
                 type: type,
                 ontap: () {
+                  AudioManager.playSoundEffect(AudioFile.sound_tap);
                   Navigator.of(context).pop();
                 },
               ));
@@ -202,6 +204,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             (tab != 0)
                 ? ScalableButton(
                     onTap: () {
+                      AudioManager.playSoundEffect(AudioFile.sound_tap);
                       setState(() {
                         tab = 0;
                       });

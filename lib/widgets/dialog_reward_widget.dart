@@ -1,6 +1,7 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_rules_reward_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -201,6 +202,7 @@ class _DialogRewardWidgetState extends State<DialogRewardWidget> {
                 right: -16,
                 child: ScalableButton(
                   onTap: () {
+                    AudioManager.playSoundEffect(AudioFile.sound_tap);
                     Navigator.of(context).pop();
                   },
                   child: Image.asset(

@@ -2,6 +2,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -52,6 +53,7 @@ class _RankingScreenState extends State<RankingScreen> {
             (tab != 0)
                 ? ScalableButton(
                     onTap: () {
+                      AudioManager.playSoundEffect(AudioFile.sound_tap);
                       setState(() {
                         tab = 0;
                         _rankingScore.sort((a, b) => b.PK11.compareTo(a.PK11));
@@ -76,6 +78,7 @@ class _RankingScreenState extends State<RankingScreen> {
             (tab != 1)
                 ? ScalableButton(
                     onTap: () {
+                      AudioManager.playSoundEffect(AudioFile.sound_tap);
                       setState(() {
                         tab = 1;
                         _rankingScore.sort((a, b) => b.PK22.compareTo(a.PK22));
@@ -434,6 +437,7 @@ class _RankingScreenState extends State<RankingScreen> {
                 right: -AppSizes.maxWidth * 0.03,
                 child: ScalableButton(
                   onTap: () {
+                    AudioManager.playSoundEffect(AudioFile.sound_tap);
                     Navigator.of(context).pop();
                   },
                   child: Image.asset(
@@ -509,6 +513,7 @@ class _RankingScreenState extends State<RankingScreen> {
   }
 
   void _showDialogReward() {
+    AudioManager.playSoundEffect(AudioFile.sound_tap);
     showDialog(
         context: context,
         builder: (BuildContext context) {
