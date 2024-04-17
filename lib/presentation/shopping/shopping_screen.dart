@@ -165,9 +165,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Globals.financeUser!.gold -= model.cast;
         _updateFinance(Globals.currentUser?.financeId ?? "",
             Globals.financeUser?.gold ?? 0, "gold");
-
         Globals.currentUser!.bags.add(model.id);
-
         _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
       } else {
         GlobalSetting.shared.showPopupWithContext(
