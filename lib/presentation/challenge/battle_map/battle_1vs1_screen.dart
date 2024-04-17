@@ -613,8 +613,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
             removeRoomById(_room.id);
             Navigator.of(context)
               ..pop()
-              ..pop()
-              ..pop()
               ..pop();
           } else {
             _timer.cancel();

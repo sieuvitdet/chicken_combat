@@ -116,7 +116,11 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
       RoomModel newRoom = await createNewRoom();
       return RoomCheckResult(room: newRoom, isNew: true);
     } else {
-      print("Empty room found with ID: ${emptyRoom.id}");
+      bool userAlreadyInRoom = emptyRoom.users.any((user) => user.userId == Globals.currentUser?.id);
+      if (!userAlreadyInRoom && Globals.currentUser?.id != null) {
+        emptyRoom.users.add(UserInfoRoom(userId: Globals.currentUser!.id, username: Globals.currentUser!.username));
+        await emptyRoom.updateUsers();
+      }
       return RoomCheckResult(room: emptyRoom, isNew: false);
     }
   }

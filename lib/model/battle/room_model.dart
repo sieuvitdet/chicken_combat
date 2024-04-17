@@ -1,3 +1,4 @@
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RoomModel {
@@ -34,6 +35,12 @@ class RoomModel {
       'type': type,
       'user': users.map((user) => user.toJson()).toList(),
     };
+  }
+
+  Future<void> updateUsers() async {
+    await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+      'user': users.map((user) => user.toJson()).toList(),
+    });
   }
 }
 
