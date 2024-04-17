@@ -19,7 +19,8 @@ class MapReadingLessonScreen extends StatefulWidget {
   State<MapReadingLessonScreen> createState() => _MapReadingLessonScreenState();
 }
 
-class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with WidgetsBindingObserver {
+class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
+    with WidgetsBindingObserver {
   String text =
       "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
       "Welcome to our random topic! Get ready  to explo";
@@ -37,6 +38,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
   List<AskModel> _asks = [];
   List<String> answers = [];
   int? result;
+  int? positionAnswer = 0;
 
   CarouselController buttonCarouselController = CarouselController();
 
@@ -80,15 +82,22 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
     super.didChangeMetrics();
   }
 
-   Future<void> _loadAsks() async {
+  Future<void> _loadAsks() async {
     List<AskModel> loadedAsks = await _getAsk();
     Random random = Random();
     int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
     setState(() {
       _asks = loadedAsks;
       _ask = loadedAsks[randomNumber];
-      answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+      answers = [_ask.A, _ask.B, _ask.C, _ask.D];
       text = _ask.Question;
+      positionAnswer = _ask.Answer == "A"
+          ? 0
+          : _ask.Answer == "B"
+              ? 1
+              : _ask.Answer == "C"
+                  ? 2
+                  : 3;
     });
   }
 
@@ -168,7 +177,6 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
               left: 16,
               right: 16,
               child: Image(image: AssetImage(Assets.img_line_table))),
-         
         ],
       ),
     );
@@ -177,7 +185,8 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
     for (int i = 0; i < 4; i++) {
-      itemList.add(_answer(answers.length > 0 ? answers[i] : "Đáp án",i, ontap: () {
+      itemList.add(
+          _answer(answers.length > 0 ? answers[i] : "Đáp án", i, ontap: () {
         setState(() {
           result = i;
         });
@@ -203,7 +212,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
     );
   }
 
-  Widget _answer(String answer,int i, {Function? ontap}) {
+  Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
@@ -225,15 +234,20 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
         child:
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
-          page += 1;
-          splitText(text2);
           setState(() {});
+          if (result != null) {
+            if (result == positionAnswer) {
+              print("Đúng");
+            } else {
+              print("Sai");
+            }
+          } else {
+            print("Chưa chọn đáp án");
+          }
         },
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -242,9 +256,8 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
       bottom: false,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child:
-            Scaffold(
-              appBar: AppBar(
+        child: Scaffold(
+            appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 leading: IconTheme(
                   data: IconThemeData(size: 24.0), // Set the size here
@@ -259,24 +272,31 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen> with Wi
                   Padding(
                     padding: EdgeInsets.only(right: 16),
                     child: GestureDetector(
-                      onTap: () {
-                        GlobalSetting.shared.showPopup(context,onTapClose: () {
-                          Navigator.of(context).pop();
-
+                        onTap: () {
+                          GlobalSetting.shared.showPopup(context,
+                              onTapClose: () {
+                            Navigator.of(context).pop();
+                          }, onTapExit: () {
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop(false);
+                          }, onTapContinous: () {
+                            Navigator.of(context).pop();
+                          });
                         },
-                        onTapExit: () {
-                          Navigator.of(context)..pop()..pop(false);
-                        },
-                        onTapContinous: () {
-                          Navigator.of(context).pop();
-                        });
-                      },
-                      child: Image.asset(Assets.ic_menu, height: 24)),
+                        child: Image.asset(Assets.ic_menu, height: 24)),
                   )
                 ],
                 title: Text("Level 1",
-                    style: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.w500))),
-              backgroundColor: Color(0xFFFACA44), body: Responsive(mobile: _buildContent(), tablet: _buildContent(), desktop: _buildContent())),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w500))),
+            backgroundColor: Color(0xFFFACA44),
+            body: Responsive(
+                mobile: _buildContent(),
+                tablet: _buildContent(),
+                desktop: _buildContent())),
       ),
     );
   }
