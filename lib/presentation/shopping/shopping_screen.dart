@@ -6,6 +6,7 @@ import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
@@ -112,12 +113,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   _buyItem(StoreModel model) {
     if (tab == 2) {
       if (Globals.financeUser!.diamond >= model.cast) {
+        AudioManager.playSoundEffect(AudioFile.sound_buy);
         if (model.asset == Assets.img_gift_gacha) {
           final random = Random();
           int i = random.nextInt(100);
           if (i >= 50 && i <= 100) {
             type = "chicken";
-
             int j = random.nextInt(100);
             if (j >= 50 && j <= 100) {
               type = "chicken_premium";
@@ -135,6 +136,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               DialogRandomGiftWidget(
                 type: type,
                 ontap: () {
+                  AudioManager.playSoundEffect(AudioFile.sound_tap);
                   Navigator.of(context).pop();
                 },
               ));
@@ -159,6 +161,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       }
     } else {
       if ((Globals.financeUser!.gold >= model.cast)) {
+        AudioManager.playSoundEffect(AudioFile.sound_buy);
         Globals.financeUser!.gold -= model.cast;
         _updateFinance(Globals.currentUser?.financeId ?? "",
             Globals.financeUser?.gold ?? 0, "gold");
@@ -202,6 +205,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             (tab != 0)
                 ? ScalableButton(
                     onTap: () {
+                      AudioManager.playSoundEffect(AudioFile.sound_tap);
                       setState(() {
                         tab = 0;
                       });

@@ -29,6 +29,7 @@ dependencies:
   pointycastle: ^3.8.0
   flutter_tts: ^3.0.0
   permission_handler: ^10.3.0
+  audioplayers: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +39,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/audio/
   fonts:
     - family: Itim
       fonts:

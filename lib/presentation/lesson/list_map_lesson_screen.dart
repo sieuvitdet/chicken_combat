@@ -5,6 +5,7 @@ import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/presentation/map/map2_screen.dart';
 import 'package:chicken_combat/presentation/map/map3_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -94,6 +95,7 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
           ],
         ),
         onTap: () async {
+          AudioManager.playSoundEffect(AudioFile.sound_tap);
           if (isLock) {
             return;
           }

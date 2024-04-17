@@ -1,6 +1,7 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,9 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
   void initState() {
     super.initState();
     _configAnamation();
+    Future.delayed(Duration.zero, () {
+      AudioManager.playRandomBackgroundMusic();
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
        await Future.delayed(Duration(seconds: 3));
       Navigator.of(context)

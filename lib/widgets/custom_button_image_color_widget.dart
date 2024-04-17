@@ -1,5 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:flutter/material.dart';
 
 class CustomButtomImageColorWidget extends StatelessWidget {
@@ -62,6 +63,7 @@ class _ScalableButtonState extends State<ScalableButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (_) {
+        AudioManager.playSoundEffect(AudioFile.sound_tap);
         if (widget.pressedScaleEnabled) {
           setState(() {
             isPressed = true;
@@ -69,6 +71,7 @@ class _ScalableButtonState extends State<ScalableButton> {
         }
       },
       onTapUp: (_) {
+        AudioManager.playSoundEffect(AudioFile.sound_tap);
         if (widget.pressedScaleEnabled) {
           setState(() {
             isPressed = false;
@@ -79,6 +82,7 @@ class _ScalableButtonState extends State<ScalableButton> {
         }
       },
       onTapCancel: () {
+        AudioManager.playSoundEffect(AudioFile.sound_tap);
         if (widget.pressedScaleEnabled) {
           setState(() {
             isPressed = false;

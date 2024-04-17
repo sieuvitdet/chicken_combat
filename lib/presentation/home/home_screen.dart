@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
@@ -9,10 +10,10 @@ import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
-import 'package:chicken_combat/widgets/custom_expanedable_draggable_fab_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+
   UserModel? _userModel;
   FinanceModel? _financeModel;
 
@@ -32,6 +34,27 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _userModel = Globals.currentUser;
     _initializeData();
+    WidgetsBinding.instance.addObserver(this);
+    Future.delayed(Duration.zero, () {
+      AudioManager.playRandomBackgroundMusic();
+    });
+  }
+
+  @override
+  void dispose() {
+    AudioManager.stopBackgroundMusic();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      AudioManager.pauseBackgroundMusic();
+    } else if (state == AppLifecycleState.resumed) {
+      AudioManager.resumeBackgroundMusic();
+    }
   }
 
   Future<void> _initializeData() async {
@@ -121,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   ScalableButton(
                     onTap: () {
+                      AudioManager.playSoundEffect(AudioFile.sound_tap);
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -171,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ontap: () {}),
               SizedBox(width: 4),
               _itemRow("Cửa hàng", Assets.ic_shop, ontap: () {
+                AudioManager.playSoundEffect(AudioFile.sound_tap);
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -212,7 +237,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
             child: Text(name,
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: onTap as void Function()?,
+        onTap: () {
+          onTap();
+          AudioManager.playSoundEffect(AudioFile.sound_tap);
+        },
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -18,7 +19,7 @@ class Battle2Vs2Screen extends StatefulWidget {
 }
 
 class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -71,6 +72,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
       _configWaterShotAnimation();
       _startTimer();
     });
+    WidgetsBinding.instance.addObserver(this);
+
   }
 
   @override
@@ -81,8 +84,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     _controllerGun.dispose();
     _controllerWaterLeftToRight.dispose();
     _controllerWaterRightToLeft.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     _timer.cancel();
   }
+
 
   _configAnimation() {
     _controllerFirst = AnimationController(

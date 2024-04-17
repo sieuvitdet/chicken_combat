@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -19,7 +20,7 @@ class Battle1Vs1Screen extends StatefulWidget {
 }
 
 class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver  {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -55,7 +56,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     } else {
       _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
     }
-
     maxWidthTomato = AppSizes.maxWidthTablet > 0
         ? AppSizes.maxWidthTablet
         : AppSizes.maxWidth;
@@ -66,6 +66,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     _configWaterShotAnimation();
       _startTimer();
     });
+    AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
+    WidgetsBinding.instance.addObserver(this);
   }
 
    void dispose() {
@@ -78,9 +80,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     _controllerWaterLeftToRight.removeListener(() { });
     _controllerWaterRightToLeft.removeListener(() { });
     _timer.cancel();
-
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
 
   _configAnimation() {
     _controllerFirst = AnimationController(
@@ -588,6 +591,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   }
 
   void showPopupWin({bool isWin = false}) {
+    AudioManager.pauseBackgroundMusic();
+    AudioManager.playSoundEffect(AudioFile.sound_victory);
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -597,6 +602,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               return DialogCongratulationWidget(
                 isWin: isWin,
                 ontapExit: () {
+                  AudioManager.stopBackgroundMusic();
                   Navigator.of(context)
                     ..pop()
                     ..pop()
@@ -620,7 +626,13 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         redBlurColor: i == 3,
         child:
             Text("Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
-        onTap: ontap,
+        onTap: () {
+          if (ontap != null) {
+            ontap();
+          }
+          AudioManager.pauseBackgroundMusic();
+          AudioManager.playSoundEffect(AudioFile.sound_tomato_fly);
+        },
       ),
     );
   }
@@ -634,6 +646,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           GlobalSetting.shared.showPopup(context, onTapClose: () {
             Navigator.of(context).pop();
           }, onTapExit: () {
+            AudioManager.stopBackgroundMusic();
             Navigator.of(context)
               ..pop()
               ..pop()

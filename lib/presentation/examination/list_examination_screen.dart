@@ -3,6 +3,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/maps/course_map_model.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/examination/list_map_examination_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
         greenColor: typeId == 3,
         child: Text(type, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: () async {
+          AudioManager.playSoundEffect(AudioFile.sound_tap);
           List<UserMapModel> items = [];
           switch (typeId) {
             case 0:

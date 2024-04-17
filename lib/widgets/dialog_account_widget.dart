@@ -5,6 +5,7 @@ import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/presentation/ranking/ranking_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -135,6 +136,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                   top: AppSizes.maxHeight * 0.0245,
                   child: ScalableButton(
                       onTap: () {
+                        AudioManager.playSoundEffect(AudioFile.sound_tap);
                         Navigator.of(context).pop();
                       },
                       child: Image.asset(Assets.ic_close_popup,
@@ -368,6 +370,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
   }
 
   void _showRanking() {
+    AudioManager.playSoundEffect(AudioFile.sound_tap);
     showDialog(
         context: context,
         builder: (BuildContext context) {
