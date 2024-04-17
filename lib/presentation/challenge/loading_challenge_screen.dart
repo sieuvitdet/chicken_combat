@@ -1,10 +1,17 @@
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/battle/room_model.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
+import 'battle_map/battle_1vs1_screen.dart';
 
 class LoadingChallegenScreen extends StatefulWidget {
   const LoadingChallegenScreen({super.key});
@@ -26,6 +33,15 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
 
   String _loadingText = 'Matching';
 
+  void initState() {
+    super.initState();
+    _configAnimation();
+    Future.delayed(Duration.zero, () {
+      AudioManager.playRandomBackgroundMusic();
+    });
+    _initializeData();
+  }
+
   @override
   void dispose() {
     _controller1.dispose();
@@ -34,20 +50,78 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     super.dispose();
   }
 
-  void initState() {
-    super.initState();
-    _configAnamation();
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-       await Future.delayed(Duration(seconds: 3));
+  Future<void> _initializeData() async {
+    RoomCheckResult _room = await ensureRoomAvailable();
+    await Future.delayed(Duration(seconds: 3));
+    if (_room.isNew) {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => LoadingMeetingChallengeScreen()));
-    });
+          .push(MaterialPageRoute(builder: (context) => Battle1Vs1Screen(room: _room.room)));
+    } else {
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+          builder: (context) => LoadingMeetingChallengeScreen(room: _room.room,)));
+    }
   }
 
-  void _configAnamation() {
+  Future<RoomModel?> findEmptyRoom() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(FirebaseEnum.room)
+          .where('user', isNotEqualTo: [])
+          .get();
+      for (var doc in querySnapshot.docs) {
+        List<dynamic> users = doc.get('user');
+        if (users.length == 1) {
+          Map<String, dynamic> user = users.first as Map<String, dynamic>;
+          if (user['userid'] != Globals.currentUser!.id) {
+            return RoomModel.fromSnapshot(doc);
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching single-user rooms: $e");
+    }
+    return null;
+  }
+
+  Future<RoomModel> createNewRoom() async {
+    Timestamp now = Timestamp.now();
+    List<UserInfoRoom> initialUsers = [];
+    if (Globals.currentUser?.id != null) {
+      initialUsers.add(UserInfoRoom(userId: Globals.currentUser!.id, username: Globals.currentUser!.username)); // Adjust according to actual user object fields
+    }
+    RoomModel newRoom = RoomModel(
+      id: '',
+      timestamp: now,
+      type: 1,
+      users: initialUsers,
+    );
+    try {
+      DocumentReference ref = await FirebaseFirestore.instance
+          .collection(FirebaseEnum.room)
+          .add(newRoom.toJson());
+      newRoom.id = ref.id; // Update the model with the Firestore-generated ID
+      print("New room created with ID: ${newRoom.id}");
+      return newRoom;
+    } catch (e) {
+      print("Error creating new room: $e");
+      throw Exception("Failed to create a new room");
+    }
+  }
+
+  Future<RoomCheckResult> ensureRoomAvailable() async {
+    RoomModel? emptyRoom = await findEmptyRoom();
+    if (emptyRoom == null) {
+      print("No empty room available, creating a new one.");
+      RoomModel newRoom = await createNewRoom();
+      return RoomCheckResult(room: newRoom, isNew: true);
+    } else {
+      print("Empty room found with ID: ${emptyRoom.id}");
+      return RoomCheckResult(room: emptyRoom, isNew: false);
+    }
+  }
+
+  void _configAnimation() {
     _controller1 = AnimationController(
       vsync: this,
       duration: Duration(seconds: 6),

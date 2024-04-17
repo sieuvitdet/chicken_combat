@@ -4,16 +4,21 @@ import 'dart:ui';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/battle/room_model.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
 class Battle1Vs1Screen extends StatefulWidget {
-  const Battle1Vs1Screen({super.key});
+  final RoomModel room;
+
+  Battle1Vs1Screen({required this.room});
 
   @override
   State<Battle1Vs1Screen> createState() => _Battle1Vs1ScreenState();
@@ -45,12 +50,14 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   bool _isTomato = true;
 
   double maxWidthTomato = 0.0;
-  // int currentVolume = 5;
-  // int currentNote = 5;
+
+  late RoomModel _room;
 
   @override
   void initState() {
     super.initState();
+    _room = widget.room;
+
     if (_isTomato) {
       _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
     } else {
@@ -59,12 +66,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     maxWidthTomato = AppSizes.maxWidthTablet > 0
         ? AppSizes.maxWidthTablet
         : AppSizes.maxWidth;
-    // _configAnimation();
-    // _configWaterShotAnimation();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _configAnimation();
-    _configWaterShotAnimation();
+      _configWaterShotAnimation();
       _startTimer();
+      _listenRoom(_room.id);
     });
     AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     WidgetsBinding.instance.addObserver(this);
@@ -84,6 +91,43 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     super.dispose();
   }
 
+  bool _checkWaitBattle() {
+    if (_room.users.length == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  UserInfoRoom _currentInfo() {
+    return _room.users.first;
+  }
+
+  Future<void> removeRoomById(String roomId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.room)  // Make sure this matches the exact name of your collection
+          .doc(roomId)
+          .delete();
+      print("Room successfully deleted");
+    } catch (e) {
+      print("Error removing room: $e");
+      throw Exception("Failed to remove the room: $e");
+    }
+  }
+
+  Future<void> _listenRoom(String _id) async {
+    CollectionReference room =
+    FirebaseFirestore.instance.collection(FirebaseEnum.room);
+    room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+        setState(() {
+            _room = RoomModel.fromSnapshot(documentSnapshot);
+        });
+      }
+    });
+  }
 
   _configAnimation() {
     _controllerFirst = AnimationController(
@@ -251,9 +295,20 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           _menu(),
           Positioned(
             bottom: 8,
-            left: 16,
+            left: _checkWaitBattle() ? (AppSizes.maxWidth / 2.5) -
+                (AppSizes.maxWidth * 0.1 / 2) : 16,
+            // Center _myChicken if _checkWaitBattle is true
             child: _myChicken(_total),
           ),
+          if (_checkWaitBattle()) ...[],
+          // No enemy chicken when _checkWaitBattle is true
+          if (!_checkWaitBattle()) // Only show _enemyChicken if _checkWaitBattle is false
+            Positioned(
+              bottom: 8,
+              right: 16,
+              child: _enemyChicken(_total),
+            ),
+          // Your existing water shot logic
           if (waterShotLeftToRight != null && waterShotLeftToRight!)
             Positioned(
               top: calculateLeftToRight(_animationWaterLeftToRight.value).dy,
@@ -262,26 +317,20 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   alignment: Alignment.center,
                   transform: Matrix4.rotationY(pi),
                   child:
-                  calculateLeftToRight(_animationWaterLeftToRight.value).dx <= (maxWidthTomato - (maxWidthTomato*0.5)) ?
-                   Image.asset(
+                  calculateLeftToRight(_animationWaterLeftToRight.value).dx <=
+                      (maxWidthTomato - (maxWidthTomato * 0.5)) ?
+                  Image.asset(
                     _isTomato ? Assets.img_tomato : Assets.img_water_shot,
                     fit: BoxFit.contain,
-                    width: _isTomato
-                        ? AppSizes.maxWidth * 0.1
-                        : AppSizes.maxWidth * 0.06,
+                    width: _isTomato ? AppSizes.maxWidth * 0.1 : AppSizes
+                        .maxWidth * 0.06,
                   ) : Image.asset(
                     _isTomato ? Assets.img_tomato_broken : Assets.img_water_shot,
                     fit: BoxFit.contain,
-                    width: _isTomato
-                        ? AppSizes.maxWidth * 0.1
-                        : AppSizes.maxWidth * 0.06,
+                    width: _isTomato ? AppSizes.maxWidth * 0.1 : AppSizes
+                        .maxWidth * 0.06,
                   )),
             ),
-          Positioned(
-            bottom: 8,
-            right: 16,
-            child: _enemyChicken(_total),
-          ),
           if (waterShotLeftToRight != null && !waterShotLeftToRight!)
             Positioned(
               top: calculateRightToLeft(_animationWaterRightToLeft.value).dy,
@@ -289,19 +338,18 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               child: Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.rotationY(pi),
-                  child: calculateRightToLeft(_animationWaterRightToLeft.value).dx >= (maxWidthTomato - (maxWidthTomato*0.55)) ?
+                  child: calculateRightToLeft(_animationWaterRightToLeft.value)
+                      .dx >= (maxWidthTomato - (maxWidthTomato * 0.55)) ?
                   Image.asset(
                     _isTomato ? Assets.img_tomato : Assets.img_water_shot,
                     fit: BoxFit.contain,
-                    width: _isTomato
-                        ? AppSizes.maxWidth * 0.1
-                        : AppSizes.maxWidth * 0.06,
+                    width: _isTomato ? AppSizes.maxWidth * 0.1 : AppSizes
+                        .maxWidth * 0.06,
                   ) :  Image.asset(
                     _isTomato ? Assets.img_tomato_broken : Assets.img_water_shot,
                     fit: BoxFit.contain,
-                    width: _isTomato
-                        ? AppSizes.maxWidth * 0.1
-                        : AppSizes.maxWidth * 0.06,
+                    width: _isTomato ? AppSizes.maxWidth * 0.1 : AppSizes
+                        .maxWidth * 0.06,
                   )),
             ),
         ],
@@ -320,14 +368,16 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                 padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: SingleChildScrollView(
                   child: Text(
-                    "Welcome to our random topic! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought ",
+                    _checkWaitBattle() ? "Đang chờ đối thủ $_start s"
+                        : "Welcome to our random topic! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought ",
                     style: TextStyle(fontSize: 14, color: Colors.white),
                     textAlign: TextAlign.start,
                   ),
                 ),
               ),
             ),
-            Row(
+            _checkWaitBattle() ? Container()
+                : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset((Assets.ic_boom),width: 24),
@@ -361,7 +411,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          "Jon seca",
+          _currentInfo().username,
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         (isEnemyWin != null && isEnemyWin!)
@@ -457,7 +507,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          "Jon seca",
+          _room.users[1].username,
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         (isEnemyWin != null && !isEnemyWin!)
@@ -546,12 +596,27 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   }
 
   List<Widget> _listAnswer() {
+    int lenghtButton = 0;
+    if (_checkWaitBattle()) {
+      lenghtButton = 1;
+    } else {
+      lenghtButton = 4;
+    }
     List<Widget> itemList = [];
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < lenghtButton; i++) {
       itemList.add(_answer(i, ontap: () {
         switch (i) {
           case 0:
             // check trả lời đúng sai , đúng thì dừng thời gian -
+          if (_checkWaitBattle()) {
+            AudioManager.stopBackgroundMusic();
+            removeRoomById(_room.id);
+            Navigator.of(context)
+              ..pop()
+              ..pop()
+              ..pop()
+              ..pop();
+          } else {
             _timer.cancel();
             if (_currentEnemyBlood == 0) {
               return;
@@ -563,6 +628,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                 _controllerWaterLeftToRight.forward();
               });
             }
+          }
           case 1:
             // check trả lời đúng sai , đúng thì dừng thời gian -
             _timer.cancel();
@@ -625,7 +691,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         yellowColor: i == 2,
         redBlurColor: i == 3,
         child:
-            Text("Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text(_checkWaitBattle() ? 'Thoát phòng chờ' : "Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           if (ontap != null) {
             ontap();
@@ -713,7 +779,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ..._listAnswer(),
+            ... _listAnswer(),
             SizedBox(
               height: AppSizes.bottomHeight,
             )
