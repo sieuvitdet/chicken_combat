@@ -113,12 +113,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   _buyItem(StoreModel model) {
     if (tab == 2) {
       if (Globals.financeUser!.diamond >= model.cast) {
+        AudioManager.playSoundEffect(AudioFile.sound_buy);
         if (model.asset == Assets.img_gift_gacha) {
           final random = Random();
           int i = random.nextInt(100);
           if (i >= 90 && i <= 100) {
             type = "chicken";
-
             int j = random.nextInt(100);
             if (j >= 95 && j <= 100) {
               type = "chicken_premium";
@@ -161,6 +161,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       }
     } else {
       if ((Globals.financeUser!.gold >= model.cast)) {
+        AudioManager.playSoundEffect(AudioFile.sound_buy);
         Globals.financeUser!.gold -= model.cast;
         _updateFinance(Globals.currentUser?.financeId ?? "",
             Globals.financeUser?.gold ?? 0, "gold");
