@@ -507,7 +507,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          "Jon seca",
+          _room.users[1].username,
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         (isEnemyWin != null && !isEnemyWin!)
