@@ -9,6 +9,7 @@ import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -23,15 +24,37 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+
   UserModel? _userModel;
   FinanceModel? _financeModel;
+
+  final AudioManager _audioManager = AudioManager();
 
   @override
   void initState() {
     super.initState();
     _userModel = Globals.currentUser;
     _initializeData();
+    _initAudioPlayer();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    _audioManager.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> _initAudioPlayer() async {
+    await _audioManager.init();
+    _audioManager.play();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _audioManager.handleAppLifecycleState(state);
   }
 
   Future<void> _initializeData() async {

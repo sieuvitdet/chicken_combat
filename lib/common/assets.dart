@@ -233,3 +233,11 @@ class Assets {
     return imagesGift[random.nextInt(imagesGiftPremium.length)];
   }
 }
+
+class AudioFile {
+  static final String sound_background = "assets/audio/sound_background.mp3";
+  static final String sound_pk1 = "assets/audio/sound_pk_1.mp3";
+  static final String sound_pk2 = "assets/audio/sound_pk_2.mp3";
+  static final String sound_pk3 = "assets/audio/sound_pk_3.mp3";
+  static final String sound_learning = "assets/audio/sound_learning.mp3";
+}
