@@ -55,7 +55,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         id: "",
         asset: Assets.img_gift_gacha,
         isHotSale: true,
-        cast: 10,
+        cast: 5,
         type: "0",
         key: StoreModelEnum.diamond));
   }
@@ -115,11 +115,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         if (model.asset == Assets.img_gift_gacha) {
           final random = Random();
           int i = random.nextInt(100);
-          if (i >= 90 && i <= 100) {
+          if (i >= 50 && i <= 100) {
             type = "chicken";
 
             int j = random.nextInt(100);
-            if (j >= 95 && j <= 100) {
+            if (j >= 50 && j <= 100) {
               type = "chicken_premium";
               print("Nhận gà hiếm");
             }
