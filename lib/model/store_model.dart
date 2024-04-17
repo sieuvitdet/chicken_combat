@@ -31,45 +31,49 @@ class StoreModel {
         cast: data?['cast'] ?? '',
         key: data?['key'] ?? '',
         type: data?['type'] ?? '',
-        asset: ExtendedAssets.getImageByCode(snapshot.id));
+        asset: ExtendedAssets.getAssetByCode(snapshot.id));
   }
 }
 
 class ExtendedAssets extends Assets {
-  static String getImageByCode(String code) {
-    switch (code) {
-      case "CO01":
-        return Assets.img_chicken;
-      case "CO02":
-        return Assets.img_chicken_green;
-      case "CO03":
-        return Assets.img_chicken_black;
-      case "CO04":
-        return Assets.img_chicken_blue;
-      case "CO05":
-        return Assets.img_chicken_red;
-      case "CO06":
-        return Assets.img_chicken_white_0;
-      case "CO07":
-        return Assets.img_chicken_green;
-      case "CO08":
-        return Assets.img_chicken_brown;
-      case "SK01":
-        return Assets.img_hat_scholar;
-      case "SK02":
-        return Assets.img_breath_machine;
-      case "SK03":
-        return Assets.img_mask;
-      case "DI01":
-        return Assets.gif_chicken_brown;
-      case "DI02":
-        return Assets.img_chicken_bear_white_premium;
-      case "DI03":
-        return Assets.img_chicken_lovely;
-      case "DI04":
-        return Assets.img_chicken_brown_circleface_premium;
-      default:
-    }
-    return Assets.img_chicken;
+  static String getAssetByCode(String code) {
+  Map<String, String> codeToAssetMap = {
+    "CO01": Assets.img_chicken,
+    "CO02": Assets.img_chicken_green,
+    "CO03": Assets.img_chicken_black,
+    "CO04": Assets.img_chicken_blue,
+    "CO05": Assets.img_chicken_red,
+    "CO06": Assets.img_chicken_white_0,
+    "CO08": Assets.img_chicken_brown,
+    "SK01": Assets.img_hat_scholar,
+    "SK02": Assets.img_breath_machine,
+    "SK03": Assets.img_mask,
+    "DI01": Assets.gif_chicken_brown,
+    "DI02": Assets.img_chicken_bear_white_premium,
+    "DI03": Assets.img_chicken_lovely,
+    "DI04": Assets.img_chicken_brown_circleface_premium,
+  };
+
+  return codeToAssetMap[code] ?? Assets.img_chicken; // Trả về tên asset tương ứng hoặc asset mặc định nếu không tìm thấy
+}
+
+  static String getCodeByAsset(String asset) {
+    Map<String, String> assetToCodeMap = {
+      Assets.img_chicken: "CO01",
+      Assets.img_chicken_green: "CO02",
+      Assets.img_chicken_black: "CO03",
+      Assets.img_chicken_blue: "CO04",
+      Assets.img_chicken_red: "CO05",
+      Assets.img_chicken_white_0: "CO06",
+      Assets.img_chicken_brown: "CO08",
+      Assets.img_hat_scholar: "SK01",
+      Assets.img_breath_machine: "SK02",
+      Assets.img_mask: "SK03",
+      Assets.gif_chicken_brown: "DI01",
+      Assets.img_chicken_bear_white_premium: "DI02",
+      Assets.img_chicken_lovely: "DI03",
+      Assets.img_chicken_brown_circleface_premium: "DI04",
+    };
+    return assetToCodeMap[asset] ?? "CO01";
   }
 }

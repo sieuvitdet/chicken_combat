@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/finance_model.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -34,6 +35,12 @@ class DialogRandomGiftWidget extends StatefulWidget {
 class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
 
 
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
    Widget build(BuildContext context) {
     String content = "";
@@ -45,17 +52,34 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
       case "gold":
         gold = random.nextInt(10) + 20;
         Globals.financeUser?.gold += gold;
-
         _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
-
         content = "Chúc mừng bạn nhận được ${gold} vàng";
         break;
       case "chicken":
-        content = "Chúc mừng bạn nhận được vật phẩm";
+        if (_validateItemExist(chicken)) {
+          content = "Vật phẩm đã được mua, sẽ được quy đổi ra 150 gold";
+          Globals.financeUser?.gold += 150;
+          _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
+        } else {
+          Globals.currentUser!.bags.add(ExtendedAssets.getCodeByAsset(chicken));
+
+
+          _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
+          content = "Chúc mừng bạn nhận được vật phẩm";
+        }
         break;
 
       case "chicken_premium":
-        content = "Chúc mừng bạn nhận được vật phẩm hiếm";
+      if (_validateItemExist(chickenPremium)) {
+          content = "Vật phẩm đã được mua, sẽ được quy đổi ra 500 gold";
+          Globals.financeUser?.gold += 500;
+          _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
+        } else {
+          Globals.currentUser!.bags.add(ExtendedAssets.getCodeByAsset(chickenPremium));
+
+          _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
+          content = "Chúc mừng bạn nhận được vật phẩm hiếm";
+        }
         break;
       default:
     }
@@ -136,6 +160,22 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
         ),
       ),
     );
+  }
+
+  Future<void> _updateStore(String _idUser, List<String> bags) async {
+    CollectionReference _user =
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
+    return _user
+        .doc(_idUser)
+        .update({'bag': bags})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  bool _validateItemExist(String assest) {
+    return (Globals.currentUser?.bag ?? []).contains(ExtendedAssets.getCodeByAsset(assest));
+
   }
 
   _buildChickenReward(String assest) {
