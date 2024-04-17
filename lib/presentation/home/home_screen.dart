@@ -17,23 +17,31 @@ import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
 class HomeScreen extends StatefulWidget {
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-
+class _HomeScreenState extends State<HomeScreen>
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
   UserModel? _userModel;
   FinanceModel? _financeModel;
+  bool _isChickenSing = false;
+  bool _isPlay = false;
+  bool _isEnablePlay = false;
+  bool _isEnableResume = false;
 
   @override
   void initState() {
     super.initState();
     _userModel = Globals.currentUser;
     _initializeData();
+    _configAnamation();
     WidgetsBinding.instance.addObserver(this);
     Future.delayed(Duration.zero, () {
       AudioManager.playRandomBackgroundMusic();
@@ -43,10 +51,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     AudioManager.stopBackgroundMusic();
+     _pauseChickenSing();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -61,6 +69,21 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     await _getFinance(_userModel!.financeId);
     await _getStore();
     await _getMaps();
+  }
+
+  void _playChickenSing() {
+    AudioManager.stopBackgroundMusic();
+    AudioManager.playRandomChickenSing();
+  }
+
+  void _pauseChickenSing() {
+    AudioManager.resumeBackgroundMusic();
+    AudioManager.pauseVoiceMusic();
+  }
+
+  void _resummeChickenSing() {
+    AudioManager.stopBackgroundMusic();
+    AudioManager.resumeVoiceMusic();
   }
 
   Future<void> _getFinance(String _id) async {
@@ -101,6 +124,27 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         maps.add(MapModel.fromSnapshot(doc));
       });
       Globals.mapsModel = maps;
+    });
+  }
+
+  void _configAnamation() {
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: -AppSizes.maxHeight * 0.22, end: AppSizes.maxHeight*0.02)
+        .animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _controller.addStatusListener((status) async {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          _isEnablePlay = true;
+        });
+      }
     });
   }
 
@@ -223,7 +267,73 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       width: Responsive.isMobile(context)
           ? AppSizes.maxWidth
           : AppSizes.maxWidthTablet,
-      child: Image(fit: BoxFit.cover, image: AssetImage(Assets.gif_snow_home)),
+      child: Stack(
+        children: [
+          Image(fit: BoxFit.cover, image: AssetImage(Assets.gif_snow_home)),
+          Positioned(
+              bottom: AppSizes.maxHeight*0.14,
+              left: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () {
+                  _controller.forward();
+                },
+                child: Image(
+                  fit: BoxFit.contain,
+                  image: AssetImage(Assets.gif_chicken_black_dance),
+                  width: AppSizes.maxWidth * 0.15,
+                  height: AppSizes.maxHeight * 0.15,
+                ),
+              )),
+          Positioned(
+              bottom: _animation.value,
+              left: 15,
+              right: 0,
+              child: Image(
+                fit: BoxFit.contain,
+                image: AssetImage(Assets.img_micro),
+                width: AppSizes.maxWidth * 0.01,
+                height: AppSizes.maxHeight * 0.2,
+              )),
+          if (_isEnablePlay)
+            Positioned(
+              top: AppSizes.maxHeight*0.28,
+              right: 0,
+              left: 0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (_isPlay) { // đang phát nhạc gà
+                      _pauseChickenSing();
+                    } else { // đang tắt nhạc gà 
+                      if (_isEnableResume) {
+                        _resummeChickenSing();
+                      } else {
+                        _isEnableResume = true;
+                        _playChickenSing();
+                      }
+                    }
+                    _isPlay = !_isPlay;
+                  });
+                },
+                child: ShakeWidget(
+                    duration: const Duration(seconds: 10),
+                    shakeConstant: ShakeDefaultConstant1(),
+                    autoPlay: true,
+                  child: Image.asset(
+                    _isPlay ? Assets.img_playing : Assets.ic_playgame_popup,
+                    height: 48,
+                  ),
+                ),
+              ),
+            ),
+
+
+            Positioned(
+              top: 200,
+              right: 80,child: ThoughtBubble(text: "Chọt em đi"))
+        ],
+      ),
     ));
   }
 
@@ -317,4 +427,58 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       ),
     );
   }
+}
+
+
+
+
+class ThoughtBubble extends StatefulWidget {
+  final String text;
+  ThoughtBubble({required this.text});
+
+  @override
+  _ThoughtBubbleState createState() => _ThoughtBubbleState();
+}
+
+class _ThoughtBubbleState extends State<ThoughtBubble> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topLeft,
+      child: CustomPaint(
+        painter: BubblePainter(),
+        child: Container(
+          padding: EdgeInsets.all(16),
+          margin: EdgeInsets.only(top: 20, left: 20),
+          child: Text(widget.text, style: TextStyle(fontSize: 12)),
+        ),
+      ),
+    );
+  }
+}
+
+
+class BubblePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()..color = Colors.amber.shade100;
+    var path = Path();
+
+    // Vẽ đám mây
+    path.addOval(Rect.fromCircle(center: Offset(size.width * 0.3, size.height * 0.3), radius: 30));
+    path.addOval(Rect.fromCircle(center: Offset(size.width * 0.5, size.height * 0.25), radius: 40));
+    path.addOval(Rect.fromCircle(center: Offset(size.width * 0.7, size.height * 0.3), radius: 30));
+
+    // Vẽ mũi tên chỉ xuống
+    path.moveTo(size.width * 0.5, size.height * 0.5);
+    path.lineTo(size.width * 0.45, size.height * 0.7);
+    path.lineTo(size.width * 0.55, size.height * 0.7);
+     path.lineTo(size.width * 0.4, size.height * 0.9);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

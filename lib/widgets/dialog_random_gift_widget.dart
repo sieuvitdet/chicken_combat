@@ -174,6 +174,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
   }
 
   bool _validateItemExist(String assest) {
+    print(assest);
     return (Globals.currentUser?.bag ?? []).contains(ExtendedAssets.getCodeByAsset(assest));
 
   }
