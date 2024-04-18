@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "486535342706",
+    "project_id": "test-project-439ba",
+    "storage_bucket": "test-project-439ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486535342706:android:51e37cda8091689f7c30eb",
+        "android_client_info": {
+          "package_name": "com.example.chicken_combat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQySw_y34qQkmkDZ3urmDtpfJEAt5brj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
