@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
+import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
@@ -8,6 +11,8 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'battle_map/battle_1vs1_screen.dart';
@@ -31,6 +36,8 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
   late Animation<double> _animation3;
 
   String _loadingText = 'Matching';
+
+  List<AskModel> _asks = [];
 
   void initState() {
     super.initState();
@@ -95,11 +102,14 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
               : Globals.currentUser!
                   .useColor)); // Adjust according to actual user object fields
     }
+    List<AskModel> asks = await _loadAsks();
     RoomModel newRoom = RoomModel(
       id: '',
       timestamp: now,
       type: 1,
+      status: '',
       users: initialUsers,
+      asks: asks
     );
     try {
       DocumentReference ref = await FirebaseFirestore.instance
@@ -133,6 +143,51 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
       }
       return RoomCheckResult(room: emptyRoom, isNew: false);
     }
+  }
+
+  Future<List<AskModel>> _loadAsks() async {
+    List<AskModel> loadedAsks = await _getAsk();
+    Random random = Random();
+    if (loadedAsks.length < 5) {
+      throw Exception("Not enough questions to select from.");
+    }
+    Set<int> usedIndexes = Set<int>();
+    List<AskModel> selectedAsks = [];
+    while (selectedAsks.length < 5) {
+      int randomNumber = random.nextInt(loadedAsks.length);
+      if (!usedIndexes.contains(randomNumber)) {
+        selectedAsks.add(loadedAsks[randomNumber]);
+        usedIndexes.add(randomNumber);
+      }
+    }
+    return selectedAsks;
+  }
+
+
+  Future<List<AskModel>> _getAsk() async {
+    List<AskModel> readings = [];
+    try {
+      FirebaseDatabase database = FirebaseDatabase(
+        app: Firebase.app(),
+        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
+      );
+      final ref = database.ref(FirebaseEnum.reading);
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List) {
+          for (var item in data) {
+            AskModel model = AskModel.fromJson(item);
+            readings.add(model);
+          }
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print('Error fetching and parsing data: $e');
+    }
+    return readings;
   }
 
   void _configAnimation() {

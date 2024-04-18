@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
+import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
@@ -13,6 +14,8 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
@@ -54,6 +57,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   late RoomModel _room;
 
+  late AskModel _ask;
+  List<AskModel> _asks = [];
+  List<String> answers = [];
+
+  int? result;
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +82,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       _configWaterShotAnimation();
       _startTimer();
       _listenRoom(_room.id);
+      _loadAsks();
     });
     AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     WidgetsBinding.instance.addObserver(this);
@@ -141,6 +151,44 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         });
       }
     });
+  }
+
+  Future<void> _loadAsks() async {
+    List<AskModel> loadedAsks = await _getAsk();
+    Random random = Random();
+    int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
+    setState(() {
+      _asks = loadedAsks;
+      _ask = loadedAsks[randomNumber];
+      answers = _checkWaitBattle() ? ['Exit room'] : [_ask.A, _ask.B, _ask.C, _ask.D];
+
+    });
+  }
+
+  Future<List<AskModel>> _getAsk() async {
+    List<AskModel> readings = [];
+    try {
+      FirebaseDatabase database = FirebaseDatabase(
+        app: Firebase.app(),
+        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
+      );
+      final ref = database.ref(FirebaseEnum.reading);
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List) {
+          for (var item in data) {
+            AskModel model = AskModel.fromJson(item);
+            readings.add(model);
+          }
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print('Error fetching and parsing data: $e');
+    }
+    return readings;
   }
 
   _configAnimation() {
@@ -383,7 +431,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                 child: SingleChildScrollView(
                   child: Text(
                     _checkWaitBattle() ? "Đang chờ đối thủ $_start s"
-                        : "Welcome to our random topic! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought Get ready to explore some interesting questions we've prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thought ",
+                        : _ask.Question,
                     style: TextStyle(fontSize: 14, color: Colors.white),
                     textAlign: TextAlign.start,
                   ),
@@ -610,59 +658,66 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   }
 
   List<Widget> _listAnswer() {
-    int lenghtButton = 0;
-    if (_checkWaitBattle()) {
-      lenghtButton = 1;
-    } else {
-      lenghtButton = 4;
-    }
     List<Widget> itemList = [];
-    for (int i = 0; i < lenghtButton; i++) {
-      itemList.add(_answer(i, ontap: () {
-        switch (i) {
-          case 0:
-            // check trả lời đúng sai , đúng thì dừng thời gian -
-          if (_checkWaitBattle()) {
-            AudioManager.stopBackgroundMusic();
-            removeRoomById(_room.id);
-            Navigator.of(context)
-              ..pop()
-              ..pop();
-          } else {
-            _timer.cancel();
-            if (_currentEnemyBlood == 0) {
-              return;
-            } else {
-              setState(() {
-                _currentEnemyBlood -= 2;
-                print(_currentEnemyBlood);
-                waterShotLeftToRight = true;
-                _controllerWaterLeftToRight.forward();
-              });
-            }
-          }
-          case 1:
-            // check trả lời đúng sai , đúng thì dừng thời gian -
-            _timer.cancel();
-            if (_currentMyBlood == 0) {
-              return;
-            } else {
-              _currentMyBlood -= 2;
-              setState(() {
-                waterShotLeftToRight = false;
-                _controllerWaterRightToLeft.forward();
-              });
-            }
-            break;
+    for (int i = 0; i < answers.length; i++) {
+      itemList.add(_answer(answers[i], i, ontap: () {
+        if (_checkWaitBattle()) {
+              AudioManager.stopBackgroundMusic();
+              removeRoomById(_room.id);
+              Navigator.of(context)
+                ..pop()
+                ..pop()..pop();
+        } else {
+            if(AskModel.answerToIndex(_ask.Answer) == i) {
 
-          case 2:
-            break;
+            } else {
 
-          case 3:
-            _startTimer();
-            break;
-          default:
+            }
         }
+        // switch (i) {
+        //   case 0:
+        //     // check trả lời đúng sai , đúng thì dừng thời gian -
+        //   if (_checkWaitBattle()) {
+        //     AudioManager.stopBackgroundMusic();
+        //     removeRoomById(_room.id);
+        //     Navigator.of(context)
+        //       ..pop()
+        //       ..pop()..pop();
+        //   } else {
+        //     _timer.cancel();
+        //     if (_currentEnemyBlood == 0) {
+        //       return;
+        //     } else {
+        //       setState(() {
+        //         _currentEnemyBlood -= 2;
+        //         print(_currentEnemyBlood);
+        //         waterShotLeftToRight = true;
+        //         _controllerWaterLeftToRight.forward();
+        //       });
+        //     }
+        //   }
+        //   case 1:
+        //     // check trả lời đúng sai , đúng thì dừng thời gian -
+        //     _timer.cancel();
+        //     if (_currentMyBlood == 0) {
+        //       return;
+        //     } else {
+        //       _currentMyBlood -= 2;
+        //       setState(() {
+        //         waterShotLeftToRight = false;
+        //         _controllerWaterRightToLeft.forward();
+        //       });
+        //     }
+        //     break;
+        //
+        //   case 2:
+        //     break;
+        //
+        //   case 3:
+        //     _startTimer();
+        //     break;
+        //   default:
+        // }
       }));
     }
     return itemList;
@@ -694,7 +749,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         });
   }
 
-  Widget _answer(int i, {Function? ontap}) {
+  Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
@@ -703,7 +758,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         yellowColor: i == 2,
         redBlurColor: i == 3,
         child:
-            Text(_checkWaitBattle() ? 'Thoát phòng chờ' : "Đáp án ${i+1}", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text(answer, style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           if (ontap != null) {
             ontap();
