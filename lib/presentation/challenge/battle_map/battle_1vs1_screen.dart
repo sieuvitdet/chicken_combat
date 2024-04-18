@@ -14,8 +14,6 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
@@ -67,7 +65,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   void initState() {
     super.initState();
     _room = widget.room;
-
     if (_isTomato) {
       _topWaterShot = AppSizes.maxHeight > 800 ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14 : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
     } else {
@@ -81,8 +78,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       _configAnimation();
       _configWaterShotAnimation();
       _startTimer();
+      _loadAsk();
       _listenRoom(_room.id);
-      _loadAsks();
     });
     AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     WidgetsBinding.instance.addObserver(this);
@@ -100,6 +97,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     _timer.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _loadAsk() {
+    if (_room.asks.isNotEmpty) {
+      _asks = _room.asks;
+    }
   }
 
   bool _checkWaitBattle() {
@@ -151,44 +154,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         });
       }
     });
-  }
-
-  Future<void> _loadAsks() async {
-    List<AskModel> loadedAsks = await _getAsk();
-    Random random = Random();
-    int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
-    setState(() {
-      _asks = loadedAsks;
-      _ask = loadedAsks[randomNumber];
-      answers = _checkWaitBattle() ? ['Exit room'] : [_ask.A, _ask.B, _ask.C, _ask.D];
-
-    });
-  }
-
-  Future<List<AskModel>> _getAsk() async {
-    List<AskModel> readings = [];
-    try {
-      FirebaseDatabase database = FirebaseDatabase(
-        app: Firebase.app(),
-        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
-      );
-      final ref = database.ref(FirebaseEnum.reading);
-      final snapshot = await ref.get();
-      if (snapshot.exists) {
-        final data = snapshot.value;
-        if (data is List) {
-          for (var item in data) {
-            AskModel model = AskModel.fromJson(item);
-            readings.add(model);
-          }
-        }
-      } else {
-        print('No data available.');
-      }
-    } catch (e) {
-      print('Error fetching and parsing data: $e');
-    }
-    return readings;
   }
 
   _configAnimation() {
