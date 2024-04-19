@@ -10,6 +10,7 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MapReadingExaminationAnswerScreen extends StatefulWidget {
@@ -116,6 +117,7 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
 
   Widget _buildContent() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         _body(),
         ..._listAnswer(),
@@ -128,12 +130,12 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
   }
 
   Widget _body() {
-    return Expanded(
+    return Flexible(
       child: Stack(
         children: [
           Column(
             children: [
-              Expanded(
+              Flexible(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 16),
                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -149,7 +151,7 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
                         scrollPhysics: NeverScrollableScrollPhysics(),
                         initialPage: page,
                         viewportFraction: 1,
-                        height: AppSizes.maxHeight,
+                        height: AppSizes.maxHeight / 5,
                         enableInfiniteScroll: false,
                         reverse: false,
                         autoPlay: false,
@@ -252,7 +254,6 @@ class _MapReadingExaminationAnswerScreenState extends State<MapReadingExaminatio
                       onTap: () {
                         GlobalSetting.shared.showPopup(context,onTapClose: () {
                           Navigator.of(context).pop();
-
                         },
                         onTapExit: () {
                           Navigator.of(context)..pop()..pop()..pop(false);

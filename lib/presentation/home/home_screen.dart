@@ -156,8 +156,7 @@ class _HomeScreenState extends State<HomeScreen>
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         children: [
-          _action(0, AppLocalizations.text(LangKey.lesson), () async {
-           await _pauseChickenSing();
+          _action(0, "Bài học", () async {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListLessonScreen(
                       courseMapModel: _userModel!.courseMapModel,

@@ -3,13 +3,11 @@ import 'package:chicken_combat/model/maps/user_map_model.dart';
 class CourseMapsModel {
   List<UserMapModel> listeningCourses;
   List<UserMapModel> readingCourses;
-  List<UserMapModel> writingCourses;
   List<UserMapModel> speakingCourses;
 
   CourseMapsModel({
     required this.listeningCourses,
     required this.readingCourses,
-    required this.writingCourses,
     required this.speakingCourses,
   });
 
@@ -24,8 +22,6 @@ class CourseMapsModel {
         listeningCourses.add(userMapModel);
       } else if (userMapModel.isCourse == 'reading') {
         readingCourses.add(userMapModel);
-      } else if (userMapModel.isCourse == 'writing') {
-        writingCourses.add(userMapModel);
       } else if (userMapModel.isCourse == 'speaking') {
         speakingCourses.add(userMapModel);
       }
@@ -34,7 +30,6 @@ class CourseMapsModel {
     return CourseMapsModel(
       listeningCourses: listeningCourses,
       readingCourses: readingCourses,
-      writingCourses: writingCourses,
       speakingCourses: speakingCourses,
     );
   }

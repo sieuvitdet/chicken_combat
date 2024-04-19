@@ -75,6 +75,7 @@ class UserInfoRoom {
     return {
       'userid': userId,
       'username': username,
+      'usecolor': usecolor,
     };
   }
 }
