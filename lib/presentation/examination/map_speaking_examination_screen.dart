@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/utils/speech_to_text_service.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -30,16 +31,21 @@ class _MapSpeakingExaminationScreenState
   var _isKeyboardVisible = false;
   int page = 1;
   bool isTextOverflow = false;
-  bool isRecording = false;
 
   CarouselController buttonCarouselController = CarouselController();
   ScrollController _controller = ScrollController();
+
+  final SpeechToTextService _sttService = SpeechToTextService();
+  String _text = '';
+  String _responseText = '';
+  bool isListening = false;
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(_scrollListener);
     _checkTextOverflow();
+    _sttService.init();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -218,20 +224,25 @@ class _MapSpeakingExaminationScreenState
         children: [
           GestureDetector(
             onTap: () {
-              print("record");
               setState(() {
-                isRecording = !isRecording;
+                isListening = !_sttService.isListening;
+              });
+              _sttService.toggleRecording((result) {
+                setState(() {
+                  text = result;
+                  _responseText = result;
+                });
               });
             },
             child: Image.asset(
-              isRecording ? Assets.ic_mic_recording : Assets.ic_mic,
+              isListening ? Assets.ic_mic_recording : Assets.ic_mic,
               width: 48,
             ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
-              isRecording ? "Click to stop" : "Click to reply",
+              isListening ? "Click to stop" : "Click to reply",
               style: TextStyle(color: Colors.white),
             ),
           )

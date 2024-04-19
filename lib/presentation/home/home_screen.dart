@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen>
 
             Positioned(
               top: 200,
-              right: 80,child: ThoughtBubble(text: "Chọt em đi"))
+              right: 80,child: Center(child: ThoughtBubble(text: "Chọt em đi")))
         ],
       ),
     ));
@@ -429,9 +429,6 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-
-
-
 class ThoughtBubble extends StatefulWidget {
   final String text;
   ThoughtBubble({required this.text});
@@ -449,7 +446,7 @@ class _ThoughtBubbleState extends State<ThoughtBubble> {
         painter: BubblePainter(),
         child: Container(
           padding: EdgeInsets.all(16),
-          margin: EdgeInsets.only(top: 20, left: 20),
+          margin: EdgeInsets.only(top: 0, left: 0),
           child: Text(widget.text, style: TextStyle(fontSize: 12)),
         ),
       ),
