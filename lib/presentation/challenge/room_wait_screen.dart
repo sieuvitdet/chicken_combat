@@ -11,6 +11,8 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'loading_meeting_challenge_screen.dart';
+
 class RoomWaitScreen extends StatefulWidget {
 
   final RoomModel room;
@@ -26,17 +28,42 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
 
   String _loadingText = 'Matching';
   bool hiddenGifPK = false;
+  RoomModel? _room;
 
   void initState() {
     super.initState();
+    setupData();
     Future.delayed(Duration.zero, () {
       AudioManager.playRandomBackgroundMusic();
     });
   }
 
+  void setupData() {
+    _room = widget.room;
+    _listenRoom(_room?.id ?? '');
+  }
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> _listenRoom(String _id) async {
+    CollectionReference room =
+    FirebaseFirestore.instance.collection(FirebaseEnum.room);
+    room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        setState(() {
+          _room = RoomModel.fromSnapshot(documentSnapshot);
+          if(_room!.users.length > 1) {
+            Navigator.of(context)
+                .push(MaterialPageRoute(
+                builder: (context) =>
+                    LoadingMeetingChallengeScreen(room: _room!,)));
+          }
+        });
+      }
+    });
   }
 
   Widget _buildBottom() {
