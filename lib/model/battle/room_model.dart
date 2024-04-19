@@ -1,3 +1,4 @@
+import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -5,13 +6,17 @@ class RoomModel {
   String id;
   Timestamp timestamp;
   int type;
+  String status;
   List<UserInfoRoom> users;
+  List<AskModel> asks;
 
   RoomModel({
     required this.id,
     required this.timestamp,
     required this.type,
+    required this.status,
     required this.users,
+    required this.asks,
   });
 
   factory RoomModel.fromSnapshot(DocumentSnapshot snapshot) {
@@ -19,12 +24,17 @@ class RoomModel {
     List<UserInfoRoom> users = (data?['user'] as List<dynamic>? ?? []).map((userMap) {
       return UserInfoRoom.fromMap(userMap as Map<String, dynamic>);
     }).toList();
+    List<AskModel> asks = (data?['asks'] as List<dynamic>? ?? []).map((askMap) {
+      return AskModel.fromMap(askMap as Map<String, dynamic>); // Assuming AskModel has a similar structure
+    }).toList();
 
     return RoomModel(
       id: snapshot.id,
       timestamp: data?['timestamp'] as Timestamp,
       type: data?['type'] as int? ?? 0,
+      status: data?['status'] ?? '',
       users: users,
+      asks: asks,
     );
   }
 
@@ -33,7 +43,9 @@ class RoomModel {
       'id': id,
       'timestamp': timestamp,
       'type': type,
+      'status': status,
       'user': users.map((user) => user.toJson()).toList(),
+      'asks': asks.map((ask) => ask.toJson()).toList(),
     };
   }
 
