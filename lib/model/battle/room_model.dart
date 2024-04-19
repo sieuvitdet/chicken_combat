@@ -60,14 +60,16 @@ class UserInfoRoom {
   String userId;
   String username;
   String usecolor;
+  bool ready;
 
-  UserInfoRoom({required this.userId, required this.username, required this.usecolor});
+  UserInfoRoom({required this.userId, required this.username, required this.usecolor, required this.ready});
 
   static UserInfoRoom fromMap(Map<String, dynamic> map) {
     return UserInfoRoom(
       userId: map['userid'] as String,
       username: map['username'] as String,
       usecolor: map['usecolor'] as String,
+      ready: map['ready'] as bool,
     );
   }
 
@@ -76,6 +78,7 @@ class UserInfoRoom {
       'userid': userId,
       'username': username,
       'usecolor': usecolor,
+      'ready': ready,
     };
   }
 }
