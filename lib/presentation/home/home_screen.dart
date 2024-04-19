@@ -1,5 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void dispose() {
     AudioManager.stopBackgroundMusic();
-     _pauseChickenSing();
+    //  _pauseChickenSing();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -76,14 +78,14 @@ class _HomeScreenState extends State<HomeScreen>
     AudioManager.playRandomChickenSing();
   }
 
-  void _pauseChickenSing() {
-    AudioManager.resumeBackgroundMusic();
-    AudioManager.pauseVoiceMusic();
+  Future<void> _pauseChickenSing() async {
+    await AudioManager.resumeBackgroundMusic();
+    await AudioManager.pauseVoiceMusic();
   }
 
-  void _resummeChickenSing() {
-    AudioManager.stopBackgroundMusic();
-    AudioManager.resumeVoiceMusic();
+  Future<void> _resummeChickenSing() async {
+    await AudioManager.stopBackgroundMusic();
+    await AudioManager.resumeVoiceMusic();
   }
 
   Future<void> _getFinance(String _id) async {
@@ -154,7 +156,8 @@ class _HomeScreenState extends State<HomeScreen>
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         children: [
-          _action(0, "Bài học", () {
+          _action(0, "Bài học", () async {
+           await _pauseChickenSing();
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListLessonScreen(
                       courseMapModel: _userModel!.courseMapModel,
@@ -233,12 +236,14 @@ class _HomeScreenState extends State<HomeScreen>
           Row(
             children: [
               _itemRow("${_financeModel?.gold ?? 0}", Assets.ic_coin,
-                  ontap: () {}),
+                  ontap: () {
+                    GlobalSetting.shared.showPopupWithTitle(context, "Tôi là hữu nhân , tôi tên thật là hửu nhân");
+                  }),
               SizedBox(width: 4),
               _itemRow("${_financeModel?.diamond ?? 0}", Assets.ic_diamond,
                   ontap: () {}),
               SizedBox(width: 4),
-              _itemRow("Cửa hàng", Assets.ic_shop, ontap: () {
+              _itemRow(AppLocalizations.text(LangKey.shop), Assets.ic_shop, ontap: () {
                 AudioManager.playSoundEffect(AudioFile.sound_tap);
                 showDialog(
                     context: context,
@@ -329,9 +334,9 @@ class _HomeScreenState extends State<HomeScreen>
             ),
 
 
-            Positioned(
-              top: 200,
-              right: 80,child: ThoughtBubble(text: "Chọt em đi"))
+            // Positioned(
+            //   top: 200,
+            //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
         ],
       ),
     ));

@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/finance_model.dart';
@@ -684,9 +686,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   ),
                 )),
             Positioned(
-                top: -40,
+                top: -AppSizes.maxHeight*0.045,
                 child: StrokeTextWidget(
-                  text: "Cửa hàng",
+                  text: AppLocalizations.text(LangKey.shop),
                   size: 32,
                 )),
             Positioned(

@@ -23,7 +23,7 @@ class AudioManager {
     // "audio/sound_chicken_sing_7.mp3",
   ];
 
-  static void playBackgroundMusic(String filePath) async {
+  static Future<void> playBackgroundMusic(String filePath) async {
     await _backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
     try {
       await _backgroundAudioPlayer.play(AssetSource(filePath));
@@ -32,7 +32,7 @@ class AudioManager {
     }
   }
 
-  static void playRandomBackgroundMusic() async {
+  static Future<void> playRandomBackgroundMusic() async {
     Random random = Random();
     int index = random.nextInt(soundFiles.length);
     String filePath = soundFiles[index];
@@ -62,7 +62,7 @@ class AudioManager {
     }
   }
 
-  static void playRandomChickenSing() async {
+  static Future<void> playRandomChickenSing() async {
     Random random = Random();
     int index = random.nextInt(soundChickenSingFiles.length);
     String filePath = soundChickenSingFiles[index];
@@ -92,35 +92,35 @@ class AudioManager {
     }
   }
 
-  static void stopVoiceMusic() async {
+  static Future<void> stopVoiceMusic() async {
     await _voiceAudioPlayer.stop();
   }
 
-  static void pauseVoiceMusic() async {
+  static Future<void> pauseVoiceMusic() async {
     await _voiceAudioPlayer.pause();
   }
 
-  static void resumeVoiceMusic() async {
+  static Future<void> resumeVoiceMusic() async {
     await _voiceAudioPlayer.resume();
   }
 
-  static void stopBackgroundMusic() async {
+  static Future<void> stopBackgroundMusic() async {
     await _backgroundAudioPlayer.stop();
   }
 
-  static void pauseBackgroundMusic() async {
+  static Future<void> pauseBackgroundMusic() async {
     await _backgroundAudioPlayer.pause();
   }
 
-  static void resumeBackgroundMusic() async {
+  static Future<void> resumeBackgroundMusic() async {
     await _backgroundAudioPlayer.resume();
   }
 
-  static void playSoundEffect(String filePath) async {
+  static Future<void> playSoundEffect(String filePath) async {
     await _soundEffectPlayer.play(AssetSource(filePath));
   }
 
-  static void setVolume(double volume) async {
+  static Future<void> setVolume(double volume) async {
     await _backgroundAudioPlayer.setVolume(volume);
   }
 }
