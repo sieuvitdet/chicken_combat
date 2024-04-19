@@ -102,6 +102,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   void _loadAsk() {
     if (_room.asks.isNotEmpty) {
       _asks = _room.asks;
+      setState(() {
+        _ask = _asks[0];
+        answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+      });
     }
   }
 

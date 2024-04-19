@@ -79,7 +79,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
         List<dynamic> users = doc.get('user');
         if (users.length == 1) {
           Map<String, dynamic> user = users.first as Map<String, dynamic>;
-          if (user[0]['userid'] != Globals.currentUser!.id) {
+          if (user['userid'] != Globals.currentUser!.id) {
             return RoomModel.fromSnapshot(doc);
           }
         }
@@ -100,7 +100,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
           usecolor: Globals.currentUser!.useSkin != ""
               ? Globals.currentUser!.useSkin
               : Globals.currentUser!
-                  .useColor)); // Adjust according to actual user object fields
+                  .useColor));
     }
     List<AskModel> asks = await _loadAsks();
     RoomModel newRoom = RoomModel(
