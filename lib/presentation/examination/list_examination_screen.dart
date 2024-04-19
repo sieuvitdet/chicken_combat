@@ -17,7 +17,7 @@ class ListExaminationScreen extends StatefulWidget {
 }
 
 class _ListExaminationScreenState extends State<ListExaminationScreen> {
-  List<String> _function = ["Speaking", "Listening", "Reading", "Writing"];
+  List<String> _function = ["Speaking", "Listening", "Reading"];
   late CourseMapsModel mapsModel;
 
   @override
@@ -60,7 +60,6 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
         orangeColor: typeId == 0,
         blueColor: typeId == 1,
         redBlurColor: typeId == 2,
-        greenColor: typeId == 3,
         child: Text(type, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: () async {
           AudioManager.playSoundEffect(AudioFile.sound_tap);
@@ -72,8 +71,6 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
               items = mapsModel.listeningCourses;
             case 2:
               items = mapsModel.readingCourses;
-            case 3:
-              items = mapsModel.writingCourses;
           }
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ListMapExaminationScreen(

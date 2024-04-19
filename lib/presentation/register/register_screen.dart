@@ -157,7 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     List<UserMapModel> courseMaps = [];
     courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: '1', isCourse: 'listening'));
     courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: '1', isCourse: 'reading'));
-    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: '1', isCourse: 'writing'));
     courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: '1', isCourse: 'speaking'));
     List<Map<String, dynamic>> courseMapsData = convertUserMapModelListToMapList(courseMaps);
 

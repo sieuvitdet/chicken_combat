@@ -157,7 +157,6 @@ class _HomeScreenState extends State<HomeScreen>
       child: Column(
         children: [
           _action(0, "Bài học", () async {
-           await _pauseChickenSing();
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListLessonScreen(
                       courseMapModel: _userModel!.courseMapModel,
