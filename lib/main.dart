@@ -1,4 +1,5 @@
 import 'package:chicken_combat/common/config.dart';
+import 'package:chicken_combat/common/localization/localizations_config.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/flash/flash_screen.dart';
 import 'package:chicken_combat/presentation/test/test.dart';
@@ -39,6 +40,12 @@ class MyApp extends StatelessWidget {
               child: child,
             ));
       },
+      locale: LocalizationsConfig.getCurrentLocale(),
+      supportedLocales: LocalizationsConfig.supportedLocales,
+      localizationsDelegates: LocalizationsConfig.localizationsDelegates,
+      localeResolutionCallback: (locale, supportedLocales) =>
+          LocalizationsConfig.localeResolutionCallback(
+              locale, supportedLocales.toList()),
       home: FlashScreen(),
     );
   }
@@ -74,9 +81,7 @@ class _DragItemState extends State<DragItem> {
                 setState(() {
                   _isShowFloatingButton = !_isShowFloatingButton;
                 });
-
               },
-          
         ) : Container(),
 
         body: BackgroundCloudMap2Widget(heightContent: 1000),

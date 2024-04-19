@@ -6,6 +6,7 @@ import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/maps/map_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/utils/shared_pref.dart';
+import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
 import 'package:chicken_combat/widgets/dialog_menu_action_widget.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,22 @@ static late SharedPrefs prefs;
         });
   }
 
-
+  void showPopupWithTitle(BuildContext context,String title, {Function? ontap}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return CustomDialogWithTitleButtonWidget(title: title,ontap: () {
+                if (ontap == null) {
+                  Navigator.of(context).pop();
+                }
+              },);
+            },
+          );
+        });
+  }
 }
 
 class Globals {

@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/user_model.dart';
@@ -115,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     initialData: false,
                     builder: (context, snapshot1) {
                       return CustomTextField(
-                        hintText: "Tên tài khoản",
+                        hintText: AppLocalizations.text(LangKey.account_name),
                         hintStyle: AppTextStyles.style13GreyW400,
                         controller: _userNameController,
                         focusNode: _userNameNode,
@@ -264,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: CustomButtomImageColorWidget(
           orangeColor: true,
           child: Center(
-              child: Text("Đăng nhập",
+              child: Text(AppLocalizations.text(LangKey.login),
                   style: TextStyle(fontSize: 24, color: Colors.white))),
           onTap: () {
                 if (checkValidInputField()) { login(_userNameController.text, _passwordController.text); }
@@ -278,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: CustomButtomImageColorWidget(
         orangeColor: true,
         child: Center(
-            child: Text("Vào ngay",
+            child: Text(AppLocalizations.text(LangKey.come_in_now),
                 style: TextStyle(fontSize: 24, color: Colors.white))),
         onTap: () {}
           // showDialog(
