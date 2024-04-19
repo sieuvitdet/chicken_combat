@@ -24,7 +24,23 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
   }
 
   Widget _buildBackground() {
-    return BackGroundCloudWidget();
+    return Stack(
+      children: [
+        BackGroundCloudWidget(),
+        Positioned(
+            top: AppSizes.maxHeight * 0.06,
+            left: AppSizes.maxWidth * 0.05,
+            child: IconTheme(
+              data: IconThemeData(size: 24.0), // Set the size here
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ))
+      ],
+    );
   }
 
   Widget _buildContent() {

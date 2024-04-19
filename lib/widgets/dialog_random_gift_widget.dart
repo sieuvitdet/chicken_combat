@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
@@ -53,32 +55,28 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
         gold = random.nextInt(10) + 20;
         Globals.financeUser?.gold += gold;
         _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
-        content = "Chúc mừng bạn nhận được ${gold} vàng";
+        content = "${AppLocalizations.text(LangKey.congratulation_reward)} ${gold} ${AppLocalizations.text(LangKey.gold)}";
         break;
       case "chicken":
         if (_validateItemExist(chicken)) {
-          content = "Vật phẩm đã được mua, sẽ được quy đổi ra 150 gold";
+          content = AppLocalizations.text(LangKey.the_purchased_item_150_gold);
           Globals.financeUser?.gold += 150;
           _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
         } else {
           Globals.currentUser!.bags.add(ExtendedAssets.getCodeByAsset(chicken));
-
-
           _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
-          content = "Chúc mừng bạn nhận được vật phẩm";
+          content = AppLocalizations.text(LangKey.congratulation_receive_item);
         }
         break;
-
       case "chicken_premium":
       if (_validateItemExist(chickenPremium)) {
-          content = "Vật phẩm đã được mua, sẽ được quy đổi ra 500 gold";
+          content =  AppLocalizations.text(LangKey.the_purchased_item_500_gold);
           Globals.financeUser?.gold += 500;
           _updateFinance(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
         } else {
           Globals.currentUser!.bags.add(ExtendedAssets.getCodeByAsset(chickenPremium));
-
           _updateStore(Globals.currentUser!.id, Globals.currentUser!.bags);
-          content = "Chúc mừng bạn nhận được vật phẩm hiếm";
+          content = AppLocalizations.text(LangKey.congratulation_receive_rare_item);
         }
         break;
       default:
@@ -89,7 +87,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.838,
-          height: AppSizes.maxHeight * 0.47,
+          height: widget.type == "gold" ?AppSizes.maxHeight * 0.37 : AppSizes.maxHeight * 0.43,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -97,7 +95,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.8,
-                height: AppSizes.maxHeight * 0.49,
+                height: widget.type == "gold" ?AppSizes.maxHeight * 0.42 :AppSizes.maxHeight * 0.45,
               ),
               Column(
                 children: [
@@ -105,7 +103,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
                     height: AppSizes.maxHeight * 0.09,
                     child: Center(
                       child: StrokeTextWidget(
-                          text: "Thông báo",
+                          text: AppLocalizations.text(LangKey.notification),
                           size: AppSizes.maxWidth < 350 ? 30 : 40,
                           colorStroke: Colors.red[900]),
                     ),
@@ -174,9 +172,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
   }
 
   bool _validateItemExist(String assest) {
-    print(assest);
     return (Globals.currentUser?.bag ?? []).contains(ExtendedAssets.getCodeByAsset(assest));
-
   }
 
   _buildChickenReward(String assest) {
@@ -217,7 +213,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
       orangeColor: true,
       child: Center(
         child: StrokeTextWidget(
-          text: "Đồng ý",
+          text: AppLocalizations.text(LangKey.agree),
           size: AppSizes.maxWidth < 350 ? 14 : 20,
           colorStroke: Color(0xFFD18A5A),
         ),

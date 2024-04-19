@@ -232,7 +232,7 @@ class Assets {
 
   static String getRandomImagePremium() {
     final random = Random();
-    return imagesGift[random.nextInt(imagesGiftPremium.length)];
+    return imagesGiftPremium[random.nextInt(imagesGiftPremium.length)];
   }
 }
 

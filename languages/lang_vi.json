@@ -17,7 +17,7 @@
     "lesson": "Bài học",
     "test": "Kiểm tra",
     "challenge": "Thử thách",
-    "confirm_purchase": "Bạn có chắc chắn muốn mua món đồ này?",
+    "confirm_purchase": "Bạn có chắc chắn muốn mua món đồ này?", 
     "daily_gift": "Quà hàng ngày",
     "monthly_gift": "Quà tháng",
     "rules": "Thể lệ",
@@ -29,5 +29,16 @@
     "used": "Đã dùng",
     "forget_password":"Quên mật khẩu?",
     "account":"Tài khoản",
-    "logout":"Đăng xuất"
-}
+    "logout":"Đăng xuất",
+    "notification":"Thông báo",
+    "change_password":"Đổi mật khẩu",
+    "input_old_password":"Nhập mật khẩu cũ",
+    "input_new_password":"Nhập mật khẩu mới",
+    "congratulation_reward":"Chúc mừng bạn nhận được",
+    "gold":"vàng",
+    "diamond":"kim cương",
+    "congratulation_receive_item":"Chúc mừng bạn nhận được vật phẩm",
+    "congratulation_receive_rare_item":"Chúc mừng bạn nhận được vật phẩm hiếm",
+    "the_purchased_item_150_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 150 gold",
+    "the_purchased_item_500_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 500 gold"
+} 

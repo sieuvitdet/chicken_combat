@@ -11,6 +11,7 @@ import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class MapReadingLessonScreen extends StatefulWidget {
   const MapReadingLessonScreen({super.key});
@@ -132,6 +133,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
       children: [
         _body(),
         ..._listAnswer(),
+        Spacer(),
         Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
         Container(
           height: AppSizes.bottomHeight,
@@ -141,36 +143,30 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
   }
 
   Widget _body() {
-    return Expanded(
+    return Flexible(
       child: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  // height: AppSizes.maxHeight / 2,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(width: 4, color: Color(0xFFE97428)),
-                      color: Color(0xFF467865)),
-                  child: CarouselSlider(
-                    items: [_itemReading(), _itemReading()],
-                    carouselController: buttonCarouselController,
-                    options: CarouselOptions(
-                        scrollPhysics: NeverScrollableScrollPhysics(),
-                        initialPage: page,
-                        viewportFraction: 1,
-                        height: AppSizes.maxHeight,
-                        enableInfiniteScroll: false,
-                        reverse: false,
-                        autoPlay: false,
-                        scrollDirection: Axis.horizontal),
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 16),
+            // height: AppSizes.maxHeight / 2,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(width: 4, color: Color(0xFFE97428)),
+                color: Color(0xFF467865)),
+            child: CarouselSlider(
+              items: [_itemReading(), _itemReading()],
+              carouselController: buttonCarouselController,
+              options: CarouselOptions(
+                  scrollPhysics: NeverScrollableScrollPhysics(),
+                  initialPage: page,
+                  viewportFraction: 1,
+                  height: AppSizes.maxHeight/5,
+                  enableInfiniteScroll: false,
+                  reverse: false,
+                  autoPlay: false,
+                  scrollDirection: Axis.horizontal),
+            ),
           ),
           Positioned(
               bottom: 0,

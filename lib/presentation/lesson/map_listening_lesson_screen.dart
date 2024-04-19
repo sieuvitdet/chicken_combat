@@ -4,16 +4,20 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class MapListeningLessonScreen extends StatefulWidget {
   const MapListeningLessonScreen({super.key});
 
   @override
-  State<MapListeningLessonScreen> createState() => _MapListeningLessonScreenState();
+  State<MapListeningLessonScreen> createState() =>
+      _MapListeningLessonScreenState();
 }
 
-class _MapListeningLessonScreenState extends State<MapListeningLessonScreen> with WidgetsBindingObserver {
+class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
+    with WidgetsBindingObserver {
   String text =
       "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
       "Welcome to our random topic! Get ready  to explo";
@@ -76,6 +80,37 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen> wit
         ..._listAnswer(),
         _listening(),
         Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Flexible(
+                child: CustomButtomImageColorWidget(
+                  orangeColor: true,
+                  child: Center(
+                    child: StrokeTextWidget(
+                      text: "Previous",
+                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                      colorStroke: Color(0xFFD18A5A),
+                    ),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: CustomButtomImageColorWidget(
+                  orangeColor: true,
+                  child: Center(
+                    child: StrokeTextWidget(
+                      text: "Next",
+                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                      colorStroke: Color(0xFFD18A5A),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
         Container(
           height: AppSizes.bottomHeight,
         )
@@ -83,7 +118,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen> wit
     );
   }
 
-   Widget _listening() {
+  Widget _listening() {
     return Container(
       height: 100,
       child: Column(
@@ -97,7 +132,9 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen> wit
               });
             },
             child: Image.asset(
-              isListening ? Assets.ic_playing_listening : Assets.ic_notplay_listening,
+              isListening
+                  ? Assets.ic_playing_listening
+                  : Assets.ic_notplay_listening,
               height: 48,
             ),
           ),
@@ -215,11 +252,10 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen> wit
       bottom: false,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child:
-            PopScope(
-              canPop: false,
-              child: Scaffold(
-                appBar: AppBar(
+        child: PopScope(
+          canPop: false,
+          child: Scaffold(
+              appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   leading: IconTheme(
                     data: IconThemeData(size: 24.0), // Set the size here
@@ -234,25 +270,32 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen> wit
                     Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
-                        onTap: () {
-                          GlobalSetting.shared.showPopup(context,onTapClose: () {
-                            Navigator.of(context).pop();
-              
+                          onTap: () {
+                            GlobalSetting.shared.showPopup(context,
+                                onTapClose: () {
+                              Navigator.of(context).pop();
+                            }, onTapExit: () {
+                              Navigator.of(context)
+                                ..pop()
+                                ..pop(false);
+                            }, onTapContinous: () {
+                              Navigator.of(context).pop();
+                            });
                           },
-                          onTapExit: () {
-                            Navigator.of(context)..pop()..pop(false);
-                          },
-                          onTapContinous: () {
-                            Navigator.of(context).pop();
-                          });
-                        },
-                        child: Image.asset(Assets.ic_menu, height: 24)),
+                          child: Image.asset(Assets.ic_menu, height: 24)),
                     )
                   ],
                   title: Text("Level 1",
-                      style: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.w500))),
-                backgroundColor: Color(0xFFFACA44), body: Responsive(mobile: _buildContent(), tablet: _buildContent(), desktop: _buildContent())),
-            ),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500))),
+              backgroundColor: Color(0xFFFACA44),
+              body: Responsive(
+                  mobile: _buildContent(),
+                  tablet: _buildContent(),
+                  desktop: _buildContent())),
+        ),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/ranking/ranking_model.dart';
@@ -80,7 +82,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                     height: AppSizes.maxHeight * 0.09,
                     child: Center(
                       child: StrokeTextWidget(
-                          text: "Tài khoản",
+                          text: AppLocalizations.text(LangKey.account),
                           size: AppSizes.maxWidth < 350 ? 30 : 40,
                           colorStroke: Colors.red[900]),
                     ),
@@ -117,7 +119,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                           orangeColor: true,
                           child: Center(
                             child: StrokeTextWidget(
-                              text: "Đăng xuất",
+                              text: AppLocalizations.text(LangKey.logout),
                               size: AppSizes.maxWidth < 350 ? 14 : 20,
                               colorStroke: Color(0xFFD18A5A),
                             ),
@@ -191,7 +193,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
           width: AppSizes.maxWidth * 0.17,
           height: AppSizes.maxWidth * 0.097,
           child: StrokeTextWidget(
-            text: "Tên TK:",
+            text: "${AppLocalizations.text(LangKey.account)}:",
             size: AppSizes.maxWidth < 350 ? 12 : 16,
             colorStroke: Color(0xFFD18A5A),
           ),
@@ -230,7 +232,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
           width: AppSizes.maxWidth * 0.18,
           height: AppSizes.maxWidth * 0.097,
           child: StrokeTextWidget(
-            text: "Mật khẩu:",
+            text: "${AppLocalizations.text(LangKey.password)}:",
             size: AppSizes.maxWidth < 350 ? 12 : 14,
             colorStroke: Color(0xFFD18A5A),
           ),

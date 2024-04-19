@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:flutter/material.dart';
 
@@ -172,7 +174,7 @@ class DialogCongratulationWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(top: 8),
           child: Text(
-            "Tiếp tục",
+            AppLocalizations.text(LangKey.continuee),
             style: TextStyle(
                 fontSize: AppSizes.maxWidth < 350 ? 16 : 24,
                 color: Colors.white),
@@ -195,7 +197,7 @@ class DialogCongratulationWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
-              "Thoát",
+              AppLocalizations.text(LangKey.exit),
               style: TextStyle(
                   fontSize: AppSizes.maxWidth < 350 ? 16 : 24,
                   color: Colors.white),

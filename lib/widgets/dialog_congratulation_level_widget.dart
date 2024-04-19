@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -223,7 +225,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
               fit: BoxFit.fill,
             )),
         Text(
-          "Tiếp tục",
+         AppLocalizations.text(LangKey.continuee),
           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],
@@ -243,7 +245,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
           ),
         ),
         Text(
-          "Thoát",
+          AppLocalizations.text(LangKey.exit),
           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],

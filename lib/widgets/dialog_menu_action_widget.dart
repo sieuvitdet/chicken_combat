@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,7 @@ class DialogMenuActionWidget extends StatelessWidget {
       body: Center(
           child: Container( 
             width: AppSizes.maxWidth*0.838,
-            height: AppSizes.maxHeight*0.5,
+            height: AppSizes.maxHeight*0.45,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -294,7 +296,7 @@ class DialogMenuActionWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(top: 4),
           child: Text(
-            "Tiếp tục",
+            AppLocalizations.text(LangKey.continuee),
             style: TextStyle(fontSize: AppSizes.maxWidth < 350 ? 16 : 24 , color: Colors.white),
           ),
         )
@@ -317,7 +319,7 @@ class DialogMenuActionWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(top: 4),
           child: Text(
-            "Thoát",
+            AppLocalizations.text(LangKey.exit),
             style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
           ),
         )

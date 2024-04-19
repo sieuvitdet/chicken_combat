@@ -33,4 +33,16 @@ class LangKey {
   static const String forget_password = "forget_password";
   static const String account = "account";
   static const String logout = "logout";
+  static const String notification = "notification";
+  static const String change_password = "change_password";
+  static const String input_old_password = "input_old_password";
+   static const String input_new_password = "input_new_password";
+   static const String congratulation_reward = "congratulation_reward";
+   static const String gold = "gold";
+   static const String diamond = "diamond";
+   static const String congratulation_receive_item = "congratulation_receive_item";
+   static const String congratulation_receive_rare_item = "congratulation_receive_rare_item";
+   static const String the_purchased_item_150_gold = "the_purchased_item_150_gold";
+   static const String the_purchased_item_500_gold = "the_purchased_item_500_gold";
+   
 }

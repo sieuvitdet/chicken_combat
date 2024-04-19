@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -47,7 +49,7 @@ class DialogConfirmWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         StrokeTextWidget(
-                            text: "Bạn có chắc chắn muốn mua món này?", size: AppSizes.maxWidth < 350 ? 16 : 24,),
+                            text: AppLocalizations.text(LangKey.confirm_purchase), size: AppSizes.maxWidth < 350 ? 16 : 24,),
                         Padding(
                           padding: EdgeInsets.only(top: 16),
                           child: Row(
@@ -80,7 +82,7 @@ class DialogConfirmWidget extends StatelessWidget {
               height: AppSizes.maxHeight*0.053,
             ),
             StrokeTextWidget(
-              text: "Hủy",
+              text:AppLocalizations.text(LangKey.cancel),
               size:AppSizes.maxWidth < 350 ? 16 : 24,
             )
           ],
@@ -98,7 +100,7 @@ class DialogConfirmWidget extends StatelessWidget {
               height: AppSizes.maxHeight*0.053,
             ),
             StrokeTextWidget(
-              text: "Đồng ý",
+              text: AppLocalizations.text(LangKey.agree),
               size: AppSizes.maxWidth < 350 ? 16 : 24,
             )
           ],

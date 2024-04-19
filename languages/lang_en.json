@@ -1,6 +1,6 @@
 {
     "shop": "Shop",
-    "come_in_now": "Enter Now",
+    "come_in_now": "Come in Now",
     "login": "Login",
     "account_name": "Account Name",
     "password": "Password",
@@ -28,7 +28,17 @@
     "use": "Use",
     "used": "Used",
     "forget_password":"Forget password?",
-
     "account":"Account",
-    "logout":"Logout"
+    "logout":"Logout",
+    "notification":"Notification",
+    "change_password":"Change password",
+    "input_old_password":"Old password",
+    "input_new_password":"New password",
+    "congratulation_reward":"Congratulations you got",
+    "gold":"gold",
+    "diamond":"diamond",
+    "congratulation_receive_item":"Congratulations you got item",
+    "congratulation_receive_rare_item":"Congratulations you got rare item",
+    "the_purchased_item_150_gold":"The purchased item will be converted into 150 gold",
+    "the_purchased_item_500_gold":"The purchased item will be converted into 500 gold"
 }

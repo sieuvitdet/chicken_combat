@@ -29,7 +29,23 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
   }
 
   Widget _buildBackground() {
-    return BackGroundCloudWidget();
+    return Stack(
+      children: [
+        BackGroundCloudWidget(),
+        Positioned(
+            top: AppSizes.maxHeight * 0.06,
+            left: AppSizes.maxWidth * 0.05,
+            child: IconTheme(
+              data: IconThemeData(size: 24.0), // Set the size here
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ))
+      ],
+    );
   }
 
   Widget _buildContent() {
@@ -51,8 +67,6 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
     List<Widget> itemList = [];
     for (int i = 0; i < _function.length; i++) {
       itemList.add(_map(i, _function[i]));
-
-      
     }
     return itemList;
   }
@@ -76,8 +90,9 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
             case 2:
               items = mapsModel.readingCourses;
           }
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ListMapLessonScreen(type: type.toLowerCase(),isLesson: true, items: items)));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ListMapLessonScreen(
+                  type: type.toLowerCase(), isLesson: true, items: items)));
         },
       ),
     );
@@ -90,25 +105,28 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
         print("cccc");
       },
       child: Scaffold(
-        body: Responsive(mobile: Stack(
-          fit: StackFit.expand,
-          children: [
-            _buildBackground(),
-            _buildContent(),
-          ],
-        ), tablet: Stack(
-          fit: StackFit.expand,
-          children: [
-            _buildBackground(),
-            _buildContent(),
-          ],
-        ), desktop: Stack(
-          fit: StackFit.expand,
-          children: [
-            _buildBackground(),
-            _buildContent(),
-          ],
-        )),
+        body: Responsive(
+            mobile: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBackground(),
+                _buildContent(),
+              ],
+            ),
+            tablet: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBackground(),
+                _buildContent(),
+              ],
+            ),
+            desktop: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildBackground(),
+                _buildContent(),
+              ],
+            )),
       ),
     );
   }

@@ -57,7 +57,7 @@ class _DialogChangePasswordWidgetState
                       height: AppSizes.maxHeight * 0.09,
                       child: Center(
                         child: StrokeTextWidget(
-                            text: "Đổi mật khẩu",
+                            text: AppLocalizations.text(LangKey.change_password),
                             size: AppSizes.maxWidth < 350 ? 20 : 30,
                             colorStroke: Colors.red[900]),
                       ),
@@ -164,7 +164,7 @@ class _DialogChangePasswordWidgetState
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 4),
                           border: InputBorder.none,
-                          hintText: "Nhập mật khẩu cũ",
+                          hintText: AppLocalizations.text(LangKey.input_old_password),
                           hintStyle: TextStyle(color: Colors.white),
                           isDense: true,
                         )),
@@ -237,7 +237,7 @@ class _DialogChangePasswordWidgetState
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 4),
                           border: InputBorder.none,
-                          hintText: "Nhập mật khẩu mới",
+                          hintText: AppLocalizations.text(LangKey.input_new_password),
                           hintStyle: TextStyle(color: Colors.white),
                           fillColor: Colors.red,
                           isDense: true,
