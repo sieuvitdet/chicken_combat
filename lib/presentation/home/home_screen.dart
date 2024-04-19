@@ -432,9 +432,6 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-
-
-
 class ThoughtBubble extends StatefulWidget {
   final String text;
   ThoughtBubble({required this.text});
@@ -452,7 +449,7 @@ class _ThoughtBubbleState extends State<ThoughtBubble> {
         painter: BubblePainter(),
         child: Container(
           padding: EdgeInsets.all(16),
-          margin: EdgeInsets.only(top: 20, left: 20),
+          margin: EdgeInsets.only(top: 0, left: 0),
           child: Text(widget.text, style: TextStyle(fontSize: 12)),
         ),
       ),

@@ -79,7 +79,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
         List<dynamic> users = doc.get('user');
         if (users.length == 1) {
           Map<String, dynamic> user = users.first as Map<String, dynamic>;
-          if (user['userid'] != Globals.currentUser!.id) {
+          if (user[0]['userid'] != Globals.currentUser!.id) {
             return RoomModel.fromSnapshot(doc);
           }
         }

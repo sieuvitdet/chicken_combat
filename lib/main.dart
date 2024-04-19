@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Itim",
@@ -86,8 +85,6 @@ class _DragItemState extends State<DragItem> {
         ) : Container(),
 
         body: BackgroundCloudMap2Widget(heightContent: 1000),
-
-        
     );
   }
 }
