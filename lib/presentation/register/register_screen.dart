@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
@@ -394,7 +396,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   initialData: true,
                   builder: (_, snapshot) {
                     return CustomTextField(
-                      hintText: "Nhập lại mật khẩu",
+                      hintText: AppLocalizations.text(LangKey.input_password_again),
                       hintStyle: AppTextStyles.style13GreyW400,
                       controller: _rePasswordController,
                       focusNode: _rePasswordNode,

@@ -30,4 +30,5 @@ class LangKey {
   static const String receive = "receive";
   static const String use = "use";
   static const String used = "used";
+  static const String forget_password = "forget_password";
 }

@@ -26,5 +26,6 @@
     "exit": "Exit",
     "receive": "Receive",
     "use": "Use",
-    "used": "Used"
+    "used": "Used",
+    "forget_password":"Forget password?"
 }

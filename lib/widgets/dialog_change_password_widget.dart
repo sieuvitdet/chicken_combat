@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -310,7 +312,7 @@ class _DialogChangePasswordWidgetState
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 4),
                           border: InputBorder.none,
-                          hintText: "Nhập lại mật khẩu",
+                          hintText: AppLocalizations.text(LangKey.input_password_again),
                           isDense: true,
                           hintStyle: TextStyle(color: Colors.white),
                         )),

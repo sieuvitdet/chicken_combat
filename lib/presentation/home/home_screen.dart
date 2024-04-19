@@ -236,9 +236,7 @@ class _HomeScreenState extends State<HomeScreen>
           Row(
             children: [
               _itemRow("${_financeModel?.gold ?? 0}", Assets.ic_coin,
-                  ontap: () {
-                    GlobalSetting.shared.showPopupWithTitle(context, "Tôi là hữu nhân , tôi tên thật là hửu nhân");
-                  }),
+                  ontap: () {}),
               SizedBox(width: 4),
               _itemRow("${_financeModel?.diamond ?? 0}", Assets.ic_diamond,
                   ontap: () {}),
