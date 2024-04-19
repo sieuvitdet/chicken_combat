@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   initialData: true,
                   builder: (_, snapshot) {
                     return CustomTextField(
-                      hintText: "Nhập mật khẩu",
+                      hintText: AppLocalizations.text(LangKey.password),
                       hintStyle: AppTextStyles.style13GreyW400,
                       controller: _passwordController,
                       focusNode: _passwordNode,
@@ -243,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     print("forget");
                   },
                   child: Text(
-                    "Quên mật khẩu?",
+                    AppLocalizations.text(LangKey.forget_password),
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

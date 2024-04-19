@@ -6,16 +6,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 class LocalizationsConfig {
   static Locale getCurrentLocale() {
-    // String lang = Globals.prefs!.getString(SharedPrefsKey.language, value: LangKey.langDefault);
-    // Globals.dateTimePickerLocale = lang == LangKey.langVi
-    //     ? DateTimePickerLocale.vi
-    //     : DateTimePickerLocale.en_us;
-    return Locale("EN");
+
+    return Locale("en_us");
   }
 
   static const List<Locale> supportedLocales = [
-    Locale(LangKey.langVi, 'VN'),
-    Locale(LangKey.langEn, 'EN'),
+    Locale(LangKey.langVi, 'vi_VI'),
+    Locale(LangKey.langEn, 'en_us'),
   ];
 
   static const List<LocalizationsDelegate> localizationsDelegates = [

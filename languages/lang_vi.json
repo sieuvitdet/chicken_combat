@@ -26,5 +26,6 @@
     "exit": "Thoát",
     "receive": "Nhận",
     "use": "Sử dụng",
-    "used": "Đã dùng"
+    "used": "Đã dùng",
+    "forget_password":"Quên mật khẩu?"
 }
