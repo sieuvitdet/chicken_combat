@@ -162,12 +162,12 @@ class _HomeScreenState extends State<HomeScreen>
                       courseMapModel: _userModel!.courseMapModel,
                     )));
           }),
-          _action(1, "Kiểm tra", () {
+          _action(1, AppLocalizations.text(LangKey.test), () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListExaminationScreen(
                     mapModel: _userModel!.checkingMapModel)));
           }),
-          _action(2, "Thử thách", () {
+          _action(2, AppLocalizations.text(LangKey.challenge), () {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => ListChallengeScreen()));
           })
