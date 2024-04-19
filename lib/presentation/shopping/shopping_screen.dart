@@ -420,12 +420,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                     text: tab == 1 || tab == 2
                                         ? Globals.currentUser?.useColor ==
                                                 model.id
-                                            ? "Đã dùng"
-                                            : "Sử dụng"
+                                            ? AppLocalizations.text(LangKey.used)
+                                            : AppLocalizations.text(LangKey.use)
                                         : Globals.currentUser?.useSkin ==
                                                 model.id
-                                            ? "Đã dùng"
-                                            : "Sử dụng",
+                                            ? AppLocalizations.text(LangKey.used)
+                                            : AppLocalizations.text(LangKey.use),
                                     size: 12,
                                     colorStroke:  tab == 1 || tab == 2
                                         ? Globals.currentUser?.useColor ==
@@ -680,9 +680,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   },
                   child: Image.asset(
                     Assets.ic_close_popup,
-                    height: 48,
-                    width: 48,
-                    fit: BoxFit.fill,
+                    height: AppSizes.maxHeight*0.05,
+                    width: AppSizes.maxWidth*0.116,
+                    fit: BoxFit.contain,
                   ),
                 )),
             Positioned(

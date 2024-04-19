@@ -27,5 +27,8 @@
     "receive": "Receive",
     "use": "Use",
     "used": "Used",
-    "forget_password":"Forget password?"
+    "forget_password":"Forget password?",
+
+    "account":"Account",
+    "logout":"Logout"
 }

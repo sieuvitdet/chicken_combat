@@ -27,5 +27,7 @@
     "receive": "Nhận",
     "use": "Sử dụng",
     "used": "Đã dùng",
-    "forget_password":"Quên mật khẩu?"
+    "forget_password":"Quên mật khẩu?",
+    "account":"Tài khoản",
+    "logout":"Đăng xuất"
 }
