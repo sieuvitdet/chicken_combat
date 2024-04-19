@@ -6,6 +6,7 @@ import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
+import 'package:chicken_combat/presentation/challenge/room_wait_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
@@ -61,7 +62,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     await Future.delayed(Duration(seconds: 3));
     if (_room.isNew) {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Battle1Vs1Screen(room: _room.room)));
+          .push(MaterialPageRoute(builder: (context) => RoomWaitScreen(_room.room)));
     } else {
       Navigator.of(context)
           .push(MaterialPageRoute(
@@ -100,7 +101,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
           usecolor: Globals.currentUser!.useSkin != ""
               ? Globals.currentUser!.useSkin
               : Globals.currentUser!
-                  .useColor));
+                  .useColor, ready: false));
     }
     List<AskModel> asks = await _loadAsks();
     RoomModel newRoom = RoomModel(
@@ -138,7 +139,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
             username: Globals.currentUser!.username,
             usecolor: Globals.currentUser!.useSkin != ""
                 ? Globals.currentUser!.useSkin
-                : Globals.currentUser!.useColor));
+                : Globals.currentUser!.useColor, ready: false));
         await emptyRoom.updateUsers();
       }
       return RoomCheckResult(room: emptyRoom, isNew: false);
@@ -148,12 +149,12 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
   Future<List<AskModel>> _loadAsks() async {
     List<AskModel> loadedAsks = await _getAsk();
     Random random = Random();
-    if (loadedAsks.length < 5) {
+    if (loadedAsks.length < 9) {
       throw Exception("Not enough questions to select from.");
     }
     Set<int> usedIndexes = Set<int>();
     List<AskModel> selectedAsks = [];
-    while (selectedAsks.length < 5) {
+    while (selectedAsks.length < 9) {
       int randomNumber = random.nextInt(loadedAsks.length);
       if (!usedIndexes.contains(randomNumber)) {
         selectedAsks.add(loadedAsks[randomNumber]);
