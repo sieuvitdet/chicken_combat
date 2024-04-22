@@ -167,9 +167,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await users.doc(_userName).set({
         'username': _userNameController.text,
         'password': _password,
-        'level': '1', //Mặc định 1
+        'level': 1, //Mặc định 1
         'financeId': financeId,
-        'avatar': '1', //Mặc định 1
+        'avatar': 1, //Mặc định 1
         'bag' : bag,
         'useColor' : 'CO01',
         'useSkin' : '',
