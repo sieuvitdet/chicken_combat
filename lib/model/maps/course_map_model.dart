@@ -14,7 +14,6 @@ class CourseMapsModel {
   static CourseMapsModel fromUserMapModelList(List<UserMapModel> userMapModels) {
     List<UserMapModel> listeningCourses = [];
     List<UserMapModel> readingCourses = [];
-    List<UserMapModel> writingCourses = [];
     List<UserMapModel> speakingCourses = [];
 
     for (var userMapModel in userMapModels) {
