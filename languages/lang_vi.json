@@ -40,5 +40,6 @@
     "congratulation_receive_item":"Chúc mừng bạn nhận được vật phẩm",
     "congratulation_receive_rare_item":"Chúc mừng bạn nhận được vật phẩm hiếm",
     "the_purchased_item_150_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 150 gold",
-    "the_purchased_item_500_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 500 gold"
+    "the_purchased_item_500_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 500 gold",
+    "confirm_submit":"Bạn có chắc chắn muốn nộp bài?"
 } 

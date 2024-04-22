@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
@@ -42,7 +44,8 @@ class _MapListeningExaminationScreenState
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late AskModel _ask = AskModel(Question: "",Answer: "",Script: "",A: "",B: "",C: "",D: "") ;
+  late AskModel _ask = AskModel(
+      Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");
   List<AskModel> _asks = [];
   List<String> answers = [];
 
@@ -51,27 +54,25 @@ class _MapListeningExaminationScreenState
     super.initState();
     AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
-    
+
     _checkMicrophonePermission();
-      AudioManager.pauseBackgroundMusic();
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-         _asks = await _loadAsks();
-         if (_asks.length > 0) {
-          _ask = _asks[0];
-          answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
-          splitText(_ask.Question);
+    AudioManager.pauseBackgroundMusic();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _asks = await _loadAsks();
+      if (_asks.length > 0) {
+        _ask = _asks[0];
+        answers = [_ask.A, _ask.B, _ask.C, _ask.D];
+        // splitText(_ask.Question);
 
-          for(int i = 0; i < _asks.length; i++ ) {
-            positions.add(-1);
-          }
-         }
-         pages = _asks.length;
-         setState(() {
-           
-         });
-      });
+        for (int i = 0; i < _asks.length; i++) {
+          positions.add(-1);
+          anwsers.add("");
+        }
+      }
+      pages = _asks.length;
+      setState(() {});
+    });
   }
-
 
   Future<void> _checkMicrophonePermission() async {
     PermissionStatus permissionStatus = await Permission.microphone.status;
@@ -127,25 +128,14 @@ class _MapListeningExaminationScreenState
     return listeningList;
   }
 
-  void splitText(String text) {
-    parts = text.split('');
-    anwsers.add("");
-    for (int i = 0; i < parts.length - 1; i++) {
-      anwsers.add("");
+  int _checkScore() {
+    int score = 0;
+    for (int i = 0; i < _asks.length; i++) {
+      if (answers[i] == _asks[i]) {
+        score += 2;
+      }
     }
-  }
-
-
-  List<InlineSpan> _listTextSpan() {
-    List<InlineSpan> textSpans = [];
-    textSpans.add(
-      TextSpan(
-        text: text,
-        style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: "Itim"),
-      ),
-    );
-
-    return textSpans;
+    return score;
   }
 
   @override
@@ -176,17 +166,17 @@ class _MapListeningExaminationScreenState
               Flexible(
                 child: CustomButtomImageColorWidget(
                   onTap: () {
-                     if (page == 1) {
+                    if (page == 1) {
                       return;
                     }
                     page -= 1;
-                    _ask = _asks[page-1];
-                    answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+                    _ask = _asks[page - 1];
+                    answers = [_ask.A, _ask.B, _ask.C, _ask.D];
                     setState(() {});
                   },
                   smallButton: true,
-                   smallOrangeColor: page > 1,
-                    smallGrayColor: page == 1,
+                  smallOrangeColor: page > 1,
+                  smallGrayColor: page == 1,
                   child: Center(
                     child: StrokeTextWidget(
                       text: "Previous",
@@ -203,28 +193,52 @@ class _MapListeningExaminationScreenState
                 child: CustomButtomImageColorWidget(
                   onTap: () {
                     if (page == pages) {
-                      GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Bạn có chắc chắn muốn nộp bài?",
-                        agree: () {
-                          if (positions.contains(-1)) {
-                            GlobalSetting.shared.showPopupWithTitle(context, "Bạn chưa chọn đủ đáp án, vui lòng chọn đầy đủ!");
-                          } else {
-                            print("Nộp bài");
-                          }
-                      },cancel: () {
-                        Navigator.of(context).pop();
-                      },));
+                      GlobalSetting.shared.showPopupWithContext(
+                          context,
+                          DialogConfirmWidget(
+                            title:
+                                AppLocalizations.text(LangKey.confirm_submit),
+                            agree: () async {
+                              Navigator.of(context).pop();
+                              int score = _checkScore();
+                              int gold = score > 9
+                                  ? 100
+                                  : score > 7
+                                      ? 50
+                                      : score > 5
+                                          ? 20
+                                          : 0;
+                              int diamond = score > 9
+                                  ? 20
+                                  : score > 7
+                                      ? 10
+                                      : score > 5
+                                          ? 5
+                                          : 0;
+                              GlobalSetting.shared.showPopupCongratulation(
+                                  context, 1, score, gold, diamond,
+                                  ontapContinue: () {
+                                    print("aaa");
+                                  }, ontapExit: () {
+                                     print("bbbb");
+                                  });
+                            },
+                            cancel: () {
+                              Navigator.of(context).pop();
+                            },
+                          ));
                       return;
                     }
                     page += 1;
-                    _ask = _asks[page-1];
-                    answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+                    _ask = _asks[page - 1];
+                    answers = [_ask.A, _ask.B, _ask.C, _ask.D];
                     setState(() {});
                   },
                   smallButton: true,
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? "Final" :"Next",
+                      text: page == pages ? "Final" : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -234,16 +248,14 @@ class _MapListeningExaminationScreenState
             ],
           ),
         ),
-        Container(
-          height: AppSizes.bottomHeight,
-        )
+        Container(height: AppSizes.maxHeight * 0.03)
       ],
     );
   }
 
-   Widget _listening() {
+  Widget _listening() {
     return Container(
-      height: AppSizes.maxHeight*0.12,
+      height: AppSizes.maxHeight * 0.12,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -256,8 +268,10 @@ class _MapListeningExaminationScreenState
               });
             },
             child: Image.asset(
-              isListening ? Assets.ic_playing_listening : Assets.ic_notplay_listening,
-              height: AppSizes.maxHeight*0.06,
+              isListening
+                  ? Assets.ic_playing_listening
+                  : Assets.ic_notplay_listening,
+              height: AppSizes.maxHeight * 0.06,
             ),
           ),
           Padding(
@@ -306,28 +320,34 @@ class _MapListeningExaminationScreenState
           ),
           Positioned(
               bottom: 0,
-              left: AppSizes.maxWidth*0.04,
-              right: AppSizes.maxWidth*0.04,
+              left: AppSizes.maxWidth * 0.04,
+              right: AppSizes.maxWidth * 0.04,
               child: Image(image: AssetImage(Assets.img_line_table))),
-
-              Positioned(
-              bottom: AppSizes.maxHeight*0.02,
-              right: AppSizes.maxWidth*0.08,
-              child: Text("${page}/${pages}",style: TextStyle(color: Colors.white),)),
+          Positioned(
+              bottom: AppSizes.maxHeight * 0.02,
+              right: AppSizes.maxWidth * 0.08,
+              child: Text(
+                "${page}/${pages}",
+                style: TextStyle(color: Colors.white),
+              )),
         ],
       ),
     );
   }
 
   List<Widget> _listAnswer() {
-
     List<Widget> itemList = [];
     for (int i = 0; i < answers.length; i++) {
       itemList.add(_answer(answers[i], i, ontap: () {
-        positions[page-1] = i;
-        setState(() {
-          
-        });
+        positions[page - 1] = i;
+        anwsers[page - 1] = i == 0
+            ? "A"
+            : i == 1
+                ? "B"
+                : i == 2
+                    ? "C"
+                    : "D";
+        setState(() {});
       }));
     }
     return itemList;
@@ -352,7 +372,10 @@ class _MapListeningExaminationScreenState
   Widget _itemReading() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Text(_ask?.Question ?? "", style: TextStyle(fontSize: 24),),
+      child: Text(
+        _ask.Question,
+        style: TextStyle(fontSize: 24),
+      ),
     );
   }
 
@@ -360,16 +383,14 @@ class _MapListeningExaminationScreenState
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: CustomButtomImageColorWidget(
-        redBlurColor:positions[page-1] != i,
-        redColor: positions[page-1] == i,
+        redBlurColor: positions[page - 1] != i,
+        redColor: positions[page - 1] == i,
         child:
             Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: ontap,
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -378,11 +399,10 @@ class _MapListeningExaminationScreenState
       bottom: false,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child:
-            PopScope(
-              canPop: false,
-              child: Scaffold(
-                appBar: AppBar(
+        child: PopScope(
+          canPop: false,
+          child: Scaffold(
+              appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   leading: IconTheme(
                     data: IconThemeData(size: 24.0), // Set the size here
@@ -397,24 +417,32 @@ class _MapListeningExaminationScreenState
                     Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
-                        onTap: () {
-                          GlobalSetting.shared.showPopup(context,onTapClose: () {
-                            Navigator.of(context).pop();
+                          onTap: () {
+                            GlobalSetting.shared.showPopup(context,
+                                onTapClose: () {
+                              Navigator.of(context).pop();
+                            }, onTapExit: () {
+                              Navigator.of(context)
+                                ..pop()
+                                ..pop(false);
+                            }, onTapContinous: () {
+                              Navigator.of(context).pop();
+                            });
                           },
-                          onTapExit: () {
-                            Navigator.of(context)..pop()..pop(false);
-                          },
-                          onTapContinous: () {
-                            Navigator.of(context).pop();
-                          });
-                        },
-                        child: Image.asset(Assets.ic_menu, height: 24)),
+                          child: Image.asset(Assets.ic_menu, height: 24)),
                     )
                   ],
                   title: Text("Level 1",
-                      style: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.w500))),
-                backgroundColor: Color(0xFFFACA44), body: Responsive(mobile: _buildContent(), tablet: _buildContent(), desktop: _buildContent())),
-            ),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500))),
+              backgroundColor: Color(0xFFFACA44),
+              body: Responsive(
+                  mobile: _buildContent(),
+                  tablet: _buildContent(),
+                  desktop: _buildContent())),
+        ),
       ),
     );
   }
