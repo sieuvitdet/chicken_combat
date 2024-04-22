@@ -9,9 +9,9 @@ class UserModel {
    String id;
    String username;
    String password;
-   String level;
+   int level;
    String financeId;
-   String avatar;
+   int avatar;
    String useColor;
    String useSkin;
    String score;
