@@ -383,7 +383,7 @@ class _Map1ScreenState extends State<Map1Screen>
           nextleft + width / 2,
           bottom - 6 * maxHeight * multiple);
     } else if (location == 6) {
-      path.moveTo(left + width / 2, bottom - 6 * maxHeight * multiple);
+      path.moveTo(width / 2, bottom - 6 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 8 * maxHeight * multiple,

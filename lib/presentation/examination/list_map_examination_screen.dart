@@ -19,7 +19,11 @@ class ListMapExaminationScreen extends StatefulWidget {
   final bool isLesson;
   List<UserMapModel> items = [];
 
-  ListMapExaminationScreen({super.key,required this.type,required this.isLesson, required this.items});
+  ListMapExaminationScreen(
+      {super.key,
+      required this.type,
+      required this.isLesson,
+      required this.items});
 
   @override
   State<ListMapExaminationScreen> createState() =>
@@ -27,11 +31,11 @@ class ListMapExaminationScreen extends StatefulWidget {
 }
 
 class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
-
   List<MapModel> _listMap = [];
   List<UserMapModel> itemMaps = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  int locationMap = 0;
+  int locationMap1 = 0;
+  int locationMap2 = 0;
 
   @override
   void initState() {
@@ -47,7 +51,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
     super.dispose();
   }
 
-   void getUserInfo() {
+  void getUserInfo() {
     CollectionReference users = firestore.collection(FirebaseEnum.userdata);
     users
         .doc(Globals.prefs!.getString(SharedPrefsKey.id_user))
@@ -56,22 +60,45 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
       if (documentSnapshot.exists) {
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
         Globals.currentUser = user;
-        print(Globals.currentUser!.checkingMapModel.listeningCourses.first.level);
 
         if (widget.type != "" && widget.type == "reading") {
-          locationMap =
-              Globals.currentUser!.checkingMapModel.readingCourses.first.level - 1;
+          locationMap1 =
+              Globals.currentUser!.checkingMapModel.readingCourses.first.level -
+                  1;
+
+          locationMap2 =
+              Globals.currentUser!.checkingMapModel.readingCourses.length > 1
+                  ? Globals.currentUser!.checkingMapModel.readingCourses[1]
+                          .level -
+                      1
+                  : 0;
+          itemMaps = Globals.currentUser?.checkingMapModel.readingCourses ?? [];
         } else if (widget.type != "" && widget.type == "listening") {
-          locationMap = Globals
-              .currentUser!.checkingMapModel.listeningCourses.first.level - 1;
+          locationMap1 = Globals
+                  .currentUser!.checkingMapModel.listeningCourses.first.level -
+              1;
+          locationMap2 =
+              Globals.currentUser!.checkingMapModel.listeningCourses.length > 1
+                  ? Globals.currentUser!.checkingMapModel.listeningCourses[1]
+                          .level -
+                      1
+                  : 0;
+          itemMaps =
+              Globals.currentUser?.checkingMapModel.listeningCourses ?? [];
         } else if (widget.type != "" && widget.type == "speaking") {
-          locationMap =
-              Globals.currentUser!.checkingMapModel.speakingCourses.first.level - 1;
+          locationMap1 = Globals
+                  .currentUser!.checkingMapModel.speakingCourses.first.level -
+              1;
+          locationMap2 =
+              Globals.currentUser!.checkingMapModel.speakingCourses.length > 1
+                  ? Globals.currentUser!.checkingMapModel.speakingCourses[1]
+                          .level -
+                      1
+                  : 0;
+          itemMaps =
+              Globals.currentUser?.checkingMapModel.speakingCourses ?? [];
         }
-        print(locationMap);
-    setState(() {
-      
-    });
+        setState(() {});
       }
     });
   }
@@ -152,18 +179,27 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
           }
           switch (index) {
             case 0:
-            bool result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map1Screen(type: widget.type,isLesson: widget.isLesson,location: locationMap,)));
-                    if (result) {
-                      getUserInfo();
-                    }
+              bool result = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Map1Screen(
+                        type: widget.type,
+                        isLesson: widget.isLesson,
+                        location: locationMap1,
+                      )));
+              if (result) {
+                getUserInfo();
+              }
             case 1:
-              Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map2Screen(type: widget.type,isLesson: widget.isLesson)));
+              bool result = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Map2Screen(
+                      type: widget.type, isLesson: widget.isLesson)));
+              if (result) {
+                getUserInfo();
+              }
               break;
             case 2:
-            Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map3Screen(type: widget.type,isLesson: widget.isLesson)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Map3Screen(
+                      type: widget.type, isLesson: widget.isLesson)));
               break;
             default:
           }
@@ -187,21 +223,22 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
             ],
           ),
           tablet: Stack(
-          fit: StackFit.expand,
-          children: [
-            _buildBackground(),
-            _buildContent(),
-          ],
-        ),
-        desktop: Stack(
-          fit: StackFit.expand,
-          children: [
-            _buildBackground(),
-            _buildContent(),
-          ],
-        ),
+            fit: StackFit.expand,
+            children: [
+              _buildBackground(),
+              _buildContent(),
+            ],
+          ),
+          desktop: Stack(
+            fit: StackFit.expand,
+            children: [
+              _buildBackground(),
+              _buildContent(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+

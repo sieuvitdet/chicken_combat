@@ -20,14 +20,14 @@ class ListMapLessonScreen extends StatefulWidget {
   final bool isLesson;
   List<UserMapModel> items = [];
 
-  ListMapLessonScreen({super.key, this.type = "", required this.isLesson, required this.items});
+  ListMapLessonScreen(
+      {super.key, this.type = "", required this.isLesson, required this.items});
 
   @override
   State<ListMapLessonScreen> createState() => _ListMapLessonScreenState();
 }
 
 class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
-
   List<MapModel> _listMap = [];
   List<UserMapModel> itemMaps = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -46,7 +46,7 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
     super.dispose();
   }
 
-   void getUserInfo() {
+  void getUserInfo() {
     CollectionReference users = firestore.collection(FirebaseEnum.userdata);
     users
         .doc(Globals.prefs!.getString(SharedPrefsKey.id_user))
@@ -58,18 +58,19 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
 
         if (widget.type != "" && widget.type == "reading") {
           locationMap =
-              Globals.currentUser!.courseMapModel.readingCourses.first.level - 1;
+              Globals.currentUser!.courseMapModel.readingCourses.first.level -
+                  1;
         } else if (widget.type != "" && widget.type == "listening") {
-          locationMap = Globals
-              .currentUser!.courseMapModel.listeningCourses.first.level - 1;
+          locationMap =
+              Globals.currentUser!.courseMapModel.listeningCourses.first.level -
+                  1;
         } else if (widget.type != "" && widget.type == "speaking") {
           locationMap =
-              Globals.currentUser!.courseMapModel.speakingCourses.first.level - 1;
+              Globals.currentUser!.courseMapModel.speakingCourses.first.level -
+                  1;
         }
         print(locationMap);
-    setState(() {
-      
-    });
+        setState(() {});
       }
     });
   }
@@ -135,15 +136,21 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
           }
           switch (index) {
             case 0:
-            Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map1Screen(type: widget.type,isLesson: widget.isLesson,location: locationMap,)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Map1Screen(
+                        type: widget.type,
+                        isLesson: widget.isLesson,
+                        location: locationMap,
+                      )));
             case 1:
               Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map2Screen(type: widget.type,isLesson: widget.isLesson)));
+                  builder: (context) => Map2Screen(
+                      type: widget.type, isLesson: widget.isLesson)));
               break;
             case 2:
-            Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Map3Screen(type: widget.type,isLesson: widget.isLesson)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Map3Screen(
+                      type: widget.type, isLesson: widget.isLesson)));
               break;
             default:
           }
@@ -165,3 +172,4 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
     );
   }
 }
+

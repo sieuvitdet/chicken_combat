@@ -24,7 +24,8 @@ import 'package:permission_handler/permission_handler.dart';
 class MapListeningExaminationScreen extends StatefulWidget {
   final bool isGetReward;
   final int level;
-  const MapListeningExaminationScreen({super.key, this.isGetReward = false, required this.level});
+  const MapListeningExaminationScreen(
+      {super.key, this.isGetReward = false, required this.level});
 
   @override
   State<MapListeningExaminationScreen> createState() =>
@@ -147,10 +148,20 @@ class _MapListeningExaminationScreenState
         for (var map in courseMaps) {
           updatedCourseMaps.add({
             'collectionMap': map['collectionMap'],
-            'level': (map['isCourse'] == "listening") ? widget.level + 1 : map['level'],
+            'level': (map['isCourse'] == "listening")
+                ? widget.level + 1
+                : map['level'],
             'isCourse': map['isCourse']
           });
         }
+         if (widget.level == 7) {
+            updatedCourseMaps.add({
+              'collectionMap':
+                  "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}",
+              'level': 1,
+              'isCourse': "listening"
+            });
+          }
 
         // Cập nhật document với danh sách mới
         docRef.update({'checkingMaps': updatedCourseMaps}).then((_) {
@@ -220,25 +231,25 @@ class _MapListeningExaminationScreenState
   }
 
   Future<void> _updateGold(String _id, int gold) async {
-    CollectionReference _finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    CollectionReference _finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
 
-  return _finance
-    .doc(_id)
-    .update({'gold': gold})
-    .then((value) => print("User Updated"))
-    .catchError((error) => print("Failed to update user: $error"));
-
+    return _finance
+        .doc(_id)
+        .update({'gold': gold})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Future<void> _updateDiamond(String _id, int dimond) async {
-    CollectionReference _finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    CollectionReference _finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
 
-  return _finance
-    .doc(_id)
-    .update({'diamond': dimond})
-    .then((value) => print("User Updated"))
-    .catchError((error) => print("Failed to update user: $error"));
-
+    return _finance
+        .doc(_id)
+        .update({'diamond': dimond})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   @override
@@ -310,8 +321,12 @@ class _MapListeningExaminationScreenState
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
                                 updateUsersReady();
-                                _updateGold(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
-                                _updateDiamond(Globals.currentUser?.financeId ?? "",Globals.financeUser?.diamond ?? 0);
+                                _updateGold(
+                                    Globals.currentUser?.financeId ?? "",
+                                    Globals.financeUser?.gold ?? 0);
+                                _updateDiamond(
+                                    Globals.currentUser?.financeId ?? "",
+                                    Globals.financeUser?.diamond ?? 0);
                               }
 
                               GlobalSetting.shared.showPopupCongratulation(
@@ -549,3 +564,4 @@ class _MapListeningExaminationScreenState
     );
   }
 }
+
