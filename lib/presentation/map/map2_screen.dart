@@ -152,7 +152,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
                     builder: (context) => MapReadingExaminationScreen()));
               } else if (widget.type != "" && widget.type == "listening") {
                 result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapListeningExaminationScreen()));
+                    builder: (context) => MapListeningExaminationScreen(isGetReward: i < location,level: location+1,)));
               } else if (widget.type != "" && widget.type == "speaking") {
                result = await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => MapSpeakingExaminationScreen()));

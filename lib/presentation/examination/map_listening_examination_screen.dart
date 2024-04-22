@@ -6,12 +6,14 @@ import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/maps/course_map_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,9 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MapListeningExaminationScreen extends StatefulWidget {
-  const MapListeningExaminationScreen({super.key});
+  final bool isGetReward;
+  final int level;
+  const MapListeningExaminationScreen({super.key, this.isGetReward = false, required this.level});
 
   @override
   State<MapListeningExaminationScreen> createState() =>
@@ -34,7 +38,7 @@ class _MapListeningExaminationScreenState
   String text2 = "";
 
   List<String> parts = [];
-  List<String> anwsers = [];
+  List<String> results = [];
   List<int> positions = [];
   var _isKeyboardVisible = false;
   int page = 1;
@@ -65,8 +69,9 @@ class _MapListeningExaminationScreenState
         // splitText(_ask.Question);
 
         for (int i = 0; i < _asks.length; i++) {
+          print(_asks[i].Answer);
           positions.add(-1);
-          anwsers.add("");
+          results.add("");
         }
       }
       pages = _asks.length;
@@ -128,14 +133,112 @@ class _MapListeningExaminationScreenState
     return listeningList;
   }
 
+  Future<void> updateUsersReady() async {
+    final DocumentReference docRef = FirebaseFirestore.instance
+        .collection(FirebaseEnum.userdata)
+        .doc(Globals.currentUser!.id);
+
+    docRef.get().then((DocumentSnapshot doc) {
+      if (doc.exists && doc.data() != null) {
+        var data = doc.data() as Map<String, dynamic>;
+        List<dynamic> courseMaps = data['checkingMaps'];
+        List<Map<String, dynamic>> updatedCourseMaps = [];
+
+        for (var map in courseMaps) {
+          updatedCourseMaps.add({
+            'collectionMap': map['collectionMap'],
+            'level': (map['isCourse'] == "listening") ? widget.level + 1 : map['level'],
+            'isCourse': map['isCourse']
+          });
+        }
+
+        // Cập nhật document với danh sách mới
+        docRef.update({'checkingMaps': updatedCourseMaps}).then((_) {
+          print('Document successfully updated with new levels');
+        }).catchError((error) {
+          print('Error updating document: $error');
+        });
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+  }
+
   int _checkScore() {
     int score = 0;
     for (int i = 0; i < _asks.length; i++) {
-      if (answers[i] == _asks[i]) {
+      print(results[i]);
+      if (results[i] == _asks[i].Answer) {
         score += 2;
       }
     }
     return score;
+  }
+
+  int _getGold(int score) {
+    if (widget.isGetReward) {
+      int gold = score > 9
+          ? 15
+          : score > 7
+              ? 10
+              : score > 5
+                  ? 5
+                  : 0;
+      return gold;
+    } else {
+      int gold = score > 9
+          ? 100
+          : score > 7
+              ? 50
+              : score > 5
+                  ? 20
+                  : 0;
+      return gold;
+    }
+  }
+
+  int _getDiamond(int score) {
+    if (widget.isGetReward) {
+      int diamond = score > 9
+          ? 5
+          : score > 7
+              ? 2
+              : score > 5
+                  ? 1
+                  : 0;
+      return diamond;
+    } else {
+      int diamond = score > 9
+          ? 15
+          : score > 7
+              ? 10
+              : score > 5
+                  ? 5
+                  : 0;
+      return diamond;
+    }
+  }
+
+  Future<void> _updateGold(String _id, int gold) async {
+    CollectionReference _finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+  return _finance
+    .doc(_id)
+    .update({'gold': gold})
+    .then((value) => print("User Updated"))
+    .catchError((error) => print("Failed to update user: $error"));
+
+  }
+
+  Future<void> _updateDiamond(String _id, int dimond) async {
+    CollectionReference _finance = FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+  return _finance
+    .doc(_id)
+    .update({'diamond': dimond})
+    .then((value) => print("User Updated"))
+    .catchError((error) => print("Failed to update user: $error"));
+
   }
 
   @override
@@ -199,29 +302,28 @@ class _MapListeningExaminationScreenState
                             title:
                                 AppLocalizations.text(LangKey.confirm_submit),
                             agree: () async {
-                              Navigator.of(context).pop();
+                              // Navigator.of(context).pop();
                               int score = _checkScore();
-                              int gold = score > 9
-                                  ? 100
-                                  : score > 7
-                                      ? 50
-                                      : score > 5
-                                          ? 20
-                                          : 0;
-                              int diamond = score > 9
-                                  ? 20
-                                  : score > 7
-                                      ? 10
-                                      : score > 5
-                                          ? 5
-                                          : 0;
+                              int gold = _getGold(score);
+                              int diamond = _getDiamond(score);
+                              if (score > 5) {
+                                Globals.financeUser?.gold += gold;
+                                Globals.financeUser?.diamond += diamond;
+                                updateUsersReady();
+                                _updateGold(Globals.currentUser?.financeId ?? "",Globals.financeUser?.gold ?? 0);
+                                _updateDiamond(Globals.currentUser?.financeId ?? "",Globals.financeUser?.diamond ?? 0);
+                              }
+
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,
                                   ontapContinue: () {
-                                    print("aaa");
-                                  }, ontapExit: () {
-                                     print("bbbb");
-                                  });
+                                // Navigator.of(context)..pop()..pop(false);
+                              }, ontapExit: () {
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop()
+                                  ..pop(score > 5);
+                              });
                             },
                             cancel: () {
                               Navigator.of(context).pop();
@@ -340,7 +442,7 @@ class _MapListeningExaminationScreenState
     for (int i = 0; i < answers.length; i++) {
       itemList.add(_answer(answers[i], i, ontap: () {
         positions[page - 1] = i;
-        anwsers[page - 1] = i == 0
+        results[page - 1] = i == 0
             ? "A"
             : i == 1
                 ? "B"

@@ -121,6 +121,7 @@ class GlobalSetting {
               return DialogCongratulationLevelWidget(
                 ontapContinue: ontapContinue,
                 ontapExit: ontapExit,
+                level: level,
                 score: score,
                 gold: gold,
                 diamond: diamond,

@@ -212,8 +212,10 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
 
   List<Widget> _listAction() {
     List<Widget> _list = [];
-    _list.add(_itemPlaygame());
+    if (score > 5) {
+      _list.add(_itemPlaygame());
     _list.add(SizedBox(width: AppSizes.maxWidth*0.116,));
+    }
     _list.add(_itemExit());
     return _list;
   }
