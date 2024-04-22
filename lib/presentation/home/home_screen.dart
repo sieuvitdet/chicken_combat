@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen>
               left: 15,
               right: 0,
               child: Image(
-                fit: BoxFit.fill,
+                fit: BoxFit.contain,
                 image: AssetImage(Assets.img_micro),
                 width: AppSizes.maxWidth * 0.01,
                 height: AppSizes.maxHeight * 0.3,

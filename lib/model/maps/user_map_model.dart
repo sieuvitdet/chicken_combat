@@ -1,6 +1,6 @@
 class UserMapModel {
   String collectionMap;
-  String level;
+  int level;
   String isCourse;
 
   UserMapModel({
