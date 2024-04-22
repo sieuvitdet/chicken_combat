@@ -29,7 +29,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
         BackGroundCloudWidget(),
         Positioned(
             top: AppSizes.maxHeight * 0.06,
-            left: AppSizes.maxWidth * 0.05,
+            left: 8.0,
             child: IconTheme(
               data: IconThemeData(size: 24.0), // Set the size here
               child: IconButton(

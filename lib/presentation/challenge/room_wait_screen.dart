@@ -184,8 +184,8 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
               )
             : Container(),
         Positioned(
-          top: 40,
-          left: 8,
+          top: AppSizes.maxHeight * 0.06,
+          left: 8.0,
           child: GestureDetector(
             onTap: () {
               isMatch
