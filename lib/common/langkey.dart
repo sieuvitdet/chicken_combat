@@ -44,5 +44,7 @@ class LangKey {
    static const String congratulation_receive_rare_item = "congratulation_receive_rare_item";
    static const String the_purchased_item_150_gold = "the_purchased_item_150_gold";
    static const String the_purchased_item_500_gold = "the_purchased_item_500_gold";
-   
+   static const String ready = "ready";
+   static const String waiting_for_opponents = "waiting_for_opponents";
+
 }

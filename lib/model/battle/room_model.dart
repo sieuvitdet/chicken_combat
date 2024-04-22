@@ -7,7 +7,7 @@ class RoomModel {
   String id;
   Timestamp timestamp;
   int type;
-  String status;
+  StatusBattle status;
   List<UserInfoRoom> users;
   List<AskModel> asks;
 
@@ -33,7 +33,7 @@ class RoomModel {
       id: snapshot.id,
       timestamp: data?['timestamp'] as Timestamp,
       type: data?['type'] as int? ?? 0,
-      status: data?['status'] ?? '',
+      status: StatusBattle.fromMap(data?['status'] as Map<String, dynamic>),
       users: users,
       asks: asks,
     );
@@ -44,7 +44,7 @@ class RoomModel {
       'id': id,
       'timestamp': timestamp,
       'type': type,
-      'status': status,
+      'status': status.toJson(),
       'user': users.map((user) => user.toJson()).toList(),
       'asks': asks.map((ask) => ask.toJson()).toList(),
     };
@@ -56,11 +56,49 @@ class RoomModel {
     });
   }
 
-  Future<void> updateUsersRemove() async {
-    users.removeWhere((user) => user.userId == Globals.currentUser?.id);
-    await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
-      'user': users.map((user) => user.toJson()).toList(),
-    });
+  Future<void> updateUsersRemove(List<UserInfoRoom> list) async {
+    try {
+      List<UserInfoRoom> updatedUsers = list.where((element) => element.userId != Globals.currentUser?.id).toList();
+      await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+        'user': updatedUsers.map((user) => user.toJson()).toList(),
+      });
+    } catch (e) {
+      print('Error updating users: $e');
+    }
+  }
+
+    Future<void> updateUsersReady(List<UserInfoRoom> list) async {
+      try {
+        List<UserInfoRoom> updatedUsers = list.map((element) {
+          if (element.userId == Globals.currentUser?.id) {
+            return UserInfoRoom(
+              userId: element.userId,
+              username: element.username,
+              usecolor: element.usecolor,
+              ready: true,
+            );
+          } else {
+            return element;
+          }
+        }).toList();
+        await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+          'user': updatedUsers.map((user) => user.toJson()).toList(),
+        });
+      } catch (e) {
+        print('Error updating users: $e');
+      }
+    }
+
+  Future<void> updateRoomStatus(StatusBattle newStatus) async {
+    try {
+      await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+        'status': newStatus.toJson(),
+      });
+      print("Status updated successfully in room ID: $id");
+    } catch (e) {
+      print("Error updating status: $e");
+      throw Exception("Failed to update status in Firestore");
+    }
   }
 }
 
@@ -96,4 +134,28 @@ class RoomCheckResult {
   final bool isNew;
 
   RoomCheckResult({required this.room, required this.isNew});
+}
+
+class StatusBattle {
+  int askPosition;
+  String userid;
+  bool correct;
+
+  StatusBattle({required this.askPosition,required this.userid, required this.correct});
+
+  static StatusBattle fromMap(Map<String, dynamic> map) {
+    return StatusBattle(
+      askPosition: map['askPosition'] ?? 0,
+      userid: map['userid'] ?? '',
+      correct: map['correct'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'askPosition': askPosition,
+      'userid': userid,
+      'correct': correct,
+    };
+  }
 }

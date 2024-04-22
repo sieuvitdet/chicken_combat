@@ -197,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 title: "Đăng ký tài khoản thành công!",
                 ontap: () {
                   print(_username);
-    print(_password);
+                  print(_password);
                   Navigator.of(context)
                     ..pop()
                     ..pop([_username, _password]);

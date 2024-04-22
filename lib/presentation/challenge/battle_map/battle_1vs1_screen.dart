@@ -9,6 +9,7 @@ import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/countdown_timer.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -44,7 +45,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   int _currentEnemyBlood = 10;
   int _currentMyBlood = 10;
   late Timer _timer;
-  int _start = 30;
   int _total = 10;
   double _topWaterShot = 0.0;
   bool? isEnemyWin = null;
@@ -58,8 +58,11 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   late AskModel _ask;
   List<AskModel> _asks = [];
   List<String> answers = [];
-
+  int isSelected = -1;
   int? result;
+  int askPosition = 0;
+  bool _showQuestion = false;
+  String _question = '';
 
   @override
   void initState() {
@@ -73,11 +76,9 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     maxWidthTomato = AppSizes.maxWidthTablet > 0
         ? AppSizes.maxWidthTablet
         : AppSizes.maxWidth;
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _configAnimation();
       _configWaterShotAnimation();
-      _startTimer();
       _loadAsk();
       _listenRoom(_room.id);
     });
@@ -102,18 +103,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   void _loadAsk() {
     if (_room.asks.isNotEmpty) {
       _asks = _room.asks;
-      setState(() {
-        _ask = _asks[0];
-        answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
-      });
-    }
-  }
-
-  bool _checkWaitBattle() {
-    if (_room.users.length == 1) {
-      return true;
-    } else {
-      return false;
+      _ask = _asks[askPosition];
+      _question = _ask.Question;
+      answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+      askPosition = askPosition + 1;
+      _showQuestion = false;
+      setState(() {});
     }
   }
 
@@ -137,7 +132,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   Future<void> removeRoomById(String roomId) async {
     try {
       await FirebaseFirestore.instance
-          .collection(FirebaseEnum.room)  // Make sure this matches the exact name of your collection
+          .collection(FirebaseEnum.room)
           .doc(roomId)
           .delete();
       print("Room successfully deleted");
@@ -148,16 +143,23 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   }
 
   Future<void> _listenRoom(String _id) async {
-    CollectionReference room =
-    FirebaseFirestore.instance.collection(FirebaseEnum.room);
-    room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        print('Document exists on the database');
-        setState(() {
-            _room = RoomModel.fromSnapshot(documentSnapshot);
-        });
-      }
-    });
+    try {
+      CollectionReference room =
+          FirebaseFirestore.instance.collection(FirebaseEnum.room);
+      room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          if (documentSnapshot.exists) {
+            print('Document exists on the database');
+            _handleRoomUpdate(RoomModel.fromSnapshot(documentSnapshot));
+            setState(() {
+              _room = RoomModel.fromSnapshot(documentSnapshot);
+            });
+          }
+        }
+      });
+    } catch (e) {
+      print('Error accessing Firestore: $e');
+    }
   }
 
   _configAnimation() {
@@ -169,7 +171,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         Tween<double>(begin: 0.0, end: -60.0).animate(_controllerFirst)
           ..addListener(() {
             setState(() {
-              // Rebuild the widget when animation value changes
             });
           });
 
@@ -180,9 +181,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           isEnemyWin = null;
           if (_currentMyBlood == 0) {
             showPopupWin(isWin: false);
-          } else {
-            _start = 30;
-            _startTimer();
           }
         });
       }
@@ -206,9 +204,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           isEnemyWin = null;
           if (_currentEnemyBlood == 0) {
             showPopupWin(isWin: true);
-          } else {
-            _start = 30;
-            _startTimer();
           }
         });
       }
@@ -253,22 +248,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       }
     });
     _pathWaterRightToLeft = drawPathRightToLeft();
-  }
-
-  void _startTimer() {
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 0) {
-          _timer.cancel();
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
   }
 
   Path drawPathLeftToRight() {
@@ -326,20 +305,14 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           _menu(),
           Positioned(
             bottom: 8,
-            left: _checkWaitBattle() ? (AppSizes.maxWidth / 2.5) -
-                (AppSizes.maxWidth * 0.1 / 2) : 16,
-            // Center _myChicken if _checkWaitBattle is true
+            left: 16,
             child: _myChicken(_total),
           ),
-          if (_checkWaitBattle()) ...[],
-          // No enemy chicken when _checkWaitBattle is true
-          if (!_checkWaitBattle()) // Only show _enemyChicken if _checkWaitBattle is false
             Positioned(
               bottom: 8,
               right: 16,
               child: _enemyChicken(_total),
             ),
-          // Your existing water shot logic
           if (waterShotLeftToRight != null && waterShotLeftToRight!)
             Positioned(
               top: calculateLeftToRight(_animationWaterLeftToRight.value).dy,
@@ -398,28 +371,37 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: SingleChildScrollView(
-                  child: Text(
-                    _checkWaitBattle() ? "Đang chờ đối thủ $_start s"
-                        : _ask.Question,
-                    style: TextStyle(fontSize: 14, color: Colors.white),
-                    textAlign: TextAlign.start,
-                  ),
+                  child: _showQuestion
+                      ? Text(
+                          _question,
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                          textAlign: TextAlign.start,
+                        )
+                      : CountdownTimer(
+                          showIcon: false,
+                          textStyle:
+                              TextStyle(fontSize: 32, color: Colors.white),
+                          seconds: 5,
+                          onTimerComplete: () {
+                            setState(() {
+                              _showQuestion = true;
+                            });
+                          },
+                        ),
                 ),
               ),
             ),
-            _checkWaitBattle() ? Container()
-                : Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset((Assets.ic_boom),width: 24),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Text(
-                    "$_start s",
-                    style: TextStyle(fontSize: 16, color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                )
+                _showQuestion
+                    ? CountdownTimer(
+                        showIcon: true,
+                        textStyle: TextStyle(fontSize: 12, color: Colors.white),
+                        seconds: 10,
+                        onTimerComplete: () {},
+                      )
+                    : Container(),
               ],
             ),
             SizedBox(
@@ -626,67 +608,64 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     );
   }
 
+  void _blood(bool isBloodCurrent) {
+    if (isBloodCurrent) {
+      if (_currentEnemyBlood == 0) {
+        return;
+      } else {
+        setState(() {
+          _currentEnemyBlood -= 2;
+          waterShotLeftToRight = true;
+          _controllerWaterLeftToRight.forward();
+        });
+      }
+    } else {
+      if (_currentMyBlood == 0) {
+        return;
+      } else {
+        _currentMyBlood -= 2;
+        setState(() {
+          waterShotLeftToRight = false;
+          _controllerWaterRightToLeft.forward();
+        });
+      }
+    }
+  }
+
+  Future<void> onCheck(int position, bool correct) async {
+    var newStatus = StatusBattle(
+        askPosition: position,
+        userid: Globals.currentUser!.id,
+        correct: correct);
+    await _room.updateRoomStatus(newStatus);
+  }
+
+  void _handleRoomUpdate(RoomModel updatedRoom) {
+    if (updatedRoom.status.userid.isEmpty) {
+      return;
+    }
+    bool isCurrentUser = Globals.currentUser!.id == updatedRoom.status.userid;
+    bool isAnswerCorrect = updatedRoom.status.correct;
+    if ((isCurrentUser && isAnswerCorrect) || (!isCurrentUser && !isAnswerCorrect)) {
+      _blood(true);
+    } else {
+      _blood(false);
+    }
+    _loadAsk();
+  }
+
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
     for (int i = 0; i < answers.length; i++) {
-      itemList.add(_answer(answers[i], i, ontap: () {
-        if (_checkWaitBattle()) {
-              AudioManager.stopBackgroundMusic();
-              removeRoomById(_room.id);
-              Navigator.of(context)
-                ..pop()
-                ..pop()..pop();
+      itemList.add(_answer(answers[i], i, ontap: () async {
+        setState(() {
+          isSelected = i;
+        });
+        if (AskModel.answerToIndex(_ask.Answer) == i) {
+          await onCheck(askPosition, true);
         } else {
-            if(AskModel.answerToIndex(_ask.Answer) == i) {
-
-            } else {
-
-            }
+          await onCheck(askPosition, false);
         }
-        // switch (i) {
-        //   case 0:
-        //     // check trả lời đúng sai , đúng thì dừng thời gian -
-        //   if (_checkWaitBattle()) {
-        //     AudioManager.stopBackgroundMusic();
-        //     removeRoomById(_room.id);
-        //     Navigator.of(context)
-        //       ..pop()
-        //       ..pop()..pop();
-        //   } else {
-        //     _timer.cancel();
-        //     if (_currentEnemyBlood == 0) {
-        //       return;
-        //     } else {
-        //       setState(() {
-        //         _currentEnemyBlood -= 2;
-        //         print(_currentEnemyBlood);
-        //         waterShotLeftToRight = true;
-        //         _controllerWaterLeftToRight.forward();
-        //       });
-        //     }
-        //   }
-        //   case 1:
-        //     // check trả lời đúng sai , đúng thì dừng thời gian -
-        //     _timer.cancel();
-        //     if (_currentMyBlood == 0) {
-        //       return;
-        //     } else {
-        //       _currentMyBlood -= 2;
-        //       setState(() {
-        //         waterShotLeftToRight = false;
-        //         _controllerWaterRightToLeft.forward();
-        //       });
-        //     }
-        //     break;
-        //
-        //   case 2:
-        //     break;
-        //
-        //   case 3:
-        //     _startTimer();
-        //     break;
-        //   default:
-        // }
       }));
     }
     return itemList;
@@ -710,7 +689,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                     ..pop()
                     ..pop()
                     ..pop();
-                    /////
                 },
               );
             },
@@ -722,10 +700,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: i == 0,
-        blueColor: i == 1,
-        yellowColor: i == 2,
-        redBlurColor: i == 3,
+        redBlurColor: isSelected != i,
+        redColor: isSelected == i,
         child:
             Text(answer, style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
@@ -783,8 +759,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ..._listAnswer(),
-            SizedBox(
+              if (_showQuestion) ..._listAnswer(),
+              SizedBox(
               height: AppSizes.bottomHeight,
             )
           ],
@@ -799,8 +775,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ..._listAnswer(),
-            SizedBox(
+              if (_showQuestion) ..._listAnswer(),
+              SizedBox(
               height: AppSizes.bottomHeight,
             )
           ],
@@ -815,8 +791,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ... _listAnswer(),
-            SizedBox(
+              if (_showQuestion) ..._listAnswer(),
+              SizedBox(
               height: AppSizes.bottomHeight,
             )
           ],
