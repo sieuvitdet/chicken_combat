@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:chicken_combat/model/finance_model.dart';
@@ -8,6 +7,7 @@ import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/utils/shared_pref.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
+import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
 import 'package:chicken_combat/widgets/dialog_menu_action_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,13 +17,14 @@ class GlobalSetting {
   GlobalSetting._internal();
   static GlobalSetting get shared => _singleton;
 
-static int currentVolume = 0;
+  static int currentVolume = 0;
 
-static int currentNote = 0;
+  static int currentNote = 0;
 
-static late SharedPrefs prefs;
+  static late SharedPrefs prefs;
 
- void showPopup(BuildContext context,{Function? onTapClose,Function? onTapContinous,Function? onTapExit}) {
+  void showPopup(BuildContext context,
+      {Function? onTapClose, Function? onTapContinous, Function? onTapExit}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -74,7 +75,7 @@ static late SharedPrefs prefs;
         });
   }
 
-  void showPopupWithContext(BuildContext context,Widget screen) {
+  void showPopupWithContext(BuildContext context, Widget screen) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -87,18 +88,44 @@ static late SharedPrefs prefs;
         });
   }
 
-  void showPopupWithTitle(BuildContext context,String title, {Function? ontap}) {
+  void showPopupWithTitle(BuildContext context, String title,
+      {Function? ontap}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
-              return CustomDialogWithTitleButtonWidget(title: title,ontap: () {
-                if (ontap == null) {
-                  Navigator.of(context).pop();
-                }
-              },);
+              return CustomDialogWithTitleButtonWidget(
+                title: title,
+                ontap: () {
+                  if (ontap == null) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              );
+            },
+          );
+        });
+  }
+
+  void showPopupCongratulation(BuildContext context, int level, int score, int gold, int diamond,
+      {Function? ontapContinue, Function? ontapExit}) {
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return DialogCongratulationLevelWidget(
+                ontapContinue: ontapContinue,
+                ontapExit: ontapExit,
+                level: level,
+                score: score,
+                gold: gold,
+                diamond: diamond,
+              );
             },
           );
         });
@@ -113,9 +140,7 @@ class Globals {
   static List<StoreModel> listStore = [];
 }
 
-
 class CustomNavigator {
-
   static popToScreen(BuildContext context, Widget screen, {bool root = true}) {
     Navigator.of(context, rootNavigator: root).popUntil(
         (route) => route.settings.name == screen.runtimeType.toString());
@@ -150,8 +175,6 @@ class CustomNavigator {
         .pushReplacement(CustomRoute(page: screen));
   }
 
-
-
   static showCustomBottomDialog(BuildContext context, Widget screen,
       {bool root = true, isScrollControlled = true}) {
     return showModalBottomSheet(
@@ -168,11 +191,10 @@ class CustomNavigator {
         });
   }
 
-
   static late ProgressDialog _pr;
   static showProgressDialog(BuildContext context) {
-      _pr = ProgressDialog(context);
-      _pr.show();
+    _pr = ProgressDialog(context);
+    _pr.show();
   }
 
   static hideProgressDialog() {
@@ -180,7 +202,6 @@ class CustomNavigator {
       _pr.hide();
     }
   }
-
 }
 
 extension NavigatorStateExtension on NavigatorState {
@@ -193,8 +214,7 @@ extension NavigatorStateExtension on NavigatorState {
       return true;
     });
 
-    if(isHUDOn)
-      CustomNavigator.hideProgressDialog();
+    if (isHUDOn) CustomNavigator.hideProgressDialog();
   }
 }
 
@@ -224,14 +244,17 @@ class ProgressDialog {
       PageRouteBuilder(
         opaque: false,
         settings: RouteSettings(name: "HUD"),
-        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
           return PopScope(
             child: Scaffold(
               backgroundColor: Colors.black.withOpacity(0.3),
               body: Container(
                 height: MediaQuery.of(context).size.height,
                 child: Center(
-                  child: CircularProgressIndicator(color: Colors.amber,),
+                  child: CircularProgressIndicator(
+                    color: Colors.amber,
+                  ),
                 ),
               ),
             ),

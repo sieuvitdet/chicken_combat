@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 
 class DialogCongratulationLevelWidget extends StatelessWidget {
   final Function? ontapContinue;
-  final Function? ontapPlayBack;
   final Function? ontapExit;
+  final int score;
+  final int gold;
+  final int diamond;
+  final int? level;
 
   DialogCongratulationLevelWidget(
-      {this.ontapContinue, this.ontapPlayBack, this.ontapExit});
+      {this.ontapContinue, this.ontapExit,required this.score,required this.gold, required this.diamond, this.level});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      "Level 10",
+                      "Level ${level}",
                       style: TextStyle(fontSize: AppSizes.maxWidth < 350 ? 35 : 40, color: Colors.white),
                     ),
                   ),
@@ -87,28 +90,22 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
           children: [
             Transform.rotate(
           angle: -20 * 3.14 / 180,
-          child: Image.asset(
-            Assets.img_star,
-            width: AppSizes.maxWidth*0.167,
-          ),
+          child: score > 5 ? _starYellow() : _starWhite(),
         ),
         SizedBox(height: 24,)
           ],
         ),
         Column(
           children: [
-             _starWhite(),
-            StrokeTextWidget(text: "9.0",size: AppSizes.maxWidth < 350 ? 30 : 40,colorStroke: Color(0xFF974026),)
+             score > 7 ? _starYellow() : _starWhite(),
+            StrokeTextWidget(text: "${score.toDouble()}",size: AppSizes.maxWidth < 350 ? 30 : 40,colorStroke: Color(0xFF974026),)
           ],
         ),
         Column(
           children: [
             Transform.rotate(
           angle: 20 * 3.14 / 180,
-          child: Image.asset(
-            Assets.img_star_white,
-            width: AppSizes.maxWidth*0.167,
-          ),
+          child: score > 9 ? _starYellow() : _starWhite(),
         ),
         SizedBox(height: 24,)
           ],
@@ -120,6 +117,13 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
   Widget _starWhite() {
     return Image.asset(
             Assets.img_star_white,
+            width: AppSizes.maxWidth*0.167,
+          );
+  }
+
+  Widget _starYellow() {
+    return Image.asset(
+            Assets.img_star,
             width: AppSizes.maxWidth*0.167,
           );
   }
@@ -174,7 +178,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
             left: AppSizes.maxWidth * 0.019,
           ),
           child: Text(
-            "100",
+            "${gold}",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
@@ -196,7 +200,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: AppSizes.maxWidth * 0.019),
           child: Text(
-            "100",
+            "${gold}",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
@@ -208,8 +212,10 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
 
   List<Widget> _listAction() {
     List<Widget> _list = [];
-    _list.add(_itemPlaygame());
+    if (score > 5) {
+      _list.add(_itemPlaygame());
     _list.add(SizedBox(width: AppSizes.maxWidth*0.116,));
+    }
     _list.add(_itemExit());
     return _list;
   }
@@ -218,7 +224,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-            onTap: () {},
+            onTap: ontapContinue as void Function()?,
             child: Image.asset(
               Assets.ic_playgame_popup,
               width:  AppSizes.maxWidth*0.116,

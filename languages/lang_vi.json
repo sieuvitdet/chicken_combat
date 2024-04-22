@@ -42,5 +42,6 @@
     "the_purchased_item_150_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 150 gold",
     "the_purchased_item_500_gold":"Vật phẩm đã được mua, sẽ được quy đổi ra 500 gold",
     "ready":"Sẵn sàng",
-    "waiting_for_opponents":"Đang chờ đối thủ"
+    "waiting_for_opponents":"Đang chờ đối thủ",
+    "confirm_submit":"Bạn có chắc chắn muốn nộp bài?"
 }

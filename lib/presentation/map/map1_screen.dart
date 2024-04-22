@@ -2,6 +2,8 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
@@ -9,19 +11,24 @@ import 'package:chicken_combat/presentation/lesson/map_listening_lesson_screen.d
 import 'package:chicken_combat/presentation/lesson/map_reading_lesson_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_speaking_lesson_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Map1Screen extends StatefulWidget {
   final String? type;
   final bool isLesson;
-  Map1Screen({this.type, required this.isLesson});
+  final int location;
+  Map1Screen({this.type, required this.isLesson,required this.location});
   @override
   State<Map1Screen> createState() => _Map1ScreenState();
 }
 
-class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, WidgetsBindingObserver  {
+class _Map1ScreenState extends State<Map1Screen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   ScrollController _scrollController = ScrollController(keepScrollOffset: true);
   bool enableScroll = true;
   final random = Random();
@@ -38,6 +45,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
   late Path _path;
   double heightContent = 0.0;
   double multiple = 0.138;
+  bool _isReload = false;
 
   late AnimationController _controller1;
   late Animation<Offset> _animation1;
@@ -45,6 +53,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
   @override
   void initState() {
     super.initState();
+
     _configUI();
     _configChickenDance();
     _configMapShake();
@@ -68,8 +77,9 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
     currentPadding = _listPadding[0];
     nextPadding = _listPadding[1];
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
-    location = 0;
+    location = widget.location;
   }
+
 
   void _configChickenDance() {
     _controller =
@@ -160,6 +170,18 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
                   ),
                 )),
           ),
+          Positioned(
+            top: AppSizes.maxHeight * 0.06,
+            left: AppSizes.maxWidth * 0.05,
+            child: IconTheme(
+              data: IconThemeData(size: 24.0), // Set the size here
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.of(context).pop(_isReload);
+                },
+              ),
+            ))
         ],
       ),
     );
@@ -226,10 +248,14 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
               if (!widget.isLesson) {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapReadingExaminationAnswerScreen()));
+                      builder: (context) =>
+                          MapReadingExaminationAnswerScreen()));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapListeningExaminationScreen()));
+                      builder: (context) => MapListeningExaminationScreen(
+                            isGetReward: i < location,
+                            level: location + 1,
+                          )));
                 } else if (widget.type != "" && widget.type == "speaking") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapSpeakingExaminationScreen()));
@@ -248,6 +274,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
               }
 
               if (result != null && result == true && i == location) {
+                _isReload = true;
                 if (i < numberMountain) {
                   currentPadding = _listPadding[i + 1];
                   nextPadding =
@@ -356,7 +383,7 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
           nextleft + width / 2,
           bottom - 6 * maxHeight * multiple);
     } else if (location == 6) {
-      path.moveTo(left + width / 2, bottom - 6 * maxHeight * multiple);
+      path.moveTo(width / 2, bottom - 6 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 8 * maxHeight * multiple,
@@ -403,30 +430,33 @@ class _Map1ScreenState extends State<Map1Screen> with TickerProviderStateMixin, 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xffFFF0AB),
-      body: Responsive(
-        mobile: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [_buildBottom(), _buildContent()],
-            )),
-        tablet: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [_buildBottom(), _buildContent()],
-            )),
-        desktop: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [_buildBottom(), _buildContent()],
-            )),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Color(0xffFFF0AB),
+        body: Responsive(
+          mobile: SingleChildScrollView(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [_buildBottom(), _buildContent()],
+              )),
+          tablet: SingleChildScrollView(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [_buildBottom(), _buildContent()],
+              )),
+          desktop: SingleChildScrollView(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [_buildBottom(), _buildContent()],
+              )),
+        ),
       ),
     );
   }
