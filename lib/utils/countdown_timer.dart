@@ -36,6 +36,15 @@ class _CountdownTimerState extends State<CountdownTimer> {
     });
   }
 
+  void resetTimer() {
+    _startTimer();
+  }
+  // Assuming you have a GlobalKey for your CountdownTimer
+  //GlobalKey<_CountdownTimerState> countdownTimerKey = GlobalKey<_CountdownTimerState>();
+
+// Somewhere in your code, when you need to reset the timer:
+  //countdownTimerKey.currentState?.resetTimer();
+
   @override
   void initState() {
     super.initState();

@@ -157,14 +157,6 @@ class _LoadingMeetingChallengeScreenState
             ),
           ),
         ),
-
-        // Positioned(
-        //     top: 0,
-        //     child: CustomPaint(
-        //       painter: PathPainter(_pathChicken1),
-        //     ),
-        //   ),
-
         Positioned(
           top: calculateChicken2(_animationChicken2.value).dy,
           left: calculateChicken2(_animationChicken2.value).dx,
@@ -201,14 +193,6 @@ class _LoadingMeetingChallengeScreenState
             height: AppSizes.maxHeight * 0.1,
           ),
         ),
-        
-
-        // Positioned(
-        //     top: 0,
-        //     child: CustomPaint(
-        //       painter: PathPainter(_pathChicken2),
-        //     ),
-        //   ),
 
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

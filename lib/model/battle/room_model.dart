@@ -1,5 +1,6 @@
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RoomModel {
@@ -50,6 +51,13 @@ class RoomModel {
   }
 
   Future<void> updateUsers() async {
+    await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+      'user': users.map((user) => user.toJson()).toList(),
+    });
+  }
+
+  Future<void> updateUsersRemove() async {
+    users.removeWhere((user) => user.userId == Globals.currentUser?.id);
     await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
       'user': users.map((user) => user.toJson()).toList(),
     });
