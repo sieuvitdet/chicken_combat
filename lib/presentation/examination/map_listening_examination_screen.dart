@@ -4,12 +4,16 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
+import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -29,24 +33,43 @@ class _MapListeningExaminationScreenState
 
   List<String> parts = [];
   List<String> anwsers = [];
+  List<int> positions = [];
   var _isKeyboardVisible = false;
   int page = 1;
+  int pages = 0;
   bool isListening = false;
   final FlutterTts flutterTts = FlutterTts();
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late AskModel _ask;
+  late AskModel _ask = AskModel(Question: "",Answer: "",Script: "",A: "",B: "",C: "",D: "") ;
   List<AskModel> _asks = [];
   List<String> answers = [];
 
   @override
   void initState() {
     super.initState();
+    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
-    splitText(text);
-    _loadAsks();
+    
     _checkMicrophonePermission();
+      AudioManager.pauseBackgroundMusic();
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+         _asks = await _loadAsks();
+         if (_asks.length > 0) {
+          _ask = _asks[0];
+          answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+          splitText(_ask.Question);
+
+          for(int i = 0; i < _asks.length; i++ ) {
+            positions.add(-1);
+          }
+         }
+         pages = _asks.length;
+         setState(() {
+           
+         });
+      });
   }
 
 
@@ -59,16 +82,22 @@ class _MapListeningExaminationScreenState
     }
   }
 
-  Future<void> _loadAsks() async {
+  Future<List<AskModel>> _loadAsks() async {
     List<AskModel> loadedAsks = await _getAsk();
     Random random = Random();
-    int randomNumber = random.nextInt(loadedAsks.length - 1) + 1;
-    setState(() {
-      _asks = loadedAsks;
-      _ask = loadedAsks[randomNumber];
-      answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
-      text = _ask.Question;
-    });
+    if (loadedAsks.length < 5) {
+      throw Exception("Not enough questions to select from.");
+    }
+    Set<int> usedIndexes = Set<int>();
+    List<AskModel> selectedAsks = [];
+    while (selectedAsks.length < 5) {
+      int randomNumber = random.nextInt(loadedAsks.length);
+      if (!usedIndexes.contains(randomNumber)) {
+        selectedAsks.add(loadedAsks[randomNumber]);
+        usedIndexes.add(randomNumber);
+      }
+    }
+    return selectedAsks;
   }
 
   Future<List<AskModel>> _getAsk() async {
@@ -106,6 +135,7 @@ class _MapListeningExaminationScreenState
     }
   }
 
+
   List<InlineSpan> _listTextSpan() {
     List<InlineSpan> textSpans = [];
     textSpans.add(
@@ -135,8 +165,75 @@ class _MapListeningExaminationScreenState
       children: [
         _body(),
         ..._listAnswer(),
+        Spacer(),
         _listening(),
-        Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+        // Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Flexible(
+                child: CustomButtomImageColorWidget(
+                  onTap: () {
+                     if (page == 1) {
+                      return;
+                    }
+                    page -= 1;
+                    _ask = _asks[page-1];
+                    answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+                    setState(() {});
+                  },
+                  smallButton: true,
+                   smallOrangeColor: page > 1,
+                    smallGrayColor: page == 1,
+                  child: Center(
+                    child: StrokeTextWidget(
+                      text: "Previous",
+                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                      colorStroke: Color(0xFFD18A5A),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              Flexible(
+                child: CustomButtomImageColorWidget(
+                  onTap: () {
+                    if (page == pages) {
+                      GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Bạn có chắc chắn muốn nộp bài?",
+                        agree: () {
+                          if (positions.contains(-1)) {
+                            GlobalSetting.shared.showPopupWithTitle(context, "Bạn chưa chọn đủ đáp án, vui lòng chọn đầy đủ!");
+                          } else {
+                            print("Nộp bài");
+                          }
+                      },cancel: () {
+                        Navigator.of(context).pop();
+                      },));
+                      return;
+                    }
+                    page += 1;
+                    _ask = _asks[page-1];
+                    answers =  [_ask.A, _ask.B, _ask.C, _ask.D];
+                    setState(() {});
+                  },
+                  smallButton: true,
+                  smallOrangeColor: true,
+                  child: Center(
+                    child: StrokeTextWidget(
+                      text: page == pages ? "Final" :"Next",
+                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                      colorStroke: Color(0xFFD18A5A),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
         Container(
           height: AppSizes.bottomHeight,
         )
@@ -146,7 +243,7 @@ class _MapListeningExaminationScreenState
 
    Widget _listening() {
     return Container(
-      height: 100,
+      height: AppSizes.maxHeight*0.12,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -160,7 +257,7 @@ class _MapListeningExaminationScreenState
             },
             child: Image.asset(
               isListening ? Assets.ic_playing_listening : Assets.ic_notplay_listening,
-              height: 48,
+              height: AppSizes.maxHeight*0.06,
             ),
           ),
           Padding(
@@ -191,7 +288,7 @@ class _MapListeningExaminationScreenState
                       border: Border.all(width: 4, color: Color(0xFFE97428)),
                       color: Color(0xFF467865)),
                   child: CarouselSlider(
-                    items: [_itemReading(), _itemReading()],
+                    items: [_itemReading()],
                     carouselController: buttonCarouselController,
                     options: CarouselOptions(
                         scrollPhysics: NeverScrollableScrollPhysics(),
@@ -209,9 +306,14 @@ class _MapListeningExaminationScreenState
           ),
           Positioned(
               bottom: 0,
-              left: 16,
-              right: 16,
+              left: AppSizes.maxWidth*0.04,
+              right: AppSizes.maxWidth*0.04,
               child: Image(image: AssetImage(Assets.img_line_table))),
+
+              Positioned(
+              bottom: AppSizes.maxHeight*0.02,
+              right: AppSizes.maxWidth*0.08,
+              child: Text("${page}/${pages}",style: TextStyle(color: Colors.white),)),
         ],
       ),
     );
@@ -221,7 +323,12 @@ class _MapListeningExaminationScreenState
 
     List<Widget> itemList = [];
     for (int i = 0; i < answers.length; i++) {
-      itemList.add(_answer(answers[i], i));
+      itemList.add(_answer(answers[i], i, ontap: () {
+        positions[page-1] = i;
+        setState(() {
+          
+        });
+      }));
     }
     return itemList;
   }
@@ -243,19 +350,9 @@ class _MapListeningExaminationScreenState
   }
 
   Widget _itemReading() {
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.only(left: 16, right: 24),
-              child: RichText(
-                text: TextSpan(children: _listTextSpan()),
-              ),
-            ),
-          ),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(_ask?.Question ?? "", style: TextStyle(fontSize: 24),),
     );
   }
 
@@ -263,29 +360,16 @@ class _MapListeningExaminationScreenState
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: CustomButtomImageColorWidget(
-        redBlurColor: true,
+        redBlurColor:positions[page-1] != i,
+        redColor: positions[page-1] == i,
         child:
-            Text(answer, style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: ontap,
       ),
     );
   }
 
-  Widget _buildButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: CustomButtomImageColorWidget(
-        orangeColor: true,
-        child:
-            Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
-        onTap: () {
-          page += 1;
-          splitText(text2);
-          setState(() {});
-        },
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {

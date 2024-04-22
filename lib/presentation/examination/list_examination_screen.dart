@@ -38,7 +38,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 },
               ),
             ))
@@ -101,45 +101,48 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFACA44),
-      body: Responsive(
-        mobile: Center(
-          child: Container(
-            width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                _buildBackground(),
-                _buildContent(),
-              ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Color(0xFFFACA44),
+        body: Responsive(
+          mobile: Center(
+            child: Container(
+              width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _buildBackground(),
+                  _buildContent(),
+                ],
+              ),
             ),
           ),
-        ),
-        tablet: Center(
-          child: Container(
-            width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                _buildBackground(),
-                _buildContent(),
-              ],
+          tablet: Center(
+            child: Container(
+              width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _buildBackground(),
+                  _buildContent(),
+                ],
+              ),
             ),
           ),
-        ),
-        desktop: Center(
-          child: Container(
-            width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                _buildBackground(),
-                _buildContent(),
-              ],
+          desktop: Center(
+            child: Container(
+              width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _buildBackground(),
+                  _buildContent(),
+                ],
+              ),
             ),
           ),
         ),

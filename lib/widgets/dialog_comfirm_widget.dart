@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 class DialogConfirmWidget extends StatelessWidget {
   final Function? agree;
   final Function? cancel;
+  final String? title;
 
-  DialogConfirmWidget({this.agree, this.cancel});
+  DialogConfirmWidget({this.agree, this.cancel,this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class DialogConfirmWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         StrokeTextWidget(
-                            text: AppLocalizations.text(LangKey.confirm_purchase), size: AppSizes.maxWidth < 350 ? 16 : 24,),
+                            text: title ?? AppLocalizations.text(LangKey.confirm_purchase), size: AppSizes.maxWidth < 350 ? 16 : 24,),
                         Padding(
                           padding: EdgeInsets.only(top: 16),
                           child: Row(

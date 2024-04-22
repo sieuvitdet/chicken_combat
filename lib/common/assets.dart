@@ -186,6 +186,8 @@ class Assets {
   static final String img_playing = "assets/images/img_playing.png";
   static final String img_micro = "assets/images/img_micro.png";
   static final String ic_chicken_hidden = "assets/icons/ic_chicken_hidden.png";
+  static final String img_button_small_orange = "assets/images/img_button_small_orange.png";
+  static final String img_button_small_gray = "assets/images/img_button_small_gray.png";
 
   //gif
   static final String chicken_flapping_swing_gif =

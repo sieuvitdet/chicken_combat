@@ -19,7 +19,6 @@ import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,10 +32,10 @@ class _HomeScreenState extends State<HomeScreen>
   late Animation<double> _animation;
   UserModel? _userModel;
   FinanceModel? _financeModel;
-  bool _isChickenSing = false;
   bool _isPlay = false;
   bool _isEnablePlay = false;
   bool _isEnableResume = false;
+  bool _showMicro = false;
 
   @override
   void initState() {
@@ -60,11 +59,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      AudioManager.pauseBackgroundMusic();
-    } else if (state == AppLifecycleState.resumed) {
-      AudioManager.resumeBackgroundMusic();
-    }
+    // if (state == AppLifecycleState.paused) {
+    //   AudioManager.pauseBackgroundMusic();
+    // } else if (state == AppLifecycleState.resumed) {
+    //   AudioManager.resumeBackgroundMusic();
+    // }
   }
 
   Future<void> _initializeData() async {
@@ -135,7 +134,8 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: -AppSizes.maxHeight * 0.22, end: AppSizes.maxHeight*0.02)
+    _animation = Tween<double>(
+            begin: -AppSizes.maxHeight * 0.22, end:-10)
         .animate(_controller)
       ..addListener(() {
         setState(() {});
@@ -150,6 +150,19 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  _triggerVoice() {
+    if (_isPlay) {
+      if (_isEnableResume) {
+        _resummeChickenSing();
+      } else {
+        _isEnableResume = true;
+        _playChickenSing();
+      }
+    } else {
+      AudioManager.resumeBackgroundMusic();
+    }
+  }
+
   Widget _function() {
     return Container(
       width: AppSizes.maxWidth,
@@ -157,19 +170,37 @@ class _HomeScreenState extends State<HomeScreen>
       child: Column(
         children: [
           _action(0, AppLocalizations.text(LangKey.lesson), () async {
-            Navigator.of(context).push(MaterialPageRoute(
+            if (_isPlay) {
+              await _pauseChickenSing();
+            }
+            bool result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListLessonScreen(
                       courseMapModel: _userModel!.courseMapModel,
                     )));
+            if (result) {
+              _triggerVoice();
+            }
           }),
-          _action(1, AppLocalizations.text(LangKey.test), () {
-            Navigator.of(context).push(MaterialPageRoute(
+          _action(1, AppLocalizations.text(LangKey.test), () async {
+            if (_isPlay) {
+              await _pauseChickenSing();
+            }
+            bool result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListExaminationScreen(
                     mapModel: _userModel!.checkingMapModel)));
+            if (result) {
+              _triggerVoice();
+            }
           }),
-          _action(2, AppLocalizations.text(LangKey.challenge), () {
-            Navigator.of(context).push(
+          _action(2, AppLocalizations.text(LangKey.challenge), () async {
+            if (_isPlay) {
+              await _pauseChickenSing();
+            }
+            bool result = await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => ListChallengeScreen()));
+            if (result) {
+              _triggerVoice();
+            }
           })
         ],
       ),
@@ -240,7 +271,8 @@ class _HomeScreenState extends State<HomeScreen>
               _itemRow("${_financeModel?.diamond ?? 0}", Assets.ic_diamond,
                   ontap: () {}),
               SizedBox(width: 4),
-              _itemRow(AppLocalizations.text(LangKey.shop), Assets.ic_shop, ontap: () {
+              _itemRow(AppLocalizations.text(LangKey.shop), Assets.ic_shop,
+                  ontap: () {
                 AudioManager.playSoundEffect(AudioFile.sound_tap);
                 showDialog(
                     context: context,
@@ -270,15 +302,22 @@ class _HomeScreenState extends State<HomeScreen>
           ? AppSizes.maxWidth
           : AppSizes.maxWidthTablet,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          Image(fit: BoxFit.cover, image: AssetImage(Assets.gif_snow_home)),
+          Image(
+            fit: BoxFit.fill,
+            image: AssetImage(Assets.gif_snow_home),
+            width: AppSizes.maxWidth,
+            height: AppSizes.maxHeight,
+          ),
           Positioned(
-              bottom: AppSizes.maxHeight*0.14,
+              bottom: AppSizes.maxHeight * 0.23,
               left: 0,
               right: 0,
               child: GestureDetector(
                 onTap: () {
                   _controller.forward();
+                  _showMicro = true;
                 },
                 child: Image(
                   fit: BoxFit.contain,
@@ -287,27 +326,29 @@ class _HomeScreenState extends State<HomeScreen>
                   height: AppSizes.maxHeight * 0.15,
                 ),
               )),
-          Positioned(
+          if (_showMicro) Positioned(
               bottom: _animation.value,
               left: 15,
               right: 0,
               child: Image(
-                fit: BoxFit.contain,
+                fit: BoxFit.fill,
                 image: AssetImage(Assets.img_micro),
                 width: AppSizes.maxWidth * 0.01,
-                height: AppSizes.maxHeight * 0.2,
+                height: AppSizes.maxHeight * 0.3,
               )),
           if (_isEnablePlay)
             Positioned(
-              top: AppSizes.maxHeight*0.28,
+              bottom: AppSizes.maxHeight * 0.38,
               right: 0,
               left: 0,
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    if (_isPlay) { // đang phát nhạc gà
+                    if (_isPlay) {
+                      // đang phát nhạc gà
                       _pauseChickenSing();
-                    } else { // đang tắt nhạc gà 
+                    } else {
+                      // đang tắt nhạc gà
                       if (_isEnableResume) {
                         _resummeChickenSing();
                       } else {
@@ -319,9 +360,9 @@ class _HomeScreenState extends State<HomeScreen>
                   });
                 },
                 child: ShakeWidget(
-                    duration: const Duration(seconds: 10),
-                    shakeConstant: ShakeDefaultConstant1(),
-                    autoPlay: true,
+                  duration: const Duration(seconds: 10),
+                  shakeConstant: ShakeDefaultConstant1(),
+                  autoPlay: true,
                   child: Image.asset(
                     _isPlay ? Assets.img_playing : Assets.ic_playgame_popup,
                     height: 48,
@@ -330,10 +371,9 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
 
-
-            // Positioned(
-            //   top: 200,
-            //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
+          // Positioned(
+          //   top: 200,
+          //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
         ],
       ),
     ));
@@ -456,7 +496,6 @@ class _ThoughtBubbleState extends State<ThoughtBubble> {
   }
 }
 
-
 class BubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -464,15 +503,18 @@ class BubblePainter extends CustomPainter {
     var path = Path();
 
     // Vẽ đám mây
-    path.addOval(Rect.fromCircle(center: Offset(size.width * 0.3, size.height * 0.3), radius: 30));
-    path.addOval(Rect.fromCircle(center: Offset(size.width * 0.5, size.height * 0.25), radius: 40));
-    path.addOval(Rect.fromCircle(center: Offset(size.width * 0.7, size.height * 0.3), radius: 30));
+    path.addOval(Rect.fromCircle(
+        center: Offset(size.width * 0.3, size.height * 0.3), radius: 30));
+    path.addOval(Rect.fromCircle(
+        center: Offset(size.width * 0.5, size.height * 0.25), radius: 40));
+    path.addOval(Rect.fromCircle(
+        center: Offset(size.width * 0.7, size.height * 0.3), radius: 30));
 
     // Vẽ mũi tên chỉ xuống
     path.moveTo(size.width * 0.5, size.height * 0.5);
     path.lineTo(size.width * 0.45, size.height * 0.7);
     path.lineTo(size.width * 0.55, size.height * 0.7);
-     path.lineTo(size.width * 0.4, size.height * 0.9);
+    path.lineTo(size.width * 0.4, size.height * 0.9);
     path.close();
 
     canvas.drawPath(path, paint);

@@ -27,13 +27,13 @@ dependencies:
   intl: ^0.18.0
   firebase_auth: ^4.19.0
   shared_preferences: any
-  flutter_screenutil: any
   pointycastle: ^3.8.0
   flutter_tts: ^3.0.0
   permission_handler: ^10.3.0
   audioplayers: ^1.2.0
   http: ^0.13.3
   speech_to_text: ^6.0.0
+  flutter_screenutil: ^5.9.0
 
 dev_dependencies:
   flutter_test:

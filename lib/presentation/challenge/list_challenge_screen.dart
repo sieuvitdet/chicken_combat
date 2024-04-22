@@ -35,7 +35,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 },
               ),
             ))
@@ -96,9 +96,10 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
-        AudioManager.playBackgroundMusic(AudioFile.sound_background);
-      },
+      // onPopInvoked: (didPop) {
+      //   AudioManager.playBackgroundMusic(AudioFile.sound_background);
+      // },
+      canPop: false,
       child: Scaffold(
         backgroundColor: Color(0xFFFACA44),
         body: Responsive(mobile: Stack(

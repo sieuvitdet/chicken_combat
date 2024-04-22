@@ -4,7 +4,6 @@ import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:flutter/material.dart';
 
 class CustomButtomImageColorWidget extends StatelessWidget {
-  
   final Function? onTap;
   final bool blueColor;
   final bool greenColor;
@@ -12,10 +11,24 @@ class CustomButtomImageColorWidget extends StatelessWidget {
   final bool redBlurColor;
   final bool redColor;
   final bool yellowColor;
+  final bool smallButton;
+  final bool smallOrangeColor;
+  final bool smallGrayColor;
   final Widget? child;
 
-  CustomButtomImageColorWidget({this.onTap,this.blueColor = false,this.greenColor = false,this.orangeColor = false,this.redBlurColor = false,this.redColor = false,this.yellowColor = false, this.child});
- 
+  CustomButtomImageColorWidget(
+      {this.onTap,
+      this.blueColor = false,
+      this.greenColor = false,
+      this.orangeColor = false,
+      this.redBlurColor = false,
+      this.redColor = false,
+      this.yellowColor = false,
+      this.smallButton = false,
+      this.smallGrayColor = false,
+      this.smallOrangeColor = false,
+      this.child});
+
   @override
   Widget build(BuildContext context) {
     return ScalableButton(
@@ -23,18 +36,32 @@ class CustomButtomImageColorWidget extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Image.asset(
-            blueColor ? Assets.img_button_blue : 
-            greenColor ? Assets.img_button_green : 
-            orangeColor ? Assets.img_button_orange : 
-            redBlurColor ? Assets.img_button_red_blur : 
-            redColor ? Assets.img_button_red : 
-            yellowColor ? Assets.img_button_yellow : Assets.img_button_grey ,
-            fit: BoxFit.fill,
-            height: AppSizes.maxHeight*0.0535,
-            width: AppSizes.maxWidth),
+          !smallButton ? Image.asset(
+              blueColor
+                  ? Assets.img_button_blue
+                  : greenColor
+                      ? Assets.img_button_green
+                      : orangeColor
+                          ? Assets.img_button_orange
+                          : redBlurColor
+                              ? Assets.img_button_red_blur
+                              : redColor
+                                  ? Assets.img_button_red
+                                  : yellowColor
+                                      ? Assets.img_button_yellow
+                                      : smallButton
+                                          ? Assets.img_button_small_orange
+                                          : Assets.img_button_grey,
+              fit: BoxFit.fill,
+              height: AppSizes.maxHeight * 0.0535,
+              width: AppSizes.maxWidth) : Image.asset(
+              smallOrangeColor
+                  ? Assets.img_button_small_orange : Assets.img_button_small_gray
+                      ,
+              fit: BoxFit.fill,
+              height: AppSizes.maxHeight * 0.0535,
+              width:  AppSizes.maxWidth/2),
           child ?? Container()
-
         ],
       ),
     );

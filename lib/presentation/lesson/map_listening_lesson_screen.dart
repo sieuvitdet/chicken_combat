@@ -22,10 +22,6 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
       "Welcome to our random topic! Get ready  to explo";
 
-  String text2 =
-      "Welcome  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready  to explore some interesting questions we've prepared for you.";
-
   List<String> parts = [];
   List<String> anwsers = [];
   var _isKeyboardVisible = false;
@@ -78,32 +74,49 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       children: [
         _body(),
         ..._listAnswer(),
+        Spacer(),
         _listening(),
-        Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+        // Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
               Flexible(
-                child: CustomButtomImageColorWidget(
-                  orangeColor: true,
-                  child: Center(
-                    child: StrokeTextWidget(
-                      text: "Previous",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
-                      colorStroke: Color(0xFFD18A5A),
+                child: ScalableButton(
+                  onTap: () {
+                    page -= 1;
+                    setState(() {});
+                  },
+                  child: CustomButtomImageColorWidget(
+                    smallButton: true,
+                    child: Center(
+                      child: StrokeTextWidget(
+                        text: "Previous",
+                        size: AppSizes.maxWidth < 350 ? 14 : 20,
+                        colorStroke: Color(0xFFD18A5A),
+                      ),
                     ),
                   ),
                 ),
               ),
+              SizedBox(
+                width: 16,
+              ),
               Flexible(
-                child: CustomButtomImageColorWidget(
-                  orangeColor: true,
-                  child: Center(
-                    child: StrokeTextWidget(
-                      text: "Next",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
-                      colorStroke: Color(0xFFD18A5A),
+                child: ScalableButton(
+                  onTap: () {
+                    page += 1;
+                    setState(() {});
+                  },
+                  child: CustomButtomImageColorWidget(
+                    smallButton: true,
+                    child: Center(
+                      child: StrokeTextWidget(
+                        text: "Next",
+                        size: AppSizes.maxWidth < 350 ? 14 : 20,
+                        colorStroke: Color(0xFFD18A5A),
+                      ),
                     ),
                   ),
                 ),
@@ -151,42 +164,36 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
   }
 
   Widget _body() {
-    return Expanded(
+    return Flexible(
       child: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  // height: AppSizes.maxHeight / 2,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(width: 4, color: Color(0xFFE97428)),
-                      color: Color(0xFF467865)),
-                  child: CarouselSlider(
-                    items: [_itemReading(), _itemReading()],
-                    carouselController: buttonCarouselController,
-                    options: CarouselOptions(
-                        scrollPhysics: NeverScrollableScrollPhysics(),
-                        initialPage: page,
-                        viewportFraction: 1,
-                        height: AppSizes.maxHeight,
-                        enableInfiniteScroll: false,
-                        reverse: false,
-                        autoPlay: false,
-                        scrollDirection: Axis.horizontal),
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 16),
+            // height: AppSizes.maxHeight / 2,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(width: 4, color: Color(0xFFE97428)),
+                color: Color(0xFF467865)),
+            child: CarouselSlider(
+              items: [_itemReading(), _itemReading()],
+              carouselController: buttonCarouselController,
+              options: CarouselOptions(
+                  scrollPhysics: NeverScrollableScrollPhysics(),
+                  initialPage: page,
+                  viewportFraction: 1,
+                  height: AppSizes.maxHeight / 3,
+                  enableInfiniteScroll: false,
+                  reverse: false,
+                  autoPlay: false,
+                  scrollDirection: Axis.horizontal),
+            ),
           ),
           Positioned(
               bottom: 0,
               left: 16,
               right: 16,
-              child: Image(image: AssetImage(Assets.img_line_table))),
+              child: Image(image: AssetImage(Assets.img_line_table)))
         ],
       ),
     );
@@ -225,22 +232,6 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
         child:
             Text("Đáp án", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: ontap,
-      ),
-    );
-  }
-
-  Widget _buildButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: CustomButtomImageColorWidget(
-        orangeColor: true,
-        child:
-            Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
-        onTap: () {
-          page += 1;
-          splitText(text2);
-          setState(() {});
-        },
       ),
     );
   }

@@ -40,7 +40,7 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 },
               ),
             ))
@@ -101,9 +101,7 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
-        print("cccc");
-      },
+      canPop: false,
       child: Scaffold(
         body: Responsive(
             mobile: Stack(
