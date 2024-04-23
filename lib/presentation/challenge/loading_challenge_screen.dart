@@ -91,6 +91,24 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     return null;
   }
 
+  Future<String> createBattleStatus() async {
+    StatusBattle battle = StatusBattle(
+        askPosition: -1,
+        userid: '',
+        correct: false, id: '',
+    );
+    try {
+      DocumentReference ref = await FirebaseFirestore.instance
+          .collection(FirebaseEnum.battlestatus)
+          .add(battle.toJson());
+      battle.id = ref.id;
+      return battle.id;
+    } catch (e) {
+      print("Error creating new room: $e");
+      throw Exception("Failed to create a new room");
+    }
+  }
+
   Future<RoomModel> createNewRoom() async {
     Timestamp now = Timestamp.now();
     List<UserInfoRoom> initialUsers = [];
@@ -103,13 +121,13 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
               : Globals.currentUser!
                   .useColor, ready: false));
     }
-    StatusBattle statusBattle = StatusBattle(askPosition: 0, userid: '', correct: false);
+    String battleId = await createBattleStatus();
     List<AskModel> asks = await _loadAsks();
     RoomModel newRoom = RoomModel(
       id: '',
       timestamp: now,
       type: 1,
-      status: statusBattle,
+      status: battleId,
       users: initialUsers,
       asks: asks
     );

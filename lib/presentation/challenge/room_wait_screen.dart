@@ -268,7 +268,11 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
     try {
       await FirebaseFirestore.instance
           .collection(FirebaseEnum.room)
-          .doc(roomId)
+          .doc(_room!.id)
+          .delete();
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.battlestatus)
+          .doc(_room!.status)
           .delete();
       Navigator.of(context)..pop()..pop();
     } catch (e) {
