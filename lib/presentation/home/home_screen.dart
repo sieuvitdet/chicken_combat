@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _initializeData() async {
     await _getFinance(_userModel!.financeId);
+    await _getUserName(_userModel!.id);
     await _getStore();
     await _getMaps();
   }
@@ -96,6 +97,20 @@ class _HomeScreenState extends State<HomeScreen>
         setState(() {
           _financeModel = FinanceModel.fromSnapshot(documentSnapshot);
           Globals.financeUser = _financeModel;
+        });
+      }
+    });
+  }
+
+  Future<void> _getUserName(String _id) async {
+    CollectionReference _user =
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    _user.doc(_userModel!.id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        setState(() {
+          UserModel _userModelRespose = UserModel.fromSnapshot(documentSnapshot);
+          Globals.currentUser = _userModelRespose;
+          _userModel = _userModelRespose;
         });
       }
     });

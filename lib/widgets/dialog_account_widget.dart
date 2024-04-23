@@ -14,6 +14,7 @@ import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
+import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -61,93 +62,124 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
     });
   }
 
+  Future<void> _updateUserName(String _idUser, String newUserName) async {
+    CollectionReference _user =
+        FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
+    return _user
+        .doc(_idUser)
+        .update({'username': newUserName})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: Container(
-          width: AppSizes.maxWidth * 0.868,
-          height: AppSizes.maxHeight > 850
-              ? AppSizes.maxHeight * 0.45
-              : AppSizes.maxHeight * 0.5,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                Assets.img_background_popup,
-                fit: BoxFit.fill,
-                width: AppSizes.maxWidth * 0.888,
-                height: AppSizes.maxHeight * 0.5,
-              ),
-              Column(
-                children: [
-                  Container(
-                    height: AppSizes.maxHeight * 0.09,
-                    child: Center(
-                      child: StrokeTextWidget(
-                          text: AppLocalizations.text(LangKey.account),
-                          size: AppSizes.maxWidth < 350 ? 30 : 40,
-                          colorStroke: Colors.red[900]),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Container(
+            width: AppSizes.maxWidth * 0.868,
+            height: AppSizes.maxHeight > 850
+                ? AppSizes.maxHeight * 0.45
+                : AppSizes.maxHeight * 0.5,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  Assets.img_background_popup,
+                  fit: BoxFit.fill,
+                  width: AppSizes.maxWidth * 0.888,
+                  height: AppSizes.maxHeight * 0.5,
+                ),
+                Column(
+                  children: [
+                    Container(
+                      height: AppSizes.maxHeight * 0.09,
+                      child: Center(
+                        child: StrokeTextWidget(
+                            text: AppLocalizations.text(LangKey.account),
+                            size: AppSizes.maxWidth < 350 ? 30 : 40,
+                            colorStroke: Colors.red[900]),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                      child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50.0),
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            Color(0xFFEDB371),
-                            Color(0xFFFFD383),
-                          ],
-                        )),
-                    child: Column(
-                      children: [
-                        _level(),
-                        _nameAccount(),
-                        _passWord(),
-                        _ranking(),
-                        Container(height: AppSizes.maxHeight * 0.02),
-                        CustomButtomImageColorWidget(
-                          onTap: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .popUntil((route) => route.isFirst);
-                            Navigator.of(context, rootNavigator: true)
-                                .pushReplacement(
-                                    CustomRoute(page: LoginScreen()));
-                          },
-                          orangeColor: true,
-                          child: Center(
-                            child: StrokeTextWidget(
-                              text: AppLocalizations.text(LangKey.logout),
-                              size: AppSizes.maxWidth < 350 ? 14 : 20,
-                              colorStroke: Color(0xFFD18A5A),
+                    Expanded(
+                        child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Color(0xFFEDB371),
+                              Color(0xFFFFD383),
+                            ],
+                          )),
+                      child: Column(
+                        children: [
+                          _level(),
+                          _nameAccount(),
+                          _passWord(),
+                          _ranking(),
+                          Container(height: AppSizes.maxHeight * 0.02),
+                          CustomButtomImageColorWidget(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .popUntil((route) => route.isFirst);
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushReplacement(
+                                      CustomRoute(page: LoginScreen()));
+                            },
+                            orangeColor: true,
+                            child: Center(
+                              child: StrokeTextWidget(
+                                text: AppLocalizations.text(LangKey.logout),
+                                size: AppSizes.maxWidth < 350 ? 14 : 20,
+                                colorStroke: Color(0xFFD18A5A),
+                              ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )),
-                  SizedBox(
-                    height: AppSizes.maxHeight * 0.025,
-                  )
-                ],
-              ),
-              Positioned(
-                  right: 16,
-                  top: AppSizes.maxHeight * 0.0245,
-                  child: ScalableButton(
-                      onTap: () {
-                        AudioManager.playSoundEffect(AudioFile.sound_tap);
-                        Navigator.of(context).pop();
-                      },
-                      child: Image.asset(Assets.ic_close_popup,
-                          width: AppSizes.maxWidth * 0.116))),
-            ],
+                          )
+                        ],
+                      ),
+                    )),
+                    SizedBox(
+                      height: AppSizes.maxHeight * 0.025,
+                    )
+                  ],
+                ),
+                Positioned(
+                    right: 16,
+                    top: AppSizes.maxHeight * 0.0245,
+                    child: ScalableButton(
+                        onTap: () {
+                          AudioManager.playSoundEffect(AudioFile.sound_tap);
+                          if (Globals.currentUser!.username != _userNameController.text) {
+                            GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Bạn có chắc chắn muốn đổi tên!",
+                            agree: () {
+                              Navigator.of(context).pop();
+                              _updateUserName(Globals.currentUser!.id, _userNameController.text);
+                            },
+                            cancel: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                _userNameController.text = Globals.currentUser!.username;
+
+                              });
+                            },
+                            ));
+                          } else {
+                            Navigator.of(context).pop();
+                          }
+                          
+                        },
+                        child: Image.asset(Assets.ic_close_popup,
+                            width: AppSizes.maxWidth * 0.116))),
+              ],
+            ),
           ),
         ),
       ),
@@ -280,6 +312,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                   ),
                   GestureDetector(
                       onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
