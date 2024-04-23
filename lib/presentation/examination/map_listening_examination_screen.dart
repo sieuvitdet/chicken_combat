@@ -490,7 +490,7 @@ class _MapListeningExaminationScreenState
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: Text(
         _ask.Question,
-        style: TextStyle(fontSize: 24),
+        style: TextStyle(fontSize: 24,color: Colors.white),
       ),
     );
   }

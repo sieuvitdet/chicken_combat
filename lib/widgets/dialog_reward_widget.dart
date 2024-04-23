@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
@@ -111,7 +113,7 @@ class _DialogRewardWidgetState extends State<DialogRewardWidget> {
                     Padding(
                       padding: EdgeInsets.only(bottom: 8.0, left: 8.0),
                       child: StrokeTextWidget(
-                          text: "Quà hàng ngày",
+                          text: AppLocalizations.text(LangKey.daily_gift),
                           size: AppSizes.maxWidth < 350 ? 13 : 16),
                     ),
                     Wrap(
@@ -133,7 +135,7 @@ class _DialogRewardWidgetState extends State<DialogRewardWidget> {
                     Padding(
                       padding: EdgeInsets.only(bottom: 8.0, left: 8.0),
                       child: StrokeTextWidget(
-                          text: "Quà hàng tháng",
+                          text: AppLocalizations.text(LangKey.monthly_gift),
                           size: AppSizes.maxWidth < 350 ? 13 : 16),
                     ),
                     Wrap(

@@ -29,14 +29,14 @@ class DialogMenuActionWidget extends StatelessWidget {
       body: Center(
           child: Container( 
             width: AppSizes.maxWidth*0.838,
-            height: AppSizes.maxHeight*0.45,
+            height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight*0.45 : AppSizes.maxHeight*0.5,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Image.asset(
                   Assets.img_background_popup,
                   fit: BoxFit.fill,
-                  height: AppSizes.maxHeight*0.52,
+                  height: AppSizes.maxHeight*0.6,
                   width: AppSizes.maxWidth*0.838,
                 ),
                 Column(
@@ -45,7 +45,7 @@ class DialogMenuActionWidget extends StatelessWidget {
                       height: AppSizes.maxHeight*0.09,
                       child: Center(
                         child: Text(
-                          "Cài đặt",
+                          AppLocalizations.text(LangKey.setting),
                           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 30 : 40, color: Colors.white),
                         ),
                       ),

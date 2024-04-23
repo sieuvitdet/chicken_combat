@@ -13,8 +13,9 @@ import 'package:flutter/material.dart';
 class RankingScreen extends StatefulWidget {
   final RankingModel? currentScore;
   final List<RankingModel>? rankingScore;
+  final int tab;
 
-  RankingScreen({required this.currentScore, required this.rankingScore});
+  RankingScreen({required this.currentScore, required this.rankingScore,required this.tab});
 
   @override
   State<RankingScreen> createState() => _RankingScreenState();
@@ -34,6 +35,7 @@ class _RankingScreenState extends State<RankingScreen> {
     _currentScore = widget.currentScore;
     _rankingScore = widget.rankingScore??[];
     _rankingScore.sort((a, b) => b.PK11.compareTo(a.PK11));
+    tab = widget.tab;
   }
 
   int getPositionById(List<RankingModel> list, String id) {
@@ -44,7 +46,7 @@ class _RankingScreenState extends State<RankingScreen> {
 
   Widget _listTabUnSelect() {
     return Positioned(
-        top: AppSizes.maxHeight * 0.1,
+        top: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.1 : AppSizes.maxHeight * 0.11,
         right: 0,
         left: 0,
         child: Row(
@@ -106,7 +108,7 @@ class _RankingScreenState extends State<RankingScreen> {
 
   Widget _listTabSelected() {
     return Positioned(
-        top: -AppSizes.maxHeight * 0.082,
+        top: AppSizes.maxHeight > 850 ? -AppSizes.maxHeight * 0.082 : -AppSizes.maxHeight * 0.1,
         right: 0,
         left: 0,
         child: Row(
@@ -340,7 +342,7 @@ class _RankingScreenState extends State<RankingScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
               // width: AppSizes.maxWidth * 0.186,
-              height: AppSizes.maxHeight * 0.028,
+              height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.028 : AppSizes.maxHeight * 0.035,
               decoration: BoxDecoration(
                   color: Color(0xFF195EC8),
                   borderRadius: BorderRadius.circular(24.0),
@@ -395,7 +397,7 @@ class _RankingScreenState extends State<RankingScreen> {
             Container(
               width: AppSizes.maxWidth * 0.85,
               margin: EdgeInsets.only(
-                  top: AppSizes.maxHeight * 0.15,
+                  top: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.15 : AppSizes.maxHeight * 0.17,
                   bottom: AppSizes.maxHeight * 0.045),
               padding: EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
@@ -478,7 +480,7 @@ class _RankingScreenState extends State<RankingScreen> {
                 )),
 
             Positioned(
-                top: AppSizes.maxHeight * 0.11,
+                top: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.11 : AppSizes.maxHeight * 0.12,
                 right: AppSizes.maxWidth * 0.038,
                 child: ScalableButton(
                   onTap: () {

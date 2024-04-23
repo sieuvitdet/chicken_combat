@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
@@ -18,7 +20,7 @@ class _DialogRulesRewardWidgetState extends State<DialogRulesRewardWidget> {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.838,
-          height: AppSizes.maxHeight * 0.47,
+          height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.4 : AppSizes.maxHeight * 0.47,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -34,7 +36,7 @@ class _DialogRulesRewardWidgetState extends State<DialogRulesRewardWidget> {
                     height: AppSizes.maxHeight * 0.09,
                     child: Center(
                       child: StrokeTextWidget(
-                          text: "Thể lệ",
+                          text: AppLocalizations.text(LangKey.rules),
                           size: AppSizes.maxWidth < 350 ? 30 : 40,
                           colorStroke: Colors.red[900]),
                     ),

@@ -12,6 +12,7 @@ import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_route.dart';
+import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,16 +26,19 @@ class DialogAccountWidget extends StatefulWidget {
 }
 
 class _DialogAccountWidgetState extends State<DialogAccountWidget> {
-
   UserModel? _userModel;
   RankingModel? _currentScore;
   List<RankingModel> _rankingScore = [];
 
-   @override
+  TextEditingController _userNameController = TextEditingController();
+  FocusNode _userNameNode = FocusNode();
+
+  @override
   void initState() {
     super.initState();
     _userModel = Globals.currentUser;
     _initializeData();
+    _userNameController.text = _userModel?.username ?? "";
   }
 
   Future<void> _initializeData() async {
@@ -44,18 +48,16 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
   Future<void> _getScore() async {
     CollectionReference score =
         FirebaseFirestore.instance.collection(FirebaseEnum.score);
-    await score.get()
-        .then((QuerySnapshot querySnapshot) {
+    await score.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         RankingModel model = RankingModel.fromSnapshot(doc);
         _rankingScore.add(model);
       });
       if (_rankingScore.isNotEmpty) {
-        _currentScore = _rankingScore.firstWhere((ranking) => ranking.id == _userModel?.score);
+        _currentScore = _rankingScore
+            .firstWhere((ranking) => ranking.id == _userModel?.score);
       }
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -66,14 +68,16 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.868,
-          height: AppSizes.maxHeight * 0.5,
+          height: AppSizes.maxHeight > 850
+              ? AppSizes.maxHeight * 0.45
+              : AppSizes.maxHeight * 0.5,
           child: Stack(
             alignment: Alignment.center,
             children: [
               Image.asset(
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
-                 width: AppSizes.maxWidth * 0.888,
+                width: AppSizes.maxWidth * 0.888,
                 height: AppSizes.maxHeight * 0.5,
               ),
               Column(
@@ -188,8 +192,8 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
     return Row(
       children: [
         Container(
-          margin: EdgeInsets.only(left: AppSizes.maxWidth * 0.03),
-          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(right: AppSizes.maxWidth * 0.03),
+          alignment: Alignment.center,
           width: AppSizes.maxWidth * 0.17,
           height: AppSizes.maxWidth * 0.097,
           child: StrokeTextWidget(
@@ -201,7 +205,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
         Expanded(
             child: Container(
           padding: EdgeInsets.only(left: 4.0),
-          height: AppSizes.maxHeight * 0.036,
+          height: AppSizes.maxHeight * 0.04,
           decoration: BoxDecoration(
               color: Color(0xFFD18A5A),
               borderRadius: BorderRadius.circular(8.0),
@@ -212,12 +216,26 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                   offset: Offset(2, 0), // Shadow position
                 ),
               ]),
-          child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "${_userModel?.username ?? ""}",
-                style: TextStyle(color: Colors.white),
-              )),
+          child: CustomTextField(
+            error: "",
+            backgroundColor: Colors.transparent,
+            verticalPadding: 0,
+            horizontalPadding: 0,
+            border: Border.all(color: Colors.transparent),
+            style: TextStyle(fontSize: 13, color: Colors.white),
+            hintText: AppLocalizations.text(LangKey.account_name),
+            controller: _userNameController,
+            focusNode: _userNameNode,
+            limitInput: 10,
+            textInputAction: TextInputAction.done,
+            maxLines: 1,
+          ),
+          // child: Container(
+          //     alignment: Alignment.centerLeft,
+          //     child: Text(
+          //       "${_userModel?.username ?? ""}",
+          //       style: TextStyle(color: Colors.white),
+          //     )),
         ))
       ],
     );
@@ -313,7 +331,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                 children: [
                   ScalableButton(
                     onTap: () {
-                      _showRanking();
+                      _showRanking(0);
                     },
                     child: Row(
                       children: [
@@ -333,36 +351,43 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                           ),
                         ),
                         StrokeTextWidget(
-                          text: '${StringUtils.formatNumber(_currentScore?.PK11 ?? 0)}',
+                          text:
+                              '${StringUtils.formatNumber(_currentScore?.PK11 ?? 0)}',
                           size: AppSizes.maxWidth < 350 ? 10 : 14,
                           colorStroke: Color(0xFFD18A5A),
                         )
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 4.0),
-                        height: AppSizes.maxWidth * 0.097,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(Assets.img_green_circle),
-                            StrokeTextWidget(
-                              text: "2vs2",
-                              size: AppSizes.maxWidth < 350 ? 6 : 8,
-                              colorStroke: Color(0xFFD18A5A),
-                            )
-                          ],
+                  ScalableButton(
+                    onTap: () {
+                      _showRanking(1);
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 4.0),
+                          height: AppSizes.maxWidth * 0.097,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(Assets.img_green_circle),
+                              StrokeTextWidget(
+                                text: "2vs2",
+                                size: AppSizes.maxWidth < 350 ? 6 : 8,
+                                colorStroke: Color(0xFFD18A5A),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      StrokeTextWidget(
-                        text: '${StringUtils.formatNumber(_currentScore?.PK22 ?? 0)}',
-                        size: AppSizes.maxWidth < 350 ? 10 : 14,
-                        colorStroke: Color(0xFFD18A5A),
-                      )
-                    ],
+                        StrokeTextWidget(
+                          text:
+                              '${StringUtils.formatNumber(_currentScore?.PK22 ?? 0)}',
+                          size: AppSizes.maxWidth < 350 ? 10 : 14,
+                          colorStroke: Color(0xFFD18A5A),
+                        )
+                      ],
+                    ),
                   )
                 ],
               )),
@@ -371,7 +396,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
     );
   }
 
-  void _showRanking() {
+  void _showRanking(int tab) {
     AudioManager.playSoundEffect(AudioFile.sound_tap);
     showDialog(
         context: context,
@@ -379,7 +404,11 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
           return StatefulBuilder(
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
-              return RankingScreen(currentScore: _currentScore, rankingScore: _rankingScore,);
+              return RankingScreen(
+                currentScore: _currentScore,
+                rankingScore: _rankingScore,
+                tab: tab,
+              );
             },
           );
         });

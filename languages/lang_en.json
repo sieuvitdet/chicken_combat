@@ -43,5 +43,7 @@
     "the_purchased_item_500_gold":"The purchased item will be converted into 500 gold",
     "ready":"Ready",
     "waiting_for_opponents":"Waiting for opponents",
-    "confirm_submit":"Are you sure to submit your assignment?"
+    "confirm_submit":"Are you sure to submit your assignment?",
+    "setting":"Setting"
+
 }

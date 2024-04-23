@@ -436,6 +436,7 @@ class _HomeScreenState extends State<HomeScreen>
     return PopScope(
       canPop: false,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color(0xffFA9C20),
         body: Responsive(
           desktop: Center(

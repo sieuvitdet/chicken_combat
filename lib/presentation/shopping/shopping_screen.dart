@@ -195,12 +195,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   Widget _listTabUnSelect() {
     return Positioned(
-        top: AppSizes.maxHeight * 0.128,
+        top: AppSizes.maxHeight * 0.12,
         right: 0,
         left: 0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
             (tab != 0)
                 ? ScalableButton(
@@ -217,7 +216,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           Assets.img_tab_button_unselected_shop,
                           height: AppSizes.maxHeight * 0.054,
                           width: (AppSizes.maxWidth * 0.65) / 3,
-                          fit: BoxFit.fitWidth,
+                          fit: BoxFit.fill,
                         ),
                         StrokeTextWidget(
                           text: "Skin",
@@ -226,7 +225,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       ],
                     ),
                   )
-                : Container(width: (AppSizes.maxWidth * 0.65) / 3),
+                : Container(width: (AppSizes.maxWidth * 0.7) / 3),
             (tab != 1)
                 ? ScalableButton(
                     onTap: () {
@@ -241,7 +240,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           Assets.img_tab_button_unselected_shop,
                           height: AppSizes.maxHeight * 0.054,
                           width: (AppSizes.maxWidth * 0.65) / 3,
-                          fit: BoxFit.fitWidth,
+                          fit: BoxFit.cover,
                         ),
                         StrokeTextWidget(
                           text: "Color",
@@ -265,7 +264,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           Assets.img_tab_button_unselected_shop,
                           height: AppSizes.maxHeight * 0.054,
                           width: (AppSizes.maxWidth * 0.65) / 3,
-                          fit: BoxFit.fitWidth,
+                          fit: BoxFit.cover,
                         ),
                         StrokeTextWidget(
                           text: "Diamond",
@@ -281,7 +280,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   Widget _listTabSelected() {
     return Positioned(
-        top: -AppSizes.maxHeight * 0.07,
+        top:AppSizes.maxHeight > 850 ? -AppSizes.maxHeight * 0.07 : -AppSizes.maxHeight * 0.075,
         right: 0,
         left: 0,
         child: Row(
@@ -296,8 +295,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                         child: Image.asset(
                           Assets.img_tab_button_selected_shop,
                           height: AppSizes.maxHeight * 0.065,
-                          width: (AppSizes.maxWidth * 0.6) / 3,
-                          fit: BoxFit.contain,
+                          width: (AppSizes.maxWidth * 0.65) / 3,
+                          fit: BoxFit.fill,
                         ),
                       ),
                       Padding(
@@ -309,7 +308,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       )
                     ],
                   )
-                : Container(width: (AppSizes.maxWidth * 0.6) / 3),
+                : Container(width: (AppSizes.maxWidth * 0.5) / 3),
             (tab == 1)
                 ? Stack(
                     alignment: Alignment.center,
@@ -318,8 +317,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                         child: Image.asset(
                           Assets.img_tab_button_selected_shop,
                           height: AppSizes.maxHeight * 0.065,
-                          width: (AppSizes.maxWidth * 0.6) / 3,
-                          fit: BoxFit.fitHeight,
+                          width: (AppSizes.maxWidth * 0.65) / 3,
+                          fit: BoxFit.fill,
                         ),
                       ),
                       Padding(
@@ -331,7 +330,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       )
                     ],
                   )
-                : Container(width: (AppSizes.maxWidth * 0.6) / 3),
+                : Container(width: (AppSizes.maxWidth * 0.75) / 3),
             (tab == 2)
                 ? Stack(
                     alignment: Alignment.center,
@@ -341,19 +340,19 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           Assets.img_tab_button_selected_shop,
                           height: AppSizes.maxHeight * 0.065,
                           width: (AppSizes.maxWidth * 0.6) / 3,
-                          fit: BoxFit.fitHeight,
+                          fit: BoxFit.fill,
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(bottom: 8),
                         child: StrokeTextWidget(
                           text: "Diamond",
-                          size: AppSizes.maxWidth < 350 ? 12 : 16,
+                          size: AppSizes.maxWidth < 400 ? 12 : 16,
                         ),
                       )
                     ],
                   )
-                : Container(width: (AppSizes.maxWidth * 0.6) / 3)
+                : Container(width: (AppSizes.maxWidth * 0.52) / 3)
           ],
         ));
   }
@@ -686,7 +685,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   ),
                 )),
             Positioned(
-                top: -AppSizes.maxHeight*0.045,
+                bottom: AppSizes.maxHeight*0.7,
                 child: StrokeTextWidget(
                   text: AppLocalizations.text(LangKey.shop),
                   size: 32,
