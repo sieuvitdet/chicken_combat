@@ -1,16 +1,22 @@
 import 'dart:math';
 
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_dots.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'battle_map/battle_1vs1_screen.dart';
 
 class RoomWaitScreen extends StatefulWidget {
   final RoomModel room;
@@ -24,6 +30,7 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
     with TickerProviderStateMixin {
   bool hiddenGifPK = true;
   bool isMatch = false;
+  bool isOutRoom = false;
   RoomModel? _room;
 
   void initState() {
@@ -39,6 +46,36 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
     _listenRoom(_room?.id ?? '');
   }
 
+  UserInfoRoom? getCurrentUserInfo() {
+    try {
+      return _room?.users.firstWhere((user) => user.userId == Globals.currentUser?.id);
+    } catch (e) {
+      print("Current user not found in room.");
+      throw Exception("Current user not found in room.");
+    }
+  }
+
+  UserInfoRoom? getOtherUserInfo() {
+    try {
+      return _room?.users.firstWhere((user) => user.userId != Globals.currentUser?.id);
+    } catch (e) {
+      print("No other users found in room.");
+      throw Exception("No other users found in room.");
+    }
+  }
+
+  UserInfoRoom? _currentInfo(bool printCurrentUser) {
+    UserInfoRoom? userInfo;
+    if (!isOutRoom) {
+      if (printCurrentUser) {
+        userInfo = getCurrentUserInfo();
+      } else {
+        userInfo = getOtherUserInfo();
+      }
+    }
+    return userInfo;
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -49,16 +86,37 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
     FirebaseFirestore.instance.collection(FirebaseEnum.room);
     room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        setState(() {
-          _room = RoomModel.fromSnapshot(documentSnapshot);
-          if(_room!.users.length > 1) {
-            isMatch = true;
-          } else {
-            isMatch = false;
+        setState(()  {
+          if (!isOutRoom) {
+            _room = RoomModel.fromSnapshot(documentSnapshot);
+            if (_room!.users.length == 1) {
+              isMatch = false;
+            } else {
+              isMatch = true;
+              if(isReadyBattle()) {
+                Future.delayed(Duration(seconds: 3), () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) =>
+                      Battle1Vs1Screen(room: widget.room)));
+                });
+              }
+            }
           }
         });
       }
     });
+  }
+
+  bool isReadyBattle()  {
+    UserInfoRoom? currentUserInfo = getCurrentUserInfo();
+    if (currentUserInfo == null || !currentUserInfo.ready) {
+      return false;
+    }
+    UserInfoRoom? otherUserInfo = getOtherUserInfo();
+    if (otherUserInfo == null || !otherUserInfo.ready) {
+      return false;
+    }
+    return true;
   }
 
   Widget _buildBottom() {
@@ -89,13 +147,13 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
                             alignment: Alignment.center,
                             transform: Matrix4.rotationY(0),
                             child: Image.asset(
-                              Assets.img_chicken_green,
+                              ExtendedAssets.getAssetByCode(_currentInfo(true)?.usecolor ?? 'SK01'),
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.15,
                             ),
                           ),
                           Text(
-                            "Gà 111",
+                            _currentInfo(true)!.username,
                             style: TextStyle(fontSize: 14, color: Colors.white),
                           )
                         ],
@@ -128,14 +186,14 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
                                 : Matrix4.rotationY(0),
                             child: Image.asset(
                               isMatch
-                                  ? Assets.img_chicken_green
-                                  : Assets.ic_chicken_hidden,
+                                  ? ExtendedAssets.getAssetByCode(_currentInfo(false)?.usecolor ?? 'SK01')
+                              : Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.15,
                             ),
                           ),
                           Text(
-                            "Gà 111",
+                              isMatch ? _currentInfo(false)!.username : '...',
                             style: TextStyle(fontSize: 14, color: Colors.white),
                           )
                         ],
@@ -149,7 +207,7 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
                               TextStyle(fontSize: 24, color: Colors.white),
                           seconds: 60,
                           onTimerComplete: () {
-                            removeRoomById(widget.room.id);
+                            removeRoomById(_room!.id);
                           },
                         ),
                 ],
@@ -159,24 +217,24 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
         ),
         isMatch
             ? Positioned(
-                bottom: 24,
+                bottom: 32,
                 left: 16,
                 right: 16,
                 child: Column(
                   children: [
                     LoadingDots(
-                      text: 'Đang chờ đối thủ',
+                      text: AppLocalizations.text(LangKey.waiting_for_opponents),
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                     SizedBox(
                       height: 8,
                     ),
                     CustomButtomImageColorWidget(
-                      orangeColor: true,
-                      child: Text('Sẵng sàng',
+                      orangeColor: _currentInfo(true)?.ready == false ? true : false,
+                      child: Text(AppLocalizations.text(LangKey.ready),
                           style: TextStyle(fontSize: 24, color: Colors.white)),
                       onTap: () {
-                        // Your tap callback here
+                        updateUserReady(_room!);
                       },
                     ),
                   ],
@@ -189,8 +247,8 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
           child: GestureDetector(
             onTap: () {
               isMatch
-                  ? updateUserRoomById(widget.room)
-                  : removeRoomById(widget.room.id);
+                  ? updateUserRoomById(_room!)
+                  : removeRoomById(_room!.id);
             },
             child: Container(
               padding: EdgeInsets.all(8),
@@ -220,9 +278,24 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
   }
 
   Future<void> updateUserRoomById(RoomModel room) async {
-    await room.updateUsersRemove();
+    try {
+      setState(() {
+        isOutRoom = true;
+      });
+      await room.updateUsersRemove(room.users);
+      Navigator.of(context)..pop()..pop();
+    } catch (e) {
+      print('Failed to update room: $e');
+    }
   }
 
+  Future<void> updateUserReady(RoomModel room) async {
+    try {
+      await room.updateUsersReady(room.users);
+    } catch (e) {
+      print('Failed to update room: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return PopScope(

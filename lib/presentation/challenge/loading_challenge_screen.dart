@@ -59,14 +59,14 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
 
   Future<void> _initializeData() async {
     RoomCheckResult _room = await ensureRoomAvailable();
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 2));
     if (_room.isNew) {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => RoomWaitScreen(_room.room)));
+          .pushReplacement(MaterialPageRoute(builder: (context) => RoomWaitScreen(_room.room)));
     } else {
       Navigator.of(context)
-          .push(MaterialPageRoute(
-          builder: (context) => LoadingMeetingChallengeScreen(room: _room.room,)));
+          .pushReplacement(MaterialPageRoute(
+          builder: (context) => RoomWaitScreen(_room.room)));
     }
   }
 
@@ -103,12 +103,13 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
               : Globals.currentUser!
                   .useColor, ready: false));
     }
+    StatusBattle statusBattle = StatusBattle(askPosition: 0, userid: '', correct: false);
     List<AskModel> asks = await _loadAsks();
     RoomModel newRoom = RoomModel(
       id: '',
       timestamp: now,
       type: 1,
-      status: '',
+      status: statusBattle,
       users: initialUsers,
       asks: asks
     );

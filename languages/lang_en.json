@@ -41,5 +41,7 @@
     "congratulation_receive_rare_item":"Congratulations you got rare item",
     "the_purchased_item_150_gold":"The purchased item will be converted into 150 gold",
     "the_purchased_item_500_gold":"The purchased item will be converted into 500 gold",
+    "ready":"Ready",
+    "waiting_for_opponents":"Waiting for opponents",
     "confirm_submit":"Are you sure to submit your assignment?"
 }
