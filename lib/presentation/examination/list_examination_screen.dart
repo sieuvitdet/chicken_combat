@@ -4,6 +4,7 @@ import 'package:chicken_combat/model/maps/course_map_model.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/examination/list_map_examination_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,12 @@ class ListExaminationScreen extends StatefulWidget {
 
 class _ListExaminationScreenState extends State<ListExaminationScreen> {
   List<String> _function = ["Speaking", "Listening", "Reading"];
-  late CourseMapsModel mapsModel;
+  late CourseMapsModel? mapsModel;
 
   @override
   void initState() {
     super.initState();
-    mapsModel = widget.mapModel;
+    mapsModel = Globals.currentUser?.checkingMapModel ;
   }
 
   Widget _buildBackground() {
@@ -36,7 +37,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
             child: IconTheme(
               data: IconThemeData(size: 24.0), // Set the size here
               child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -82,11 +83,11 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
           List<UserMapModel> items = [];
           switch (typeId) {
             case 0:
-              items = mapsModel.speakingCourses;
+              items = mapsModel?.speakingCourses ?? [];
             case 1:
-              items = mapsModel.listeningCourses;
+              items = mapsModel?.listeningCourses ?? [];
             case 2:
-              items = mapsModel.readingCourses;
+              items = mapsModel?.readingCourses ?? [];
           }
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ListMapExaminationScreen(

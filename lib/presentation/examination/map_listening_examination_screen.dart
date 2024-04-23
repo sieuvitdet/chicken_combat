@@ -154,7 +154,7 @@ class _MapListeningExaminationScreenState
             'isCourse': map['isCourse']
           });
         }
-         if (widget.level == 7) {
+         if (widget.level == 9) {
             updatedCourseMaps.add({
               'collectionMap':
                   "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}",
@@ -178,7 +178,6 @@ class _MapListeningExaminationScreenState
   int _checkScore() {
     int score = 0;
     for (int i = 0; i < _asks.length; i++) {
-      print(results[i]);
       if (results[i] == _asks[i].Answer) {
         score += 2;
       }
@@ -524,14 +523,14 @@ class _MapListeningExaminationScreenState
                   leading: IconTheme(
                     data: IconThemeData(size: 24.0), // Set the size here
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
+                      icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                   ),
                   actions: [
-                    Padding(
+                    Padding( 
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
                           onTap: () {
@@ -549,7 +548,7 @@ class _MapListeningExaminationScreenState
                           child: Image.asset(Assets.ic_menu, height: 24)),
                     )
                   ],
-                  title: Text("Level 1",
+                  title: Text("Level ${widget.level}",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 28,

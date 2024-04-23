@@ -266,7 +266,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
                 leading: IconTheme(
                   data: IconThemeData(size: 24.0), // Set the size here
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

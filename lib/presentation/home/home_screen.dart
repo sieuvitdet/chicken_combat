@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
 
     _animation = Tween<double>(
-            begin: -AppSizes.maxHeight * 0.22, end:-10)
+            begin: -AppSizes.maxHeight * 0.22, end:-20)
         .animate(_controller)
       ..addListener(() {
         setState(() {});
@@ -311,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen>
             height: AppSizes.maxHeight,
           ),
           Positioned(
-              bottom: AppSizes.maxHeight * 0.23,
+              bottom: AppSizes.maxHeight * 0.1,
               left: 0,
               right: 0,
               child: GestureDetector(
@@ -334,11 +334,11 @@ class _HomeScreenState extends State<HomeScreen>
                 fit: BoxFit.contain,
                 image: AssetImage(Assets.img_micro),
                 width: AppSizes.maxWidth * 0.01,
-                height: AppSizes.maxHeight * 0.3,
+                height: AppSizes.maxHeight * 0.2,
               )),
           if (_isEnablePlay)
             Positioned(
-              bottom: AppSizes.maxHeight * 0.38,
+              bottom: AppSizes.maxHeight * 0.25,
               right: 0,
               left: 0,
               child: GestureDetector(

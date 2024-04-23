@@ -22,7 +22,7 @@ class Map1Screen extends StatefulWidget {
   final String? type;
   final bool isLesson;
   final int location;
-  Map1Screen({this.type, required this.isLesson,required this.location});
+  Map1Screen({this.type, required this.isLesson, required this.location});
   @override
   State<Map1Screen> createState() => _Map1ScreenState();
 }
@@ -79,7 +79,6 @@ class _Map1ScreenState extends State<Map1Screen>
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
     location = widget.location;
   }
-
 
   void _configChickenDance() {
     _controller =
@@ -171,17 +170,17 @@ class _Map1ScreenState extends State<Map1Screen>
                 )),
           ),
           Positioned(
-            top: AppSizes.maxHeight * 0.06,
-            left: AppSizes.maxWidth * 0.05,
-            child: IconTheme(
-              data: IconThemeData(size: 24.0), // Set the size here
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  Navigator.of(context).pop(_isReload);
-                },
-              ),
-            ))
+              top: AppSizes.maxHeight * 0.06,
+              left: AppSizes.maxWidth * 0.05,
+              child: IconTheme(
+                data: IconThemeData(size: 24.0), // Set the size here
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios,color: Colors.grey),
+                  onPressed: () {
+                    Navigator.of(context).pop(_isReload);
+                  },
+                ),
+              ))
         ],
       ),
     );
@@ -248,8 +247,10 @@ class _Map1ScreenState extends State<Map1Screen>
               if (!widget.isLesson) {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          MapReadingExaminationAnswerScreen()));
+                      builder: (context) => MapReadingExaminationAnswerScreen(
+                            isGetReward: i < location,
+                            level: location + 1,
+                          )));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningExaminationScreen(
@@ -353,7 +354,7 @@ class _Map1ScreenState extends State<Map1Screen>
           nextleft + width / 2,
           bottom - 2 * maxHeight * multiple);
     } else if (location == 2) {
-      path.moveTo(left + width / 2, bottom - 2 * maxHeight * multiple);
+      path.moveTo(width / 2, bottom - 2 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 3.4 * maxHeight * multiple,
@@ -368,7 +369,7 @@ class _Map1ScreenState extends State<Map1Screen>
           nextleft + width / 2,
           bottom - 4 * maxHeight * multiple);
     } else if (location == 4) {
-      path.moveTo(left + width / 2, bottom - 4 * maxHeight * multiple);
+      path.moveTo(width / 2, bottom - 4 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 6 * maxHeight * multiple,
@@ -398,7 +399,7 @@ class _Map1ScreenState extends State<Map1Screen>
           nextleft + width / 2,
           bottom - 8 * maxHeight * multiple);
     } else if (location == 8) {
-      path.moveTo(left + width / 2, bottom - 8 * maxHeight * multiple);
+      path.moveTo(width / 2, bottom - 8 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 10 * maxHeight * multiple,
@@ -413,9 +414,6 @@ class _Map1ScreenState extends State<Map1Screen>
           nextleft + width / 2,
           bottom - 10 * maxHeight * multiple);
     }
-
-    print(left + width / 3);
-    print(left + width / bottom);
 
     return path;
   }

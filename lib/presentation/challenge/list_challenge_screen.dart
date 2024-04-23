@@ -33,7 +33,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
             child: IconTheme(
               data: IconThemeData(size: 24.0), // Set the size here
               child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: Icon(Icons.arrow_back_ios,color: Colors.white),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },

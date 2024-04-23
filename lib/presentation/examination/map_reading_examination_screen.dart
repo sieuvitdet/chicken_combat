@@ -157,8 +157,8 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
         child:
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapReadingExaminationAnswerScreen()));
+          // Navigator.of(context).push(MaterialPageRoute(
+          //             builder: (context) => MapReadingExaminationAnswerScreen()));
         },
       ),
     );
@@ -180,7 +180,7 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
                 leading: IconTheme(
                   data: IconThemeData(size: 24.0), // Set the size here
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

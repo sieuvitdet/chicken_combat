@@ -113,7 +113,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
             child: IconTheme(
               data: IconThemeData(size: 24.0), // Set the size here
               child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -191,7 +191,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
             case 1:
               bool result = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Map2Screen(
-                      type: widget.type, isLesson: widget.isLesson)));
+                      type: widget.type, isLesson: widget.isLesson,location: locationMap2)));
               if (result) {
                 getUserInfo();
               }
