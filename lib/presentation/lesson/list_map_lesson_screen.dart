@@ -31,7 +31,8 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
   List<MapModel> _listMap = [];
   List<UserMapModel> itemMaps = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  int locationMap = 0;
+  int locationMap1 = 0;
+  int locationMap2 = 0;
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
     super.dispose();
   }
 
-  void getUserInfo() {
+   void getUserInfo() {
     CollectionReference users = firestore.collection(FirebaseEnum.userdata);
     users
         .doc(Globals.prefs!.getString(SharedPrefsKey.id_user))
@@ -57,19 +58,42 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
         Globals.currentUser = user;
 
         if (widget.type != "" && widget.type == "reading") {
-          locationMap =
-              Globals.currentUser!.courseMapModel.readingCourses.first.level -
+          locationMap1 =
+              Globals.currentUser!.checkingMapModel.readingCourses.first.level -
                   1;
+
+          locationMap2 =
+              Globals.currentUser!.checkingMapModel.readingCourses.length > 1
+                  ? Globals.currentUser!.checkingMapModel.readingCourses[1]
+                          .level -
+                      1
+                  : 0;
+          itemMaps = Globals.currentUser?.checkingMapModel.readingCourses ?? [];
         } else if (widget.type != "" && widget.type == "listening") {
-          locationMap =
-              Globals.currentUser!.courseMapModel.listeningCourses.first.level -
-                  1;
+          locationMap1 = Globals
+                  .currentUser!.checkingMapModel.listeningCourses.first.level -
+              1;
+          locationMap2 =
+              Globals.currentUser!.checkingMapModel.listeningCourses.length > 1
+                  ? Globals.currentUser!.checkingMapModel.listeningCourses[1]
+                          .level -
+                      1
+                  : 0;
+          itemMaps =
+              Globals.currentUser?.checkingMapModel.listeningCourses ?? [];
         } else if (widget.type != "" && widget.type == "speaking") {
-          locationMap =
-              Globals.currentUser!.courseMapModel.speakingCourses.first.level -
-                  1;
+          locationMap1 = Globals
+                  .currentUser!.checkingMapModel.speakingCourses.first.level -
+              1;
+          locationMap2 =
+              Globals.currentUser!.checkingMapModel.speakingCourses.length > 1
+                  ? Globals.currentUser!.checkingMapModel.speakingCourses[1]
+                          .level -
+                      1
+                  : 0;
+          itemMaps =
+              Globals.currentUser?.checkingMapModel.speakingCourses ?? [];
         }
-        print(locationMap);
         setState(() {});
       }
     });
@@ -140,12 +164,12 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
                   builder: (context) => Map1Screen(
                         type: widget.type,
                         isLesson: widget.isLesson,
-                        location: locationMap,
+                        location: locationMap1,
                       )));
             case 1:
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Map2Screen(
-                      type: widget.type, isLesson: widget.isLesson)));
+                      type: widget.type, isLesson: widget.isLesson,location: locationMap2)));
               break;
             case 2:
               Navigator.of(context).push(MaterialPageRoute(

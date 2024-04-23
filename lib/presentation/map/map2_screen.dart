@@ -15,7 +15,8 @@ import 'package:flutter/material.dart';
 class Map2Screen extends StatefulWidget {
   final String? type;
   final bool isLesson;
-  Map2Screen({this.type,required this.isLesson});
+  final int location;
+  Map2Screen({this.type,required this.isLesson,required this.location});
 
   @override
   State<Map2Screen> createState() => _Map2ScreenState();
@@ -38,6 +39,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
   late Path _path;
   double heightContent = 0.0;
   double multiple = 0.138;
+  bool _isReload = false;
 
   @override
   void initState() {
@@ -104,6 +106,18 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
                   height: AppSizes.maxHeight * 0.11),
               ),
             ),
+            Positioned(
+              top: AppSizes.maxHeight * 0.06,
+              left: AppSizes.maxWidth * 0.05,
+              child: IconTheme(
+                data: IconThemeData(size: 24.0), // Set the size here
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                  onPressed: () {
+                    Navigator.of(context).pop(_isReload);
+                  },
+                ),
+              ))
             // Positioned(
             //   top: 0,
             //   child: CustomPaint(
@@ -162,6 +176,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
               }
 
               if (result != null && result == true && i == location) {
+                _isReload = true;
                 if (i < numberMountain) {
                   currentPadding = _listPadding[i + 1];
                 nextPadding = i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
