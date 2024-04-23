@@ -113,20 +113,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     maxWidthTomato = AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth;
   }
 
-  void _loadAsk() {
-    if (_room.asks.isNotEmpty) {
-      _asks = _room.asks;
-      if(askPosition <= 9) {
-        _ask = _asks[askPosition];
-        _question = _ask.Question;
-        answers = [_ask.A, _ask.B, _ask.C, _ask.D];
-        askPosition = askPosition + 1;
-        _showQuestion = false;
-      }
-      setState(() {});
-    }
-  }
-
   UserInfoRoom _currentInfo(bool printCurrentUser) {
     if (_room.users.length == 1) {
       print('error');
@@ -165,14 +151,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           FirebaseFirestore.instance.collection(FirebaseEnum.room);
       room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          if (documentSnapshot.exists) {
             _room = RoomModel.fromSnapshot(documentSnapshot);
-            _bloc.getQuestion(askPosition, _room.asks);
-            askPosition = askPosition + 1;
-            setState(() {
-            });
           }
-        }
       });
     } catch (e) {
       print('Error accessing Firestore: $e');
@@ -185,12 +165,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       FirebaseFirestore.instance.collection(FirebaseEnum.battlestatus);
       room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          if (documentSnapshot.exists) {
-            setState(() {
-              _battle = StatusBattle.fromSnapshot(documentSnapshot);
-              _handleRoomUpdate(_battle!);
-            });
-          }
+          setState(() {
+            _battle = StatusBattle.fromSnapshot(documentSnapshot);
+            _handleRoomUpdate(_battle!);
+          });
         }
       });
     } catch (e) {
@@ -442,7 +420,9 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                         showIcon: true,
                         textStyle: TextStyle(fontSize: 12, color: Colors.white),
                         seconds: 10,
-                        onTimerComplete: () {},
+                        onTimerComplete: () {
+                          _bloc.getQuestion();
+                        },
                       )
                     : Container(),
               ],
@@ -679,9 +659,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     if (model.userid.isEmpty) {
       return;
     }
-    if(model.askPosition != askPosition) {
-      return;
-    }
     bool isCurrentUser = Globals.currentUser!.id == model.userid;
     bool isAnswerCorrect = model.correct;
     if ((isCurrentUser && isAnswerCorrect) || (!isCurrentUser && !isAnswerCorrect)) {
@@ -689,7 +666,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     } else {
       _blood(false);
     }
-    _loadAsk();
   }
 
   Future<void> updateUserRoomById(RoomModel room) async {
@@ -706,10 +682,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     for (int i = 0; i < 4; i++) {
       itemList.add(_answer(i, onTap: () async {
         await _bloc.setSelected(i);
-        await _bloc.onCheckAsk(askPosition, i, _battle!);
-        setState(() {
-          askPosition = askPosition + 1;
-        });
+        await _bloc.onCheckAsk(i, _battle!);
       }));
     }
     return itemList;
@@ -749,6 +722,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           stream: _bloc.outputSelected,
           builder: (context, snapshot) {
             int? selected = snapshot.data;
+             askPosition = askPosition + 1;
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: CustomButtomImageColorWidget(
