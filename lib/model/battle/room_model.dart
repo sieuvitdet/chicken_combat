@@ -7,7 +7,7 @@ class RoomModel {
   String id;
   Timestamp timestamp;
   int type;
-  StatusBattle status;
+  String status;
   List<UserInfoRoom> users;
   List<AskModel> asks;
 
@@ -33,7 +33,7 @@ class RoomModel {
       id: snapshot.id,
       timestamp: data?['timestamp'] as Timestamp,
       type: data?['type'] as int? ?? 0,
-      status: StatusBattle.fromMap(data?['status'] as Map<String, dynamic>),
+      status: data?['status'] as String? ?? '',
       users: users,
       asks: asks,
     );
@@ -44,7 +44,7 @@ class RoomModel {
       'id': id,
       'timestamp': timestamp,
       'type': type,
-      'status': status.toJson(),
+      'status': status,
       'user': users.map((user) => user.toJson()).toList(),
       'asks': asks.map((ask) => ask.toJson()).toList(),
     };
@@ -89,17 +89,17 @@ class RoomModel {
       }
     }
 
-  Future<void> updateRoomStatus(StatusBattle newStatus) async {
-    try {
-      await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
-        'status': newStatus.toJson(),
-      });
-      print("Status updated successfully in room ID: $id");
-    } catch (e) {
-      print("Error updating status: $e");
-      throw Exception("Failed to update status in Firestore");
-    }
-  }
+  // Future<void> updateRoomStatus(StatusBattle newStatus) async {
+  //   try {
+  //     await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+  //       'status': newStatus.toJson(),
+  //     });
+  //     print("Status updated successfully in room ID: $id");
+  //   } catch (e) {
+  //     print("Error updating status: $e");
+  //     throw Exception("Failed to update status in Firestore");
+  //   }
+  // }
 }
 
 class UserInfoRoom {
@@ -137,22 +137,26 @@ class RoomCheckResult {
 }
 
 class StatusBattle {
+  String id;
   int askPosition;
   String userid;
   bool correct;
 
-  StatusBattle({required this.askPosition,required this.userid, required this.correct});
+  StatusBattle({required this.id,required this.askPosition,required this.userid, required this.correct});
 
-  static StatusBattle fromMap(Map<String, dynamic> map) {
+  factory StatusBattle.fromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
     return StatusBattle(
-      askPosition: map['askPosition'] ?? 0,
-      userid: map['userid'] ?? '',
-      correct: map['correct'] ?? false,
+      id: snapshot.id,
+      askPosition: data?['askPosition'] as int? ?? -1,
+      userid: data?['userid'] as String? ?? '',
+      correct: data?['correct'] as bool? ?? false
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'askPosition': askPosition,
       'userid': userid,
       'correct': correct,
