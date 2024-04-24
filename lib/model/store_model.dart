@@ -52,6 +52,7 @@ class ExtendedAssets extends Assets {
     "DI02": Assets.img_chicken_bear_white_premium,
     "DI03": Assets.img_chicken_lovely,
     "DI04": Assets.img_chicken_brown_circleface_premium,
+    "DI05": Assets.img_chicken_zombie,
   };
 
   return codeToAssetMap[code] ?? Assets.img_chicken; // Trả về tên asset tương ứng hoặc asset mặc định nếu không tìm thấy
@@ -73,6 +74,7 @@ class ExtendedAssets extends Assets {
       Assets.img_chicken_bear_white_premium: "DI02",
       Assets.img_chicken_lovely: "DI03",
       Assets.img_chicken_brown_circleface_premium: "DI04",
+      Assets.img_chicken_zombie: "DI05",
     };
     return assetToCodeMap[asset] ?? "CO01";
   }

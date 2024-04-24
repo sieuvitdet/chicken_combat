@@ -7,7 +7,6 @@ import 'package:chicken_combat/presentation/login/change_password_bloc.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
 import 'package:chicken_combat/utils/shared_pref_key.dart';
-import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
@@ -16,7 +15,6 @@ import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DialogChangePasswordWidget extends StatefulWidget {
   const DialogChangePasswordWidget({super.key});
@@ -56,35 +54,41 @@ class _DialogChangePasswordWidgetState
     bool check = true;
     bool oldPassSuccess = false;
     if (_controllerOldPass.text.trim() == "") {
-      _bloc.setErrorPassword('Vui lòng nhập mật khẩu cũ');
+      _bloc.setErrorPassword(
+          AppLocalizations.text(LangKey.change_pass_enter_old_pass));
       check = false;
     } else {
       String encryptedString = GenerateHash.encryptString(
           _controllerOldPass.text.trim(), Globals.currentUser!.id);
       if (encryptedString != Globals.currentUser!.password) {
-        _bloc.setErrorPassword('Mật khẩu không đúng');
+        _bloc.setErrorPassword(
+            AppLocalizations.text(LangKey.change_pass_old_pass_wrong));
         check = false;
       } else {
         oldPassSuccess = true;
       }
     }
     if (_controllerNewPass.text.trim() == "") {
-      _bloc.setErrorNewPassword("Vui lòng nhập mật khẩu mới");
+      _bloc.setErrorNewPassword(
+          AppLocalizations.text(LangKey.change_pass_enter_new_pass));
       check = false;
     } else {
       String encryptedString = GenerateHash.encryptString(
           _controllerNewPass.text.trim(), Globals.currentUser!.id);
       if (encryptedString == Globals.currentUser!.password && oldPassSuccess) {
-        _bloc.setErrorNewPassword('Không được trùng với mật khẩu cũ');
+        _bloc.setErrorNewPassword(
+            AppLocalizations.text(LangKey.change_pass_not_same_old_pass));
         check = false;
       }
     }
     if (_controllerNewPassAgain.text.trim() == "") {
-      _bloc.setErrorAgainPassword("Vui lòng nhập lại mật khẩu mới");
+      _bloc.setErrorAgainPassword(
+          AppLocalizations.text(LangKey.change_pass_enter_new_pass_again));
       check = false;
     } else if (_controllerNewPassAgain.text.trim() !=
         _controllerNewPass.text.trim()) {
-      _bloc.setErrorAgainPassword("Không trùng với mật khẩu mới");
+      _bloc.setErrorAgainPassword(
+          AppLocalizations.text(LangKey.change_pass_not_same_new_pass));
       check = false;
     }
 

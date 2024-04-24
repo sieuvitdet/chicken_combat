@@ -337,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen>
                 },
                 child: Image(
                   fit: BoxFit.contain,
-                  image: AssetImage(Assets.gif_chicken_black_dance),
+                  image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
                   width: AppSizes.maxWidth * 0.15,
                   height: AppSizes.maxHeight * 0.15,
                 ),
@@ -383,6 +383,30 @@ class _HomeScreenState extends State<HomeScreen>
                     _isPlay ? Assets.img_playing : Assets.ic_playgame_popup,
                     height: 48,
                   ),
+                ),
+              ),
+            ),
+
+            if (!_showMicro) Positioned(
+              bottom: AppSizes.maxHeight * 0.25,
+              right: AppSizes.maxWidth/5,
+              
+              child: ShakeWidget(
+                      duration: const Duration(seconds: 10),
+                      shakeConstant: ShakeDefaultConstant1(),
+                      autoPlay: true,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset( Assets.img_bubble,
+                      height: AppSizes.maxWidth*0.3,
+                      width: AppSizes.maxWidth*0.3,
+                    ),
+                    Center(
+                      child: Text(
+                        "Touch me"),
+                    )
+                  ],
                 ),
               ),
             ),
