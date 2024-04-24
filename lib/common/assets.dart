@@ -150,6 +150,8 @@ class Assets {
   static final String img_star_white = "assets/images/img_star_white.png";
   static final String img_gift_gacha = "assets/images/img_gift_gacha.png";
   static final String img_bg_item_used = "assets/images/img_bg_item_used.png";
+  static final String img_chicken_zombie = "assets/images/img_chicken_zombie.png";
+  static final String img_bubble = "assets/images/img_bubble.png";
 
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";
@@ -226,6 +228,7 @@ class Assets {
     Assets.img_chicken_bear_white_premium,
     Assets.img_chicken_lovely,
     Assets.img_chicken_brown_circleface_premium,
+    Assets.img_chicken_zombie
   ];
 
   static String getRandomImage() {

@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_draggale_widget.dart';

@@ -51,4 +51,10 @@ class LangKey {
    static const String register = "register";
    static const String input_password = "input_password";
    static const String save = "save";
+   static const String change_pass_enter_old_pass = "change_pass_enter_old_pass";
+   static const String change_pass_old_pass_wrong = "change_pass_old_pass_wrong";
+   static const String change_pass_enter_new_pass = "change_pass_enter_new_pass";
+   static const String change_pass_not_same_old_pass = "change_pass_not_same_old_pass";
+   static const String change_pass_enter_new_pass_again = "change_pass_enter_new_pass_again";
+   static const String change_pass_not_same_new_pass = "change_pass_not_same_new_pass";
 }

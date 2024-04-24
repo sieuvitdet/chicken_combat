@@ -47,5 +47,12 @@
     "setting":"Cài đặt",
     "register":"Đăng ký",
     "input_password":"Nhập mật khẩu",
-    "save":"Lưu"
+    "save":"Lưu",
+    "change_pass_enter_old_pass":"Vui lòng nhập mật khẩu cũ",
+    "change_pass_old_pass_wrong":"Mật khẩu không đúng",
+    "change_pass_enter_new_pass":"Vui lòng nhập mật khẩu mới",
+    "change_pass_not_same_old_pass":"Không được trùng với mật khẩu cũ",
+    "change_pass_enter_new_pass_again":"Vui lòng nhập lại mật khẩu mới",
+    "change_pass_not_same_new_pass":"Không trùng với mật khẩu mới"
+
 }

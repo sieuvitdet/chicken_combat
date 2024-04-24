@@ -47,5 +47,11 @@
     "setting":"Setting",
     "register":"Register",
     "input_password":"Enter password",
-    "save":"Save"
+    "save":"Save",
+    "change_pass_enter_old_pass": "Please enter your old password",
+    "change_pass_old_pass_wrong": "The password is incorrect",
+    "change_pass_enter_new_pass": "Please enter a new password",
+    "change_pass_not_same_old_pass": "Cannot be the same as the old password",
+    "change_pass_enter_new_pass_again": "Please re-enter the new password",
+    "change_pass_not_same_new_pass": "Does not match the new password"
 }

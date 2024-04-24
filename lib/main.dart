@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       localeResolutionCallback: (locale, supportedLocales) =>
           LocalizationsConfig.localeResolutionCallback(
               locale, supportedLocales.toList()),
-      home: RoomWait2v2Screen(),
+      home: FlashScreen(),
     );
   }
 }
