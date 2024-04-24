@@ -5,6 +5,7 @@ class FirebaseEnum {
   static String maps = 'maps';
   static String score = 'score';
   static String room = 'room';
+  static String roomV2 = 'roomv2';
   static String battlestatus = 'battlestatus';
   static String URL_REALTIME_DATABASE = 'https://hocgiagacon-default-rtdb.asia-southeast1.firebasedatabase.app';
   static String listening = '/listening';

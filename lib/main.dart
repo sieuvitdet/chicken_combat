@@ -1,6 +1,8 @@
 import 'package:chicken_combat/common/config.dart';
 import 'package:chicken_combat/common/localization/localizations_config.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/presentation/challenge/loading_2vs2_challenge_screen.dart';
+import 'package:chicken_combat/presentation/challenge/loading_challenge_screen.dart';
 import 'package:chicken_combat/presentation/challenge/room_wait_2v2_screen.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/presentation/challenge/loading_ready_challenge_screen.dart';

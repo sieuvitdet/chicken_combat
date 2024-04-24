@@ -26,7 +26,7 @@ class RoomV2Model {
       return UserInfoRoomV2.fromMap(userMap as Map<String, dynamic>);
     }).toList();
     List<AskModel> asks = (data?['asks'] as List<dynamic>? ?? []).map((askMap) {
-      return AskModel.fromMap(askMap as Map<String, dynamic>); // Assuming AskModel has a similar structure
+      return AskModel.fromMap(askMap as Map<String, dynamic>);
     }).toList();
 
     return RoomV2Model(
@@ -50,9 +50,44 @@ class RoomV2Model {
     };
   }
 
+  void assignTeams() {
+    int teamSize = users.length;
+    for (int i = 0; i < teamSize; i++) {
+      users[i].team = (i == 0 || i == 1) ? 1 : 2;
+    }
+    if (teamSize == 1) {
+      users[0].team = 1;
+    }
+  }
+
+  Future<void> updateUserTeams() async {
+    try {
+      assignTeams();
+      await FirebaseFirestore.instance.collection(FirebaseEnum.roomV2).doc(id).update({
+        'user': users.map((user) => user.toJson()).toList(),
+      });
+    } catch (e) {
+      print('Error updating user teams: $e');
+    }
+  }
+
+  Future<void> removeUser(String userId) async {
+    try {
+      users = users.where((user) => user.userId != userId).toList();
+      assignTeams();
+      await FirebaseFirestore.instance.collection(FirebaseEnum.roomV2).doc(id).update({
+        'user': users.map((user) => user.toJson()).toList(),
+      });
+    } catch (e) {
+      print('Error removing user: $e');
+    }
+  }
+
   Future<void> updateUsers() async {
-    await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+    await FirebaseFirestore.instance.collection(FirebaseEnum.roomV2).doc(id).update({
       'user': users.map((user) => user.toJson()).toList(),
+    }).catchError((error) {
+      print("Failed to update users: $error");
     });
   }
 
@@ -122,11 +157,11 @@ class UserInfoRoomV2 {
   }
 }
 
-class RoomCheckResult {
+class RoomV2CheckResult {
   final RoomV2Model room;
   final bool isNew;
 
-  RoomCheckResult({required this.room, required this.isNew});
+  RoomV2CheckResult({required this.room, required this.isNew});
 }
 
 class StatusBattleV2 {

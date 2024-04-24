@@ -4,11 +4,12 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/langkey.dart';
 import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/model/battle/room_model.dart';
+import 'package:chicken_combat/model/battle/room_v2_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_dots.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -16,9 +17,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RoomWait2v2Screen extends StatefulWidget {
+  final RoomV2Model room;
 
-  // final RoomModel room;
-  // RoomWait2v2Screen(this.room);
+  RoomWait2v2Screen(this.room);
 
   @override
   State<RoomWait2v2Screen> createState() => _RoomWait2v2ScreenState();
@@ -29,7 +30,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
   bool hiddenGifPK = true;
   bool isMatch = false;
   bool isOutRoom = false;
-  RoomModel? _room;
+  RoomV2Model? _room;
 
   void initState() {
     super.initState();
@@ -40,16 +41,74 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
   }
 
   void setupData() {
-   // _room = widget.room;
-    _listenRoom(_room?.id ?? '');
+    _listenRoom(widget.room.id ?? '');
+  }
+
+  UserInfoRoomV2? getCurrentUserInfo() {
+    try {
+      return _room?.users
+          .firstWhere((user) => user.userId == Globals.currentUser?.id);
+    } catch (e) {
+      print("Current user not found in room.");
+      throw Exception("Current user not found in room.");
+    }
+  }
+
+  UserInfoRoomV2? getCurrentTeamUserInfo() {
+    try {
+      var currentUser = getCurrentUserInfo();
+      if (currentUser == null) {
+        print("No current user information available.");
+        return null;
+      }
+      if (_room?.users.length == 1) {
+        print("No current user information available.");
+        return null;
+      }
+      var teamUser = _room?.users.firstWhere(
+          (user) =>
+              user.userId != Globals.currentUser?.id &&
+              user.team == currentUser.team,
+          orElse: () => throw Exception("Error finding other users: $e"));
+      return teamUser;
+    } catch (e) {
+      print("Error finding a team member: $e");
+      throw Exception("Error finding a team member: $e");
+    }
+  }
+
+  List<UserInfoRoomV2>? getListOtherUserNotTeamInfo() {
+    UserInfoRoomV2? currentUser = getCurrentUserInfo();
+    if (currentUser == null) {
+      print("No current user information available.");
+      return [];
+    }
+    try {
+      List<UserInfoRoomV2> otherUsers = _room?.users
+              .where((user) =>
+                  user.userId != Globals.currentUser?.id &&
+                  user.team != currentUser.team)
+              .toList() ??
+          [];
+      if (otherUsers.isEmpty) {
+        print("No other users found in room.");
+        return [];
+      }
+      return otherUsers;
+    } catch (e) {
+      print("Error finding other users: $e");
+      throw Exception("Error finding other users: $e");
+    }
   }
 
   Future<void> _listenRoom(String _id) async {
     CollectionReference room =
-    FirebaseFirestore.instance.collection(FirebaseEnum.room);
+        FirebaseFirestore.instance.collection(FirebaseEnum.roomV2);
     room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-
+        setState(() {
+          _room = RoomV2Model.fromSnapshot(documentSnapshot);
+        });
       }
     });
   }
@@ -86,17 +145,26 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                             alignment: Alignment.center,
                             transform: Matrix4.rotationY(0),
                             child: Image.asset(
-                              ExtendedAssets.getAssetByCode('CO01'),
+                              getCurrentTeamUserInfo()?.usecolor != null
+                                  ? ExtendedAssets.getAssetByCode(
+                                      getCurrentTeamUserInfo()!.usecolor)
+                                  : Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.12,
                             ),
                           ),
                           Container(
                             width: AppSizes.maxWidth * 0.16,
-                            child: Text(
-                              'dsasdasdasdsadasdasd',
-                              style: TextStyle(fontSize: 14, color: Colors.white,
-                                  overflow: TextOverflow.ellipsis),
+                            child: Expanded(
+                              child: Center(
+                                child: Text(
+                                  getCurrentTeamUserInfo()?.username ?? '...',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
                             ),
                           )
                         ],
@@ -110,17 +178,24 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                             alignment: Alignment.center,
                             transform: Matrix4.rotationY(0),
                             child: Image.asset(
-                              ExtendedAssets.getAssetByCode('CO02'),
+                              ExtendedAssets.getAssetByCode(
+                                  getCurrentUserInfo()?.usecolor ?? 'CO01'),
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.16,
                             ),
                           ),
                           Container(
                             width: AppSizes.maxWidth * 0.16,
-                            child: Text(
-                              'dsasdasdasdsadasdasd',
-                              style: TextStyle(fontSize: 14, color: Colors.white,
-                                  overflow: TextOverflow.ellipsis),
+                            child: Expanded(
+                              child: Center(
+                                child: Text(
+                                  getCurrentUserInfo()?.username ?? '...',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
                             ),
                           )
                         ],
@@ -147,9 +222,9 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                                 ? Matrix4.rotationY(pi)
                                 : Matrix4.rotationY(0),
                             child: Image.asset(
-                              isMatch
-                                  ? ExtendedAssets.getAssetByCode('CO01')
-                                  : Assets.ic_chicken_hidden,
+                                getListOtherUserNotTeamInfo()!.length == 1 ?
+                                ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()![0].usecolor) :
+                                Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.16,
                             ),
@@ -157,7 +232,9 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                           Container(
                             width: AppSizes.maxWidth * 0.16,
                             child: Text(
-                              'dsasdasdasdsadasdasd',
+                                getListOtherUserNotTeamInfo()!.length == 1 ?
+                                getListOtherUserNotTeamInfo()![0].username :
+                                '...',
                               style: TextStyle(fontSize: 14, color: Colors.white,
                                   overflow: TextOverflow.ellipsis),
                             ),
@@ -175,9 +252,9 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                                 ? Matrix4.rotationY(pi)
                                 : Matrix4.rotationY(0),
                             child: Image.asset(
-                              isMatch
-                                  ? ExtendedAssets.getAssetByCode('CO01')
-                                  : Assets.ic_chicken_hidden,
+                              getListOtherUserNotTeamInfo()!.length == 2 ?
+                              ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()![0].usecolor) :
+                              Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.12,
                             ),
@@ -185,7 +262,9 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                           Container(
                             width: AppSizes.maxWidth * 0.16,
                             child: Text(
-                              'dsasdasdasdsadasdasd',
+                              getListOtherUserNotTeamInfo()!.length == 2 ?
+                              getListOtherUserNotTeamInfo()![1].username :
+                              '...',
                               style: TextStyle(fontSize: 14, color: Colors.white,
                                   overflow: TextOverflow.ellipsis),
                             ),
