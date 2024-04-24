@@ -87,7 +87,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
         onTap: () {
           AudioManager.playSoundEffect(AudioFile.sound_tap);
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Loading2vs2ChallengeScreen()));
+              builder: (context) => Loading2V2ChallegenScreen()));
         },
       ),
     );
