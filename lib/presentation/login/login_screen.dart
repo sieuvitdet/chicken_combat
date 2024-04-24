@@ -61,14 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
     bool check = true;
     if (_userNameController.text.trim() == "" &&
         _passwordController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng nhập tên đăng nhập");
-      _bloc.setErrorPassword("Vui lòng nhập mật khẩu");
+      _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_username));
+      _bloc.setErrorPassword(AppLocalizations.text(LangKey.enter_password));
       check = false;
     } else if (_userNameController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng tên đăng nhập");
+      _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_username));
       check = false;
     } else if (_passwordController.text.trim() == "") {
-      _bloc.setErrorUserName("Vui lòng tên đăng nhập");
+      _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_password));
       check = false;
     }
     return check;

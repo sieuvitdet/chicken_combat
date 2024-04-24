@@ -237,7 +237,7 @@ class CustomTextField extends StatelessWidget {
                         ),
                         child: Image.asset(
                           suffixIcon ?? Assets.img_eye_close,
-                          width: suffixSize ?? AppSizes.maxWidth * 0.058,
+                          width: suffixSize ?? AppSizes.maxWidth * 0.05,
                           color: suffixIconColor ?? Colors.amber,
                         ),
                       ),

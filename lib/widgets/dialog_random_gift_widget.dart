@@ -87,7 +87,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.838,
-          height: widget.type == "gold" ?AppSizes.maxHeight * 0.37 : AppSizes.maxHeight * 0.43,
+          height: widget.type == "gold" ?AppSizes.maxHeight * 0.3 : AppSizes.maxHeight * 0.48,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -95,7 +95,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.8,
-                height: widget.type == "gold" ?AppSizes.maxHeight * 0.42 :AppSizes.maxHeight * 0.45,
+                height: widget.type == "gold" ?AppSizes.maxHeight * 0.44 :AppSizes.maxHeight * 0.48,
               ),
               Column(
                 children: [

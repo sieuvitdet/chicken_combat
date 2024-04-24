@@ -53,6 +53,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
                           text: title,
                           size: AppSizes.maxWidth < 350 ? 16 : 24,
                         ),
+                        Spacer(),
                         Padding(
                           padding: EdgeInsets.only(top: AppSizes.maxHeight*0.03),
                           child: _btnBottom(),

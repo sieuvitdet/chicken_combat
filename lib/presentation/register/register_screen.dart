@@ -83,21 +83,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_userNameController.text.trim().length == 0 &&
         _passwordController.text.trim().length == 0 &&
         _rePasswordController.text.trim().length == 0) {
-      _bloc.setErrorUserName("Vui lòng điền tên tài khoản");
-      _bloc.setErrorPassword("Vui lòng nhập mật khẩu");
-      _bloc.setErrorRePassword("Vui lòng nhập mật khẩu");
+      _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_username));
+      _bloc.setErrorPassword(AppLocalizations.text(LangKey.enter_password));
+      _bloc.setErrorRePassword(AppLocalizations.text(LangKey.enter_password));
       check = false;
     } else {
       if (_userNameController.text.trim().length == 0) {
-        _bloc.setErrorUserName("Vui lòng điền tên tài khoản");
+        _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_username));
         check = false;
       }
       if (_passwordController.text.trim().length == 0) {
-        _bloc.setErrorPassword("Vui lòng nhập mật khẩu");
+        _bloc.setErrorPassword(AppLocalizations.text(LangKey.enter_password));
         check = false;
       }
       if (_rePasswordController.text.trim().length == 0) {
-        _bloc.setErrorRePassword("Vui lòng nhập mật khẩu");
+        _bloc.setErrorRePassword(AppLocalizations.text(LangKey.enter_password));
         check = false;
       } else {
         if (_passwordController.text.trim().length > 0 &&
@@ -194,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
               return CustomDialogWithTitleButtonWidget(
-                title: "Đăng ký tài khoản thành công!",
+                title: AppLocalizations.text(LangKey.registration_success),
                 ontap: () {
                   print(_username);
                   print(_password);
@@ -271,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Padding(
                         padding: EdgeInsets.only(bottom: 16),
                         child: Text(
-                          "Đăng ký",
+                          AppLocalizations.text(LangKey.register),
                           style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -287,7 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: CustomButtomImageColorWidget(
                       orangeColor: true,
                       child: Center(
-                          child: Text("Đăng ký",
+                          child: Text(AppLocalizations.text(LangKey.register),
                               style: TextStyle(
                                   fontSize: 24, color: Colors.white))),
                       onTap: () async {
@@ -359,7 +359,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   initialData: true,
                   builder: (_, snapshot) {
                     return CustomTextField(
-                      hintText: "Nhập mật khẩu",
+                      hintText: AppLocalizations.text(LangKey.input_password),
                       hintStyle: AppTextStyles.style13GreyW400,
                       controller: _passwordController,
                       focusNode: _passwordNode,
