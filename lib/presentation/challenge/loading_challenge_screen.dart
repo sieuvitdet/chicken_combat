@@ -59,7 +59,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
 
   Future<void> _initializeData() async {
     RoomCheckResult _room = await ensureRoomAvailable();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     if (_room.isNew) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => RoomWaitScreen(_room.room)));
@@ -213,7 +213,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
   void _configAnimation() {
     _controller1 = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 6),
+      duration: Duration(seconds: 3),
     )..repeat(reverse: true);
     _animation1 = Tween<Offset>(
       begin: Offset.zero,
@@ -241,7 +241,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
 
     _controller3 = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 600),
     )..repeat(reverse: true);
     _animation3 = Tween<double>(begin: 1.0, end: 4.0).animate(_controller3)
       ..addListener(() {

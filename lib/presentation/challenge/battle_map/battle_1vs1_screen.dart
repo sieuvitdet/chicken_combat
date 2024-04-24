@@ -21,7 +21,7 @@ import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'bloc/battle_1vs1_bloc.dart';
 
 class Battle1Vs1Screen extends StatefulWidget {
-  final RoomModel room;
+  RoomModel? room;
 
   Battle1Vs1Screen({required this.room});
 
@@ -49,7 +49,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   late Animation<double> _animationFirst;
   int _currentEnemyBlood = 10;
   int _currentMyBlood = 10;
-  late Timer _timer;
   int _total = 10;
   double _topWaterShot = 0.0;
   bool? isEnemyWin = null;
@@ -58,7 +57,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   double maxWidthTomato = 0.0;
 
-  late RoomModel _room;
+  RoomModel? _room;
 
   late AskModel _ask;
   List<AskModel> _asks = [];
@@ -67,13 +66,15 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   int? result;
   int askPosition = 0;
   bool _showQuestion = false;
+  bool _isClick = false;
+  bool _isOutRoom = false;
   String _question = '';
   StatusBattle? _battle;
 
   @override
   void initState() {
     super.initState();
-    _bloc = Battle1vs1Bloc(context, widget.room);
+    _bloc = Battle1vs1Bloc(context, widget.room!);
     AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -81,8 +82,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       _configWaterShotAnimation();
     });
     calculateDimensions();
-    _listenRoom(widget.room.id);
-    _listenBattle(widget.room.status);
+    _listenRoom(widget.room?.id ?? '');
+    _listenBattle(widget.room?.status ?? '');
   }
 
    void dispose() {
@@ -94,7 +95,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     _controllerFirst.removeListener(() { });
     _controllerWaterLeftToRight.removeListener(() { });
     _controllerWaterRightToLeft.removeListener(() { });
-    _timer.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -113,23 +113,23 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     maxWidthTomato = AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth;
   }
 
-  UserInfoRoom _currentInfo(bool printCurrentUser) {
-    if (_room.users.length == 1) {
+  UserInfoRoom? _currentInfo(bool printCurrentUser) {
+    if (_room?.users.length == 1) {
       print('error');
     }
     UserInfoRoom? userInfo;
     if (printCurrentUser) {
-      userInfo = _room.users.firstWhere(
+      userInfo = _room?.users.firstWhere(
               (user) => user.userId == Globals.currentUser?.id,
           orElse: () => throw Exception("Current user not found in room.")
       );
     } else {
-      userInfo = _room.users.firstWhere(
+      userInfo = _room?.users.firstWhere(
               (user) => user.userId != Globals.currentUser?.id,
           orElse: () => throw Exception("No other users found in room.")
       );
     }
-    return userInfo;
+      return userInfo;
   }
 
   Future<void> removeRoomById(String roomId) async {
@@ -152,7 +152,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
             _room = RoomModel.fromSnapshot(documentSnapshot);
+          if (_room?.users.length == 1) {
+            if (_currentEnemyBlood != 0 && !_isOutRoom) {
+              showPopupWin(isWin: true);
+            }
           }
+        }
       });
     } catch (e) {
       print('Error accessing Firestore: $e');
@@ -312,7 +317,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       child: Stack(
         children: [
           Image(
-            image: AssetImage(Assets.gif_background_sea),
+            image: AssetImage(Assets.gif_background_solo),
             fit: BoxFit.fill,
             height: AppSizes.maxHeight,
             width: AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth,
@@ -400,7 +405,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                               showIcon: false,
                               textStyle:
                                   TextStyle(fontSize: 32, color: Colors.white),
-                              seconds: 5,
+                              seconds: 3,
                               onTimerComplete: () {
                                 setState(() {
                                   _showQuestion = true;
@@ -447,8 +452,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          _currentInfo(true).username,
-          style: TextStyle(color: Colors.black, fontSize: 14),
+          _currentInfo(true)?.username ?? '',
+          style: TextStyle(color: Colors.white, fontSize: 14),
         ),
         (isEnemyWin != null && isEnemyWin!)
             ? Transform.rotate(
@@ -479,7 +484,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   shakeConstant: ShakeDefaultConstant1(),
                   autoPlay: true,
                   child: Image.asset(
-                    ExtendedAssets.getAssetByCode(_currentInfo(true).usecolor),
+                    ExtendedAssets.getAssetByCode(_currentInfo(true)?.usecolor ?? ''),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.1,
                   ),
@@ -543,8 +548,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return Column(
       children: [
         Text(
-          _currentInfo(false).username,
-          style: TextStyle(color: Colors.black, fontSize: 14),
+          _currentInfo(false)?.username ?? '',
+          style: TextStyle(color: Colors.white, fontSize: 14),
         ),
         (isEnemyWin != null && !isEnemyWin!)
             ? Transform.rotate(
@@ -571,7 +576,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   shakeConstant: ShakeDefaultConstant1(),
                   autoPlay: true,
                   child: Image.asset(
-                    ExtendedAssets.getAssetByCode( _currentInfo(false).usecolor),
+                    ExtendedAssets.getAssetByCode( _currentInfo(false)?.usecolor ?? ''),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.1,
                   ),
@@ -657,19 +662,33 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   void _handleRoomUpdate(StatusBattle model) {
     if (model.userid.isEmpty) {
+      print('Received update without user id, ignoring.');
       return;
     }
     bool isCurrentUser = Globals.currentUser!.id == model.userid;
     bool isAnswerCorrect = model.correct;
+    int position = model.askPosition;
+    _bloc.currentQuestionPosition = position + 1;
     if ((isCurrentUser && isAnswerCorrect) || (!isCurrentUser && !isAnswerCorrect)) {
       _blood(true);
+      if (!_isClick) {
+        _bloc.getQuestion();
+      }
     } else {
       _blood(false);
+      if (!_isClick) {
+        _bloc.getQuestion();
+      }
     }
+    _showQuestion = false;
+    setState(() {});
   }
 
   Future<void> updateUserRoomById(RoomModel room) async {
     try {
+      setState(() {
+        _isOutRoom = true;
+      });
       await room.updateUsersRemove(room.users);
       Navigator.of(context)..pop()..pop();
     } catch (e) {
@@ -681,8 +700,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     List<Widget> itemList = [];
     for (int i = 0; i < 4; i++) {
       itemList.add(_answer(i, onTap: () async {
+        _isClick = true;
         await _bloc.setSelected(i);
         await _bloc.onCheckAsk(i, _battle!);
+        setState(() {
+          _isClick = false;
+        });
       }));
     }
     return itemList;
@@ -700,6 +723,11 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               return DialogCongratulationWidget(
                 isWin: isWin,
                 ontapExit: () {
+                  if(_room?.users.length == 1) {
+                    removeRoomById(widget.room?.id ?? '');
+                  } else {
+                    updateUserRoomById(widget.room!);
+                  }
                   AudioManager.stopBackgroundMusic();
                   Navigator.of(context)
                     ..pop()
@@ -728,10 +756,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               child: CustomButtomImageColorWidget(
                 redBlurColor: selected != i,
                 redColor: selected == i,
-                child:
-                    Text(answer![i], style: TextStyle(fontSize: 24, color: Colors.white)),
-                onTap: () {
-                  if (onTap != null) {
+                    child: Text(answer?[i] ?? "",
+                        style: TextStyle(fontSize: 24, color: Colors.white)),
+                    onTap: () {
+                      if (onTap != null) {
                     onTap();
                   }
                   AudioManager.pauseBackgroundMusic();
