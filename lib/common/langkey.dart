@@ -48,4 +48,7 @@ class LangKey {
    static const String waiting_for_opponents = "waiting_for_opponents";
    static const String confirm_submit = "confirm_submit";
    static const String setting = "setting";
+   static const String register = "register";
+   static const String input_password = "input_password";
+   static const String save = "save";
 }

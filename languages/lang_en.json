@@ -44,6 +44,8 @@
     "ready":"Ready",
     "waiting_for_opponents":"Waiting for opponents",
     "confirm_submit":"Are you sure to submit your assignment?",
-    "setting":"Setting"
-
+    "setting":"Setting",
+    "register":"Register",
+    "input_password":"Enter password",
+    "save":"Save"
 }

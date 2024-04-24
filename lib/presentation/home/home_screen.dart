@@ -111,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen>
           UserModel _userModelRespose = UserModel.fromSnapshot(documentSnapshot);
           Globals.currentUser = _userModelRespose;
           _userModel = _userModelRespose;
+          print("password ne ${_userModel!.password}");
         });
       }
     });

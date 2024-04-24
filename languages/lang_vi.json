@@ -11,7 +11,7 @@
     "enter_username": "Vui lòng nhập tên tài khoản",
     "enter_password": "Vui lòng nhập mật khẩu",
     "do_not_have_account": "Bạn chưa có tài khoản",
-    "registration_success": "Đăng ký tài khoản thành công",
+    "registration_success": "Đăng ký tài khoản thành công!",
     "agree": "Đồng ý",
     "cancel": "Hủy",
     "lesson": "Bài học",
@@ -44,5 +44,8 @@
     "ready":"Sẵn sàng",
     "waiting_for_opponents":"Đang chờ đối thủ",
     "confirm_submit":"Bạn có chắc chắn muốn nộp bài?",
-    "setting":"Cài đặt"
+    "setting":"Cài đặt",
+    "register":"Đăng ký",
+    "input_password":"Nhập mật khẩu",
+    "save":"Lưu"
 }
