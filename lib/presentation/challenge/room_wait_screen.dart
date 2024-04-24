@@ -93,11 +93,13 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
               isMatch = false;
             } else {
               isMatch = true;
+              hiddenGifPK = true;
               if(isReadyBattle()) {
                 Future.delayed(Duration(seconds: 3), () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) =>
-                      Battle1Vs1Screen(room: widget.room)));
+                  if (_room != null) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Battle1Vs1Screen(room: _room)));
+                  }
                 });
               }
             }
@@ -149,12 +151,18 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
                             child: Image.asset(
                               ExtendedAssets.getAssetByCode(_currentInfo(true)?.usecolor ?? 'SK01'),
                               fit: BoxFit.contain,
-                              width: AppSizes.maxWidth * 0.15,
+                              width: AppSizes.maxWidth * 0.16,
                             ),
                           ),
-                          Text(
-                            _currentInfo(true)!.username,
-                            style: TextStyle(fontSize: 14, color: Colors.white),
+                          Container(
+                            width: AppSizes.maxWidth * 0.16,
+                            child: Text(
+                              _currentInfo(true)!.username,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
                           )
                         ],
                       ),
@@ -189,12 +197,18 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
                                   ? ExtendedAssets.getAssetByCode(_currentInfo(false)?.usecolor ?? 'SK01')
                               : Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
-                              width: AppSizes.maxWidth * 0.15,
+                              width: AppSizes.maxWidth * 0.16,
                             ),
                           ),
-                          Text(
+                          Container(
+                            width: AppSizes.maxWidth * 0.16,
+                            child: Text(
                               isMatch ? _currentInfo(false)!.username : '...',
-                            style: TextStyle(fontSize: 14, color: Colors.white),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
                           )
                         ],
                       ),

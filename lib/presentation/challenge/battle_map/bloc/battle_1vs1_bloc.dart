@@ -17,6 +17,7 @@ class Battle1vs1Bloc extends BaseBloc {
   @override
   void dispose() {
     _streamSelected.close();
+    _streamOutRoom.close();
     _streamAsk.close();
     _streamAnswer.close();
     super.dispose();
@@ -29,6 +30,10 @@ class Battle1vs1Bloc extends BaseBloc {
   final _streamSelected = BehaviorSubject<int>();
   ValueStream<int> get outputSelected => _streamSelected.stream;
   setSelected(int event) => set(_streamSelected, event);
+
+  final _streamOutRoom = BehaviorSubject<bool>();
+  ValueStream<bool> get outputOutRoom => _streamOutRoom.stream;
+  setRemoveRoom(bool event) => set(_streamOutRoom, event);
 
   final _streamAsk = BehaviorSubject<AskModel>();
   ValueStream<AskModel> get outputAsk => _streamAsk.stream;
@@ -46,7 +51,6 @@ class Battle1vs1Bloc extends BaseBloc {
       setSelected(-1);
     } else {
       print("Position $currentQuestionPosition is out of range.");
-      // Optionally, handle the end of questions (e.g., show results or reset the quiz)
     }
   }
 
@@ -54,13 +58,13 @@ class Battle1vs1Bloc extends BaseBloc {
     if (AskModel.answerToIndex(modelAsk.Answer) == position) {
       await onCheck(currentQuestionPosition, true, battle);
       if (currentQuestionPosition < modelRoom.asks.length - 1) {
-          currentQuestionPosition++; // Move to next question
-          getQuestion(); // Load next question
+        getQuestion();
       }
     } else {
       await onCheck(currentQuestionPosition, false, battle);
-        currentQuestionPosition++; // Move to next question
+      if (currentQuestionPosition < modelRoom.asks.length - 1) {
         getQuestion();
+      }
     }
   }
 

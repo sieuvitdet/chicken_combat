@@ -70,8 +70,8 @@ class _Loading2vs2ChallengeScreenState extends State<Loading2vs2ChallengeScreen>
       setState(() {
         hiddenGifPK = true;
       });
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Battle2Vs2Screen()));
+      // Navigator.of(context)
+      //     .push(MaterialPageRoute(builder: (context) => Battle2Vs2Screen()));
     });
   }
 

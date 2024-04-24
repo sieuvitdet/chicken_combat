@@ -283,7 +283,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
       child: Stack(
         children: [
           Image(
-            image: AssetImage(Assets.gif_background_sea),
+            image: AssetImage(Assets.gif_background_solo),
             fit: BoxFit.fill,
             height: AppSizes.maxHeight,
             width: AppSizes.maxWidthTablet > 0
