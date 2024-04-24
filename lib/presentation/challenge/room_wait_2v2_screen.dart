@@ -83,6 +83,10 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
       print("No current user information available.");
       return [];
     }
+    if (_room!.users.length <= 2) {
+      print("No current user information available.");
+      return null;
+    }
     try {
       List<UserInfoRoomV2> otherUsers = _room?.users
               .where((user) =>
