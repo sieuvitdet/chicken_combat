@@ -157,7 +157,7 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
     } else {
       bool userAlreadyInRoom = emptyRoom.users.any((user) => user.userId == Globals.currentUser?.id);
       if (!userAlreadyInRoom && Globals.currentUser?.id != null) {
-        int teamAssignment = (emptyRoom.users.length == 3 || emptyRoom.users.length == 4) ? 2 : 1;
+        int teamAssignment = (emptyRoom.users.length == 2 || emptyRoom.users.length == 3) ? 2 : 1;
         emptyRoom.users.add(UserInfoRoomV2(
             userId: Globals.currentUser!.id,
             username: Globals.currentUser!.username,
