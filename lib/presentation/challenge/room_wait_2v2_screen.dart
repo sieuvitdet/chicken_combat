@@ -61,7 +61,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
         print("No current user information available.");
         return null;
       }
-      if (_room?.users.length == 1) {
+      if (_room!.users.length == 1) {
         print("No current user information available.");
         return null;
       }
@@ -85,7 +85,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
     }
     if (_room!.users.length <= 2) {
       print("No current user information available.");
-      return null;
+      return [];
     }
     try {
       List<UserInfoRoomV2> otherUsers = _room?.users
@@ -285,7 +285,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                       : CountdownTimer(
                     textStyle:
                     TextStyle(fontSize: 24, color: Colors.white),
-                    seconds: 60,
+                    seconds: 120,
                     onTimerComplete: () {
                       //removeRoomById(_room!.id);
                     },
