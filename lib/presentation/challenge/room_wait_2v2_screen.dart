@@ -73,7 +73,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
       return teamUser;
     } catch (e) {
       print("Error finding a team member: $e");
-      throw Exception("Error finding a team member: $e");
+      return null;
     }
   }
 
@@ -83,7 +83,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
       print("No current user information available.");
       return [];
     }
-    if (_room!.users.length <= 2) {
+    if (_room!.users.length == 1) {
       print("No current user information available.");
       return [];
     }
@@ -226,7 +226,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                                 ? Matrix4.rotationY(pi)
                                 : Matrix4.rotationY(0),
                             child: Image.asset(
-                                getListOtherUserNotTeamInfo()?.length == 1 ?
+                                getListOtherUserNotTeamInfo()!.length > 1 ?
                                 ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()![0].usecolor) :
                                 Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
@@ -236,7 +236,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                           Container(
                             width: AppSizes.maxWidth * 0.16,
                             child: Text(
-                                getListOtherUserNotTeamInfo()?.length == 1 ?
+                                getListOtherUserNotTeamInfo()!.length > 1 ?
                                 getListOtherUserNotTeamInfo()![0].username :
                                 '...',
                               style: TextStyle(fontSize: 14, color: Colors.white,
@@ -257,7 +257,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                                 : Matrix4.rotationY(0),
                             child: Image.asset(
                               getListOtherUserNotTeamInfo()?.length == 2 ?
-                              ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()![0].usecolor) :
+                              ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()![1].usecolor) :
                               Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
                               width: AppSizes.maxWidth * 0.12,
