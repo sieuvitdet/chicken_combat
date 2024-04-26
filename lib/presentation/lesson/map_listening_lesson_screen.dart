@@ -111,7 +111,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
         app: Firebase.app(),
         databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
       );
-      final ref = database.ref(FirebaseEnum.examination_listening);
+      final ref = database.ref(FirebaseEnum.lesson_listening);
       final snapshot = await ref.get();
       if (snapshot.exists) {
         final data = snapshot.value;

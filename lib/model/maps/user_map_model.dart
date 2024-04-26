@@ -8,7 +8,7 @@ class UserMapModel {
     required this.collectionMap,
     required this.level,
     required this.isCourse,
-    required this.isComplete
+    required this.isComplete,
   });
 
   static List<UserMapModel> convertDynamicListToUserMapModelList(List<dynamic> dynamicList) {
