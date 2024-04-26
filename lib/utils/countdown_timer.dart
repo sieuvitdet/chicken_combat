@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ class CountdownTimer extends StatefulWidget {
   final Function onTimerComplete;
   final bool showIcon;
   bool isBoom;
+  bool isGiftBoom;
+  bool isShowBoom;
 
   CountdownTimer({
     Key? key,
@@ -16,7 +19,9 @@ class CountdownTimer extends StatefulWidget {
     required this.onTimerComplete,
     this.textStyle,
     this.showIcon = false,
-    this.isBoom = false
+    this.isBoom = false,
+    this.isGiftBoom = false,
+    this.isShowBoom = false
   }) : super(key: key);
 
   @override
@@ -30,16 +35,28 @@ class _CountdownTimerState extends State<CountdownTimer> {
   void _startTimer() {
     _counter = widget.seconds;
     widget.isBoom = false;
+    widget.isShowBoom = false;
 
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (_counter > 0) {
         setState(() {
           _counter--;
-          widget.isBoom = _counter <= 3;  // Set to true when counter is 3 or less
+          widget.isBoom = _counter <= 3;
+          if(widget.showIcon) {
+            widget.isShowBoom = _counter == 0;
+          }
         });
       } else {
-        _timer.cancel();
-        widget.onTimerComplete();
+          if(widget.showIcon) {
+            Future.delayed(Duration(seconds: 3), () {
+              setState(() {
+                widget.isShowBoom = false;
+                resetTimer();
+              });
+            });
+          }
+          _timer.cancel();
+          widget.onTimerComplete();
       }
     });
   }
@@ -76,7 +93,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return !widget.isShowBoom ? Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         widget.showIcon ? AnimatedContainer(
@@ -94,6 +111,9 @@ class _CountdownTimerState extends State<CountdownTimer> {
           ),
         ),
       ],
+    ) : Image(
+      image: AssetImage(Assets.gif_boom),
+      height: AppSizes.maxHeight * 0.3,
     );
   }
 }

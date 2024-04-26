@@ -65,10 +65,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
   int isSelected = -1;
   int? result;
   int askPosition = 0;
-  bool _showQuestion = false;
-  bool _isClick = false;
-  bool _isOutRoom = false;
-  String _question = '';
+  bool _showQuestion = false,
+      _isClick = false,
+      _isOutRoom = false,
+      _isShowPopup = false;
   StatusBattle? _battle;
 
   @override
@@ -138,6 +138,11 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           .collection(FirebaseEnum.room)
           .doc(roomId)
           .delete();
+      Navigator.of(context)
+        ..pop()
+        ..pop()
+        ..pop()
+        ..pop();
       print("Room successfully deleted");
     } catch (e) {
       print("Error removing room: $e");
@@ -155,6 +160,9 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           if (_room?.users.length == 1) {
             if (_currentEnemyBlood != 0 && !_isOutRoom) {
               showPopupWin(isWin: true);
+              setState(() {
+                _isShowPopup = true;
+              });
             }
           }
         }
@@ -200,6 +208,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           _controllerFirst.reset();
           isEnemyWin = null;
           if (_currentMyBlood == 0) {
+            _isShowPopup = true;
             showPopupWin(isWin: false);
           }
         });
@@ -223,6 +232,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           _controller.reset();
           isEnemyWin = null;
           if (_currentEnemyBlood == 0) {
+            _isShowPopup = true;
             showPopupWin(isWin: true);
           }
         });
@@ -403,13 +413,15 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                             )
                           : CountdownTimer(
                               showIcon: false,
-                              textStyle:
-                                  TextStyle(fontSize: 32, color: Colors.white),
-                              seconds: 3,
-                              onTimerComplete: () {
-                                setState(() {
-                                  _showQuestion = true;
-                                });
+                                textStyle: TextStyle(
+                                    fontSize: 46, color: Colors.white),
+                                seconds: 3,
+                                onTimerComplete: () {
+                                  if (!_isShowPopup) {
+                                    setState(() {
+                                      _showQuestion = true;
+                                    });
+                                  }
                               },
                             ),
                     ),
@@ -426,7 +438,23 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                         textStyle: TextStyle(fontSize: 12, color: Colors.white),
                         seconds: 10,
                         onTimerComplete: () {
+                          _showQuestion = false;
+                          _bloc.currentQuestionPosition =
+                              _bloc.currentQuestionPosition + 1;
                           _bloc.getQuestion();
+                          if (_currentEnemyBlood == 0) {
+                            _isShowPopup = true;
+                            showPopupWin(isWin: false);
+                          } else {
+                            _currentEnemyBlood -= 2;
+                          }
+                          if (_currentMyBlood == 0) {
+                            _isShowPopup = true;
+                            showPopupWin(isWin: false);
+                          } else {
+                            _currentMyBlood -= 2;
+                          }
+                          setState(() {});
                         },
                       )
                     : Container(),
@@ -671,12 +699,12 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     _bloc.currentQuestionPosition = position + 1;
     if ((isCurrentUser && isAnswerCorrect) || (!isCurrentUser && !isAnswerCorrect)) {
       _blood(true);
-      if (!_isClick) {
+      if (!_isClick && !_isShowPopup) {
         _bloc.getQuestion();
       }
     } else {
       _blood(false);
-      if (!_isClick) {
+      if (!_isClick && !_isShowPopup) {
         _bloc.getQuestion();
       }
     }
@@ -690,7 +718,11 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
         _isOutRoom = true;
       });
       await room.updateUsersRemove(room.users);
-      Navigator.of(context)..pop()..pop();
+      Navigator.of(context)
+        ..pop()
+        ..pop()
+        ..pop()
+        ..pop();
     } catch (e) {
       print('Failed to update room: $e');
     }
@@ -729,11 +761,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                     updateUserRoomById(widget.room!);
                   }
                   AudioManager.stopBackgroundMusic();
-                  Navigator.of(context)
-                    ..pop()
-                    ..pop()
-                    ..pop()
-                    ..pop();
                 },
               );
             },
@@ -782,6 +809,11 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
           GlobalSetting.shared.showPopup(context, onTapClose: () {
             Navigator.of(context).pop();
           }, onTapExit: () {
+            if (_room?.users.length == 1) {
+              removeRoomById(widget.room?.id ?? '');
+            } else {
+              updateUserRoomById(widget.room!);
+            }
             AudioManager.stopBackgroundMusic();
             Navigator.of(context)
               ..pop()

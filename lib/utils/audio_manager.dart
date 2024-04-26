@@ -46,8 +46,8 @@ class AudioManager {
         ],
       ),
       android: AudioContextAndroid(
-        isSpeakerphoneOn: true,
-        stayAwake: true,
+        isSpeakerphoneOn: false,
+        stayAwake: false,
         contentType: AndroidContentType.sonification,
         usageType: AndroidUsageType.assistanceSonification,
         audioFocus: AndroidAudioFocus.gain,

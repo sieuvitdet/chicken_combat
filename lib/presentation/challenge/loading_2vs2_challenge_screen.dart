@@ -94,11 +94,10 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
   }
 
   Future<String> createBattleStatus() async {
-    StatusBattleV2 battle = StatusBattleV2(
+    StatusBattle battle = StatusBattle(
       askPosition: -1,
       userid: '',
       correct: false, id: '',
-      team: 0,
     );
     try {
       DocumentReference ref = await FirebaseFirestore.instance
@@ -125,6 +124,24 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
               .useColor,
           ready: false,
           team: 1));
+      // initialUsers.add(UserInfoRoomV2(
+      //     userId: '${Globals.currentUser!.id}test12',
+      //     username: '${Globals.currentUser!.id}test12',
+      //     usecolor: 'CO03',
+      //     ready: true,
+      //     team: 1));
+      // initialUsers.add(UserInfoRoomV2(
+      //     userId: '${Globals.currentUser!.id}test21',
+      //     username: '${Globals.currentUser!.id}test21',
+      //     usecolor: 'CO04',
+      //     ready: true,
+      //     team: 2));
+      // initialUsers.add(UserInfoRoomV2(
+      //     userId: '${Globals.currentUser!.id}test22',
+      //     username: '${Globals.currentUser!.id}test21',
+      //     usecolor: 'CO02',
+      //     ready: true,
+      //     team: 2));
     }
     String battleId = await createBattleStatus();
     List<AskModel> asks = await _loadAsks();

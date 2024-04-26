@@ -16,5 +16,4 @@ class FirebaseEnum {
   static String level2 = '/level2';
   static String level3 = '/level3';
   static String store = 'store';
-
 }

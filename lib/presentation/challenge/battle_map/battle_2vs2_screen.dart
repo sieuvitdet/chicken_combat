@@ -3,16 +3,29 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/battle/room_model.dart';
+import 'package:chicken_combat/model/battle/room_v2_model.dart';
+import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/countdown_timer.dart';
+import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
+import 'bloc/battle_2vs2_bloc.dart';
+
 class Battle2Vs2Screen extends StatefulWidget {
-  const Battle2Vs2Screen({super.key});
+
+  RoomV2Model? room;
+
+  Battle2Vs2Screen({required this.room});
 
   @override
   State<Battle2Vs2Screen> createState() => _Battle2Vs2ScreenState();
@@ -20,6 +33,8 @@ class Battle2Vs2Screen extends StatefulWidget {
 
 class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
+  late Battle2vs2Bloc _bloc;
+
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -37,43 +52,35 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
   late AnimationController _controllerGun;
   late Animation<double> _animationGun;
 
-  int _currentEnemyBlood = 10;
-  int _currentMyBlood = 10;
-  late Timer _timer;
-  int _start = 5;
-  int _total = 10;
-  double _topWaterShot = 0.0;
-  bool? isEnemyWin = null;
-  bool? waterShotLeftToRight = null;
-  bool _isTomato = false;
-  bool _startDelayed = false;
+  int _currentEnemyBlood = 10, _currentMyBlood = 10, _total = 10;
+  double _topWaterShot = 0.0, maxWidthTomato = 0.0;
 
-  double maxWidthTomato = 0.0;
-  // int currentVolume = 5;
-  // int currentNote = 5;
+  bool? isEnemyWin, waterShotLeftToRight;
+  bool _isTomato = false, _startDelayed = false, _isOutRoom = false, _showQuestion = false, _isClick = false, _isShowPopup = false;
+
+  RoomV2Model? _room;
+
+  StatusBattle? _battle;
+  int askPosition = 0;
+
+  String? currentTeam, otherTeam;
 
   @override
   void initState() {
     super.initState();
-    if (_isTomato) {
-      _topWaterShot = AppSizes.maxHeight > 800
-          ? AppSizes.maxHeight * 0.38 - AppSizes.maxHeight * 0.14
-          : AppSizes.maxHeight * 0.34 - AppSizes.maxHeight * 0.14;
-    } else {
-      _topWaterShot = AppSizes.maxHeight > 800
-          ? AppSizes.maxHeight * 0.4 - AppSizes.maxHeight * 0.14
-          : AppSizes.maxHeight * 0.36 - AppSizes.maxHeight * 0.14;
-    }
-    maxWidthTomato = AppSizes.maxWidthTablet > 0
-        ? AppSizes.maxWidthTablet
-        : AppSizes.maxWidth;
+    _bloc = Battle2vs2Bloc(context, widget.room!);
+    _topWaterShot = (AppSizes.maxHeight > 800 ? (_isTomato ? 0.38 : 0.4) : (_isTomato ? 0.34 : 0.36))
+        * AppSizes.maxHeight - AppSizes.maxHeight * 0.14;
+    maxWidthTomato = AppSizes.maxWidthTablet > 0 ? AppSizes.maxWidthTablet : AppSizes.maxWidth;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _configAnimation();
       _configWaterShotAnimation();
-      _startTimer();
+      currentTeam = StringUtils.generateRandomTeam();
+      otherTeam = StringUtils.generateRandomTeam();
     });
+    _listenRoom(widget.room?.id ?? '');
+    _listenBattle(widget.room?.status ?? '');
     WidgetsBinding.instance.addObserver(this);
-
   }
 
   @override
@@ -85,7 +92,111 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     _controllerWaterLeftToRight.dispose();
     _controllerWaterRightToLeft.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    _timer.cancel();
+  }
+
+  Future<void> _listenRoom(String _id) async {
+    try {
+      CollectionReference room =
+      FirebaseFirestore.instance.collection(FirebaseEnum.roomV2);
+      room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          _room = RoomV2Model.fromSnapshot(documentSnapshot);
+          if (_room?.users.length == 1) {
+            if (_currentEnemyBlood != 0 && !_isOutRoom) {
+              showPopupWin(isWin: true);
+              setState(() {
+                _isShowPopup = true;
+              });
+            }
+          }
+        }
+      });
+    } catch (e) {
+      print('Error accessing Firestore: $e');
+    }
+  }
+
+  Future<void> _listenBattle(String _id) async {
+    try {
+      CollectionReference room =
+      FirebaseFirestore.instance.collection(FirebaseEnum.battlestatus);
+      room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          setState(() {
+            _battle = StatusBattle.fromSnapshot(documentSnapshot);
+            _handleRoomUpdate(_battle!);
+          });
+        }
+      });
+    } catch (e) {
+      print('Error accessing Firestore: $e');
+    }
+  }
+
+
+
+  UserInfoRoomV2? getCurrentUserInfo() {
+    if (_isOutRoom) {
+      return null;
+    }
+    try {
+      return _room?.users
+          .firstWhere((user) => user.userId == Globals.currentUser?.id);
+    } catch (e) {
+      print("Current user not found in room.");
+      throw Exception("Current user not found in room.");
+    }
+  }
+
+  UserInfoRoomV2? getCurrentTeamUserInfo() {
+    try {
+      var currentUser = getCurrentUserInfo();
+      if (currentUser == null) {
+        print("No current user information available.");
+        return null;
+      }
+      if (_room!.users.length == 1) {
+        print("No current user information available.");
+        return null;
+      }
+      var teamUser = _room?.users.firstWhere(
+              (user) =>
+          user.userId != Globals.currentUser?.id &&
+              user.team == currentUser.team,
+          orElse: () => throw Exception("Error finding other users: $e"));
+      return teamUser;
+    } catch (e) {
+      print("Error finding a team member: $e");
+      return null;
+    }
+  }
+
+  List<UserInfoRoomV2>? getListOtherUserNotTeamInfo() {
+    UserInfoRoomV2? currentUser = getCurrentUserInfo();
+    if (currentUser == null) {
+      print("No current user information available.");
+      return [];
+    }
+    if (_room!.users.length == 1) {
+      print("No current user information available.");
+      return [];
+    }
+    try {
+      List<UserInfoRoomV2> otherUsers = _room?.users
+          .where((user) =>
+      user.userId != Globals.currentUser?.id &&
+          user.team != currentUser.team)
+          .toList() ??
+          [];
+      if (otherUsers.isEmpty) {
+        print("No other users found in room.");
+        return [];
+      }
+      return otherUsers;
+    } catch (e) {
+      print("Error finding other users: $e");
+      throw Exception("Error finding other users: $e");
+    }
   }
 
 
@@ -108,10 +219,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           _controllerFirst.reset();
           isEnemyWin = null;
           if (_currentMyBlood == 0) {
+            _isShowPopup = true;
             showPopupWin(isWin: false);
-          } else {
-            _start = 5;
-            _startTimer();
           }
         });
       }
@@ -134,10 +243,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           _controller.reset();
           isEnemyWin = null;
           if (_currentEnemyBlood == 0) {
+            _isShowPopup = true;
             showPopupWin(isWin: true);
-          } else {
-            _start = 5;
-            _startTimer();
           }
         });
       }
@@ -204,36 +311,6 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     _pathWaterRightToLeft = drawPathRightToLeft();
   }
 
-  void _startTimer() {
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_startDelayed && _start == 0) {
-          // Delay the restart by 3 seconds
-          Future.delayed(Duration(seconds: 3), () {
-            setState(() {
-              _startDelayed = false; // Reset the flag
-              _start = 5;
-              _timer.cancel(); // Reset the timer value
-            });
-            _startTimer(); // Start the timer again
-          });
-          return;
-        }
-        if (_start == 0) {
-          setState(() {
-            _startDelayed = true;
-          });
-          _timer.cancel();
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
-  }
 
   Path drawPathLeftToRight() {
     Path path = Path();
@@ -355,32 +432,68 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: SingleChildScrollView(
-                  child: Text(
-                    "How are you today? ",
-                    style: TextStyle(fontSize: 14, color: Colors.white),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
+              child: StreamBuilder(
+                  stream: _bloc.outputAsk,
+                  builder: (context, snapshot) {
+                    AskModel? ask = snapshot.data;
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                      child: SingleChildScrollView(
+                        child: _showQuestion
+                            ? Text(
+                          ask!.Question,
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                          textAlign: TextAlign.start,
+                        )
+                            : CountdownTimer(
+                          showIcon: false,
+                          textStyle: TextStyle(
+                              fontSize: 46, color: Colors.white),
+                          seconds: 3,
+                          onTimerComplete: () {
+                            if (!_isShowPopup) {
+                              setState(() {
+                                _showQuestion = true;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  }
               ),
             ),
-            if (_start > 0)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset((Assets.ic_boom), width: 24),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: Text(
-                      "$_start s",
-                      style: TextStyle(fontSize: 16, color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _showQuestion
+                    ? CountdownTimer(
+                  showIcon: true,
+                  textStyle: TextStyle(fontSize: 12, color: Colors.white),
+                  seconds: 10,
+                  onTimerComplete: () {
+                    _showQuestion = false;
+                    _bloc.currentQuestionPosition =
+                        _bloc.currentQuestionPosition + 1;
+                    _bloc.getQuestion();
+                    if (_currentEnemyBlood == 0) {
+                      _isShowPopup = true;
+                      showPopupWin(isWin: false);
+                    } else {
+                      _currentEnemyBlood -= 2;
+                    }
+                    if (_currentMyBlood == 0) {
+                      _isShowPopup = true;
+                      showPopupWin(isWin: false);
+                    } else {
+                      _currentMyBlood -= 2;
+                    }
+                    setState(() {});
+                  },
+                )
+                    : Container(),
+              ],
+            ),
             SizedBox(
               height: AppSizes.maxHeight*0.02,
             ),
@@ -392,16 +505,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
             right: 0,
             child: Image(
               image: AssetImage(Assets.img_line_table),
-            )),
-        if (_start == 0)
-          Positioned(
-              bottom: 16,
-              left: 0,
-              right: 0,
-              child: Image(
-                image: AssetImage(Assets.gif_boom),
-                height: AppSizes.maxHeight * 0.3,
-              ))
+            ))
       ],
     );
   }
@@ -410,8 +514,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     return Column(
       children: [
         Text(
-          "Black Team",
-          style: TextStyle(color: Colors.black, fontSize: 14),
+          currentTeam  ?? '',
+          style: TextStyle(color: Colors.white, fontSize: 14),
         ),
         (isEnemyWin != null && isEnemyWin!)
             ? Stack(
@@ -474,7 +578,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                           shakeConstant: ShakeDefaultConstant1(),
                           autoPlay: true,
                           child: Image.asset(
-                            Assets.img_chicken_black,
+                            getCurrentTeamUserInfo()?.usecolor != null
+                                ? ExtendedAssets.getAssetByCode(
+                                getCurrentTeamUserInfo()!.usecolor)
+                                : ExtendedAssets.getAssetByCode('CO01'),
                             fit: BoxFit.contain,
                             width: AppSizes.maxWidth * 0.09,
                           ),
@@ -488,7 +595,8 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                           shakeConstant: ShakeDefaultConstant1(),
                           autoPlay: true,
                           child: Image.asset(
-                            Assets.img_chicken_black,
+                            ExtendedAssets.getAssetByCode(
+                                getCurrentUserInfo()?.usecolor ?? 'CO01'),
                             fit: BoxFit.contain,
                             width: AppSizes.maxWidth * 0.1,
                           ),
@@ -569,9 +677,9 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     return Column(
       children: [
         Text(
-          "Covid Team",
+          otherTeam ?? '',
           style: TextStyle(
-              color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
         ),
         (isEnemyWin != null && !isEnemyWin!)
             ? Row(
@@ -620,7 +728,9 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                       shakeConstant: ShakeDefaultConstant1(),
                       autoPlay: true,
                       child: Image.asset(
-                        Assets.img_chicken_blue,
+                        getListOtherUserNotTeamInfo()!.isNotEmpty ?
+                        ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()?[0].usecolor ?? 'CO01') :
+                        ExtendedAssets.getAssetByCode('CO01'),
                         fit: BoxFit.contain,
                         width: AppSizes.maxWidth * 0.1,
                       ),
@@ -634,7 +744,9 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                       shakeConstant: ShakeDefaultConstant1(),
                       autoPlay: true,
                       child: Image.asset(
-                        Assets.img_chicken_green,
+                        getListOtherUserNotTeamInfo()!.isNotEmpty ?
+                        ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()?[1].usecolor ?? 'CO01') :
+                        ExtendedAssets.getAssetByCode('CO01'),
                         fit: BoxFit.contain,
                         width: AppSizes.maxWidth * 0.09,
                       ),
@@ -696,50 +808,105 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     );
   }
 
+  void _blood(bool isBloodCurrent) {
+    if (isBloodCurrent) {
+      if (_currentEnemyBlood == 0) {
+        return;
+      } else {
+        setState(() {
+          _currentEnemyBlood -= 2;
+          waterShotLeftToRight = true;
+          _controllerWaterLeftToRight.forward();
+        });
+      }
+    } else {
+      if (_currentMyBlood == 0) {
+        return;
+      } else {
+        _currentMyBlood -= 2;
+        setState(() {
+          waterShotLeftToRight = false;
+          _controllerWaterRightToLeft.forward();
+        });
+      }
+    }
+  }
+
+  void _handleRoomUpdate(StatusBattle model) {
+    if (model.userid.isEmpty) {
+      print('Received update without user id, ignoring.');
+      return;
+    }
+    if (_currentEnemyBlood == 0 || _currentMyBlood == 0) {
+      print('emptys');
+      return;
+    }
+    bool isCurrentTeam = getCurrentUserInfo()?.team == model.userid;
+    bool isAnswerCorrect = model.correct;
+    int position = model.askPosition;
+    _bloc.currentQuestionPosition = position + 1;
+    if ((isCurrentTeam && isAnswerCorrect) || (!isCurrentTeam && !isAnswerCorrect)) {
+      _blood(true);
+      if (!_isClick && !_isShowPopup) {
+        _bloc.getQuestion();
+      }
+    } else {
+      _blood(false);
+      if (!_isClick && !_isShowPopup) {
+        _bloc.getQuestion();
+      }
+    }
+    _showQuestion = false;
+    setState(() {});
+  }
+
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
     for (int i = 0; i < 4; i++) {
-      itemList.add(_answer(i, ontap: () {
-        switch (i) {
-          case 0:
-            // check trả lời đúng sai , đúng thì dừng thời gian -
-            _timer.cancel();
-            if (_currentEnemyBlood == 0) {
-              return;
-            } else {
-              setState(() {
-                _currentEnemyBlood -= 2;
-                print(_currentEnemyBlood);
-                waterShotLeftToRight = true;
-                _controllerWaterLeftToRight.forward();
-                // _controllerGun.forward();
-              });
-            }
-          case 1:
-            // check trả lời đúng sai , đúng thì dừng thời gian -
-            _timer.cancel();
-            if (_currentMyBlood == 0) {
-              return;
-            } else {
-              _currentMyBlood -= 2;
-              setState(() {
-                waterShotLeftToRight = false;
-                _controllerWaterRightToLeft.forward();
-              });
-            }
-            break;
-
-          case 2:
-            break;
-
-          case 3:
-            _startTimer();
-            break;
-          default:
-        }
+      itemList.add(_answer(i, onTap: () async {
+        _isClick = true;
+        await _bloc.setSelected(i);
+        await _bloc.onCheckAsk(getCurrentUserInfo()!.team.toString() ,i, _battle!);
+        setState(() {
+          _isClick = false;
+        });
       }));
     }
     return itemList;
+  }
+
+  Future<void> updateUserRoomById(RoomV2Model room) async {
+    try {
+      setState(() {
+        _isOutRoom = true;
+      });
+      await room.updateUsersRemove(room.users);
+      Navigator.of(context)
+        ..pop()
+        ..pop()
+        ..pop()
+        ..pop();
+    } catch (e) {
+      print('Failed to update room: $e');
+    }
+  }
+
+  Future<void> removeRoomById(String roomId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.roomV2)
+          .doc(roomId)
+          .delete();
+      Navigator.of(context)
+        ..pop()
+        ..pop()
+        ..pop()
+        ..pop();
+      print("Room successfully deleted");
+    } catch (e) {
+      print("Error removing room: $e");
+      throw Exception("Failed to remove the room: $e");
+    }
   }
 
   void showPopupWin({bool isWin = false}) {
@@ -752,10 +919,12 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
               return DialogCongratulationWidget(
                 isWin: isWin,
                 ontapExit: () {
-                  Navigator.of(context)
-                    ..pop()
-                    ..pop()
-                    ..pop();
+                  if(_room?.users.length == 1) {
+                    removeRoomById(widget.room?.id ?? '');
+                  } else {
+                    updateUserRoomById(widget.room!);
+                  }
+                  AudioManager.stopBackgroundMusic();
                 },
               );
             },
@@ -763,18 +932,35 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
         });
   }
 
-  Widget _answer(int i, {Function? ontap}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: CustomButtomImageColorWidget(
-        orangeColor: i == 0,
-        blueColor: i == 1,
-        yellowColor: i == 2,
-        redBlurColor: i == 3,
-        child: Text("Đáp án ${i + 1}",
-            style: TextStyle(fontSize: 24, color: Colors.white)),
-        onTap: ontap,
-      ),
+  Widget _answer(int i, {Function? onTap}) {
+    return StreamBuilder(
+        stream: _bloc.outputAnswer,
+        builder: (context, snapshot) {
+          List<String>? answer = snapshot.data;
+          return StreamBuilder(
+              stream: _bloc.outputSelected,
+              builder: (context, snapshot) {
+                int? selected = snapshot.data;
+                askPosition = askPosition + 1;
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: CustomButtomImageColorWidget(
+                    redBlurColor: selected != i,
+                    redColor: selected == i,
+                    child: Text(answer?[i] ?? "",
+                        style: TextStyle(fontSize: 24, color: Colors.white)),
+                    onTap: () {
+                      if (onTap != null) {
+                        onTap();
+                      }
+                      AudioManager.pauseBackgroundMusic();
+                      AudioManager.playSoundEffect(AudioFile.sound_tomato_fly);
+                    },
+                  ),
+                );
+              }
+          );
+        }
     );
   }
 
@@ -787,7 +973,14 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           GlobalSetting.shared.showPopup(context, onTapClose: () {
             Navigator.of(context).pop();
           }, onTapExit: () {
+            if(_room?.users.length == 1) {
+              removeRoomById(widget.room?.id ?? '');
+            } else {
+              updateUserRoomById(widget.room!);
+            }
+            AudioManager.stopBackgroundMusic();
             Navigator.of(context)
+              ..pop()
               ..pop()
               ..pop()
               ..pop();
@@ -821,7 +1014,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ..._listAnswer(),
+            if (_showQuestion) ..._listAnswer(),
             SizedBox(
               height: AppSizes.bottomHeight,
             )
@@ -838,7 +1031,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ..._listAnswer(),
+            if (_showQuestion) ..._listAnswer(),
             SizedBox(
               height: AppSizes.bottomHeight,
             )
@@ -855,7 +1048,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                         border: Border.all(width: 4, color: Color(0xFFE97428)),
                         color: Color(0xFF467865)),
                     child: _body())),
-            ..._listAnswer(),
+            if (_showQuestion) ..._listAnswer(),
             SizedBox(
               height: AppSizes.bottomHeight,
             )

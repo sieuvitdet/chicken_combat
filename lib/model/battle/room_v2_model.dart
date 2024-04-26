@@ -94,7 +94,7 @@ class RoomV2Model {
   Future<void> updateUsersRemove(List<UserInfoRoomV2> list) async {
     try {
       List<UserInfoRoomV2> updatedUsers = list.where((element) => element.userId != Globals.currentUser?.id).toList();
-      await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+      await FirebaseFirestore.instance.collection(FirebaseEnum.roomV2).doc(id).update({
         'user': updatedUsers.map((user) => user.toJson()).toList(),
       });
     } catch (e) {
@@ -117,7 +117,7 @@ class RoomV2Model {
           return element;
         }
       }).toList();
-      await FirebaseFirestore.instance.collection(FirebaseEnum.room).doc(id).update({
+      await FirebaseFirestore.instance.collection(FirebaseEnum.roomV2).doc(id).update({
         'user': updatedUsers.map((user) => user.toJson()).toList(),
       });
     } catch (e) {
@@ -162,35 +162,4 @@ class RoomV2CheckResult {
   final bool isNew;
 
   RoomV2CheckResult({required this.room, required this.isNew});
-}
-
-class StatusBattleV2 {
-  String id;
-  int askPosition;
-  String userid;
-  int team;
-  bool correct;
-
-  StatusBattleV2({required this.id,required this.askPosition,required this.userid,required this.team, required this.correct});
-
-  factory StatusBattleV2.fromSnapshot(DocumentSnapshot snapshot) {
-    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
-    return StatusBattleV2(
-        id: snapshot.id,
-        askPosition: data?['askPosition'] as int? ?? -1,
-        userid: data?['userid'] as String? ?? '',
-        team: data?['team'] as int? ?? 0,
-        correct: data?['correct'] as bool? ?? false
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'askPosition': askPosition,
-      'userid': userid,
-      'team': team,
-      'correct': correct,
-    };
-  }
 }
