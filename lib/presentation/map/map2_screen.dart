@@ -310,7 +310,7 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
                 child: IconButton(
                   icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   },
                 ),
               )

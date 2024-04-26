@@ -21,4 +21,11 @@ class FirebaseEnum {
   static String level2 = '/level2';
   static String level3 = '/level3';
   static String store = 'store';
+
+  static String reading = 'reading';
+  static String listening = 'listening';
+  static String speaking = 'speaking';
+
+
+
 }

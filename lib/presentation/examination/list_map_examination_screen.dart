@@ -70,7 +70,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
               Globals.currentUser!.checkingMapModel.readingCourses.length > 1
                   ? Globals.currentUser!.checkingMapModel.readingCourses[1]
                           .level
-                  : 0;
+                  : 1;
           itemMaps = Globals.currentUser?.checkingMapModel.readingCourses ?? [];
         } else if (widget.type != "" && widget.type == "listening") {
           locationMap1 = Globals
@@ -79,7 +79,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
               Globals.currentUser!.checkingMapModel.listeningCourses.length > 1
                   ? Globals.currentUser!.checkingMapModel.listeningCourses[1]
                           .level
-                  : 0;
+                  : 1;
           itemMaps =
               Globals.currentUser?.checkingMapModel.listeningCourses ?? [];
         } else if (widget.type != "" && widget.type == "speaking") {
@@ -89,7 +89,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
               Globals.currentUser!.checkingMapModel.speakingCourses.length > 1
                   ? Globals.currentUser!.checkingMapModel.speakingCourses[1]
                           .level
-                  : 0;
+                  : 1;
           itemMaps =
               Globals.currentUser?.checkingMapModel.speakingCourses ?? [];
         }

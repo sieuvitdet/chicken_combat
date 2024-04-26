@@ -7,7 +7,6 @@ import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -17,7 +16,6 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MapReadingExaminationAnswerScreen extends StatefulWidget {
@@ -119,47 +117,6 @@ class _MapReadingExaminationAnswerScreenState
       print('Error fetching and parsing data: $e');
     }
     return readings;
-  }
-
-  Future<void> updateUsersReady() async {
-    final DocumentReference docRef = FirebaseFirestore.instance
-        .collection(FirebaseEnum.userdata)
-        .doc(Globals.currentUser!.id);
-
-    docRef.get().then((DocumentSnapshot doc) {
-      if (doc.exists && doc.data() != null) {
-        var data = doc.data() as Map<String, dynamic>;
-        List<dynamic> courseMaps = data['checkingMaps'];
-        List<Map<String, dynamic>> updatedCourseMaps = [];
-
-        for (var map in courseMaps) {
-          updatedCourseMaps.add({
-            'collectionMap': map['collectionMap'],
-            'level': (map['isCourse'] == "reading")
-                ? widget.level + 1
-                : map['level'],
-            'isCourse': map['isCourse']
-          });
-        }
-        if (widget.level == 9) {
-          updatedCourseMaps.add({
-            'collectionMap':
-                "MAP0${Globals.currentUser!.checkingMapModel.readingCourses.length + 1}",
-            'level': 1,
-            'isCourse': "reading"
-          });
-        }
-
-        // Cập nhật document với danh sách mới
-        docRef.update({'checkingMaps': updatedCourseMaps}).then((_) {
-          print('Document successfully updated with new levels');
-        }).catchError((error) {
-          print('Error updating document: $error');
-        });
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
   }
 
   int _checkScore() {
@@ -304,7 +261,6 @@ class _MapReadingExaminationAnswerScreenState
                               if (score > 5) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
-                                updateUsersReady();
                                 _updateGold(
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.gold ?? 0);
