@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
@@ -14,6 +15,8 @@ import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
+import 'package:chicken_combat/widgets/custom_scaffold.dart';
+import 'package:chicken_combat/widgets/dialog_shield_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -90,13 +93,13 @@ class _Map1ScreenState extends State<Map1Screen>
     _controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         setState(() {
-          print(location);
-          if (location == (numberMountain - 2)) {
+          if (location >= numberMountain) {
             return;
+          } else {
+            _controller.reset();
+            location += 1;
+            _path = drawPath();
           }
-          _controller.reset();
-          location += 1;
-          _path = drawPath();
         });
       }
     });
@@ -129,6 +132,22 @@ class _Map1ScreenState extends State<Map1Screen>
     super.dispose();
   }
 
+  _triggerCongratulation(String type) {
+    GlobalSetting.shared.showPopupWithContext(
+        context,
+        DialogShieldWiget(
+          ontap: () {
+            Navigator.of(context).pop();
+          },
+          isShowHalo: type == 'speaking' || type == 'listening',
+          imgage: type == 'reading'
+              ? Assets.img_cup_reward
+              : type == 'listening'
+                  ? Assets.img_cup_chicken
+                  : Assets.img_shield_chicken,
+        ));
+  }
+
   Widget _buildBottom() {
     return Container(
       height: heightContent,
@@ -149,7 +168,7 @@ class _Map1ScreenState extends State<Map1Screen>
             left: calculate(_animation.value).dx,
             child: Transform(
                 alignment: Alignment.center,
-                transform: location % 2 == 0
+                transform: (location - 1) % 2 == 0
                     ? Matrix4.rotationY(0)
                     : Matrix4.rotationY(pi),
                 child: AnimatedBuilder(
@@ -169,18 +188,6 @@ class _Map1ScreenState extends State<Map1Screen>
                   ),
                 )),
           ),
-          Positioned(
-              top: AppSizes.maxHeight * 0.06,
-              left: AppSizes.maxWidth * 0.05,
-              child: IconTheme(
-                data: IconThemeData(size: 24.0), // Set the size here
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios,color: Colors.grey),
-                  onPressed: () {
-                    Navigator.of(context).pop(_isReload);
-                  },
-                ),
-              ))
         ],
       ),
     );
@@ -240,7 +247,7 @@ class _Map1ScreenState extends State<Map1Screen>
             horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
             count: i + 1,
             onTap: () async {
-              if (i > location) {
+              if ((i + 1) > location) {
                 return;
               }
               bool? result = null;
@@ -249,13 +256,13 @@ class _Map1ScreenState extends State<Map1Screen>
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapReadingExaminationAnswerScreen(
                             isGetReward: i < location,
-                            level: location + 1,
+                            level: location,
                           )));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningExaminationScreen(
                             isGetReward: i < location,
-                            level: location + 1,
+                            level: location,
                           )));
                 } else if (widget.type != "" && widget.type == "speaking") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
@@ -264,19 +271,34 @@ class _Map1ScreenState extends State<Map1Screen>
               } else {
                 if (widget.type != "" && widget.type == "reading") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapReadingLessonScreen()));
+                      builder: (context) => MapReadingLessonScreen(
+                            isGetReward: i < location,
+                            level: location,
+                          )));
                 } else if (widget.type != "" && widget.type == "listening") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapListeningLessonScreen()));
+                      builder: (context) => MapListeningLessonScreen(
+                          isGetReward: i < location, level: location)));
                 } else if (widget.type != "" && widget.type == "speaking") {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapSpeakingLessonScreen()));
                 }
               }
 
-              if (result != null && result == true && i == location) {
+              if (result != null && result == true && (i + 1) == location) {
+                bool skip = true;
+                Globals.currentUser!.checkingMapModel.listeningCourses
+                    .forEach((element) {
+                  if (element.collectionMap !=
+                      "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length}") {
+                    skip = false;
+                  }
+                });
+                if (location == 10 && skip) {
+                  _triggerCongratulation(widget.type!);
+                }
                 _isReload = true;
-                if (i < numberMountain) {
+                if ((i + 1) < numberMountain) {
                   currentPadding = _listPadding[i + 1];
                   nextPadding =
                       i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
@@ -339,28 +361,28 @@ class _Map1ScreenState extends State<Map1Screen>
     double width = AppSizes.maxWidth * 0.42;
     double maxWidth = AppSizes.maxWidth;
     double maxHeight = AppSizes.maxHeight;
-    if (location == 0) {
+    if (location == 1) {
       path.moveTo(left + width / 3, bottom);
       path.quadraticBezierTo(
           left + width / 3,
           bottom - 2.4 * maxHeight * multiple,
           maxWidth - nextleft - width / 1.5,
           bottom - maxHeight * multiple);
-    } else if (location == 1) {
+    } else if (location == 2) {
       path.moveTo(maxWidth - left - width / 1.5, bottom - maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 3,
           bottom - 3.4 * maxHeight * multiple,
           nextleft + width / 2,
           bottom - 2 * maxHeight * multiple);
-    } else if (location == 2) {
+    } else if (location == 3) {
       path.moveTo(width / 2, bottom - 2 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 3.4 * maxHeight * multiple,
           maxWidth - nextleft - width / 1.5,
           bottom - 3 * maxHeight * multiple);
-    } else if (location == 3) {
+    } else if (location == 4) {
       path.moveTo(
           maxWidth - left - width / 1.5, bottom - 3 * maxHeight * multiple);
       path.quadraticBezierTo(
@@ -368,14 +390,14 @@ class _Map1ScreenState extends State<Map1Screen>
           bottom - 5.4 * maxHeight * multiple,
           nextleft + width / 2,
           bottom - 4 * maxHeight * multiple);
-    } else if (location == 4) {
+    } else if (location == 5) {
       path.moveTo(width / 2, bottom - 4 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 6 * maxHeight * multiple,
           maxWidth - nextleft - width / 1.5,
           bottom - 5 * maxHeight * multiple);
-    } else if (location == 5) {
+    } else if (location == 6) {
       path.moveTo(
           maxWidth - left - width / 1.5, bottom - 5 * maxHeight * multiple);
       path.quadraticBezierTo(
@@ -383,14 +405,14 @@ class _Map1ScreenState extends State<Map1Screen>
           bottom - 7.4 * maxHeight * multiple,
           nextleft + width / 2,
           bottom - 6 * maxHeight * multiple);
-    } else if (location == 6) {
+    } else if (location == 7) {
       path.moveTo(width / 2, bottom - 6 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 8 * maxHeight * multiple,
           maxWidth - nextleft - width / 1.5,
           bottom - 7 * maxHeight * multiple);
-    } else if (location == 7) {
+    } else if (location == 8) {
       path.moveTo(
           maxWidth - left - width / 1.5, bottom - 7 * maxHeight * multiple);
       path.quadraticBezierTo(
@@ -398,14 +420,14 @@ class _Map1ScreenState extends State<Map1Screen>
           bottom - 9.4 * maxHeight * multiple,
           nextleft + width / 2,
           bottom - 8 * maxHeight * multiple);
-    } else if (location == 8) {
+    } else if (location == 9) {
       path.moveTo(width / 2, bottom - 8 * maxHeight * multiple);
       path.quadraticBezierTo(
           left + width / 2,
           bottom - 10 * maxHeight * multiple,
           maxWidth - nextleft - width / 1.5,
           bottom - 9 * maxHeight * multiple);
-    } else if (location == 9) {
+    } else if (location == 10) {
       path.moveTo(
           maxWidth - left - width / 1.5, bottom - 9 * maxHeight * multiple);
       path.quadraticBezierTo(
@@ -429,33 +451,34 @@ class _Map1ScreenState extends State<Map1Screen>
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: Color(0xffFFF0AB),
-        body: Responsive(
-          mobile: SingleChildScrollView(
-              controller: _scrollController,
-              physics: ClampingScrollPhysics(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [_buildBottom(), _buildContent()],
-              )),
-          tablet: SingleChildScrollView(
-              controller: _scrollController,
-              physics: ClampingScrollPhysics(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [_buildBottom(), _buildContent()],
-              )),
-          desktop: SingleChildScrollView(
-              controller: _scrollController,
-              physics: ClampingScrollPhysics(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [_buildBottom(), _buildContent()],
-              )),
-        ),
-      ),
+      canPop: true,
+      child: CustomScaffold(
+          backgroundColor: Color(0xffFFF0AB),
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: ClampingScrollPhysics(),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [_buildBottom(), _buildContent()],
+                  )),
+              Positioned(
+                top: MediaQuery.of(context)
+                    .padding
+                    .top, // Đảm bảo không bị che bởi notch
+                left: 0,
+                child: SafeArea(
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              )
+            ],
+          )),
     );
   }
 }

@@ -19,7 +19,7 @@ class DialogCongratulationWidget extends StatelessWidget {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.838,
-          height: AppSizes.maxHeight > 800
+          height: AppSizes.maxHeight > 850
               ? AppSizes.maxHeight * 0.614
               : AppSizes.maxHeight * 0.65,
           child: Stack(
@@ -29,7 +29,7 @@ class DialogCongratulationWidget extends StatelessWidget {
                 Assets.img_bg_dialog_congratulation,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.838,
-                height: AppSizes.maxHeight > 800
+                height: AppSizes.maxHeight > 850
                     ? AppSizes.maxHeight * 0.614
                     : AppSizes.maxHeight * 0.65,
               ),

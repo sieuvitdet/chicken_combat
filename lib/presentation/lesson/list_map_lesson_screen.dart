@@ -12,6 +12,7 @@ import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_shield_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -59,48 +60,65 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
 
         if (widget.type != "" && widget.type == "reading") {
           locationMap1 =
-              Globals.currentUser!.checkingMapModel.readingCourses.first.level -
+              Globals.currentUser!.courseMapModel.readingCourses.first.level -
                   1;
 
           locationMap2 =
-              Globals.currentUser!.checkingMapModel.readingCourses.length > 1
-                  ? Globals.currentUser!.checkingMapModel.readingCourses[1]
+              Globals.currentUser!.courseMapModel.readingCourses.length > 1
+                  ? Globals.currentUser!.courseMapModel.readingCourses[1]
                           .level -
                       1
                   : 0;
-          itemMaps = Globals.currentUser?.checkingMapModel.readingCourses ?? [];
+          itemMaps = Globals.currentUser?.courseMapModel.readingCourses ?? [];
         } else if (widget.type != "" && widget.type == "listening") {
           locationMap1 = Globals
-                  .currentUser!.checkingMapModel.listeningCourses.first.level -
+                  .currentUser!.courseMapModel.listeningCourses.first.level -
               1;
           locationMap2 =
-              Globals.currentUser!.checkingMapModel.listeningCourses.length > 1
-                  ? Globals.currentUser!.checkingMapModel.listeningCourses[1]
+              Globals.currentUser!.courseMapModel.listeningCourses.length > 1
+                  ? Globals.currentUser!.courseMapModel.listeningCourses[1]
                           .level -
                       1
                   : 0;
           itemMaps =
-              Globals.currentUser?.checkingMapModel.listeningCourses ?? [];
+              Globals.currentUser?.courseMapModel.listeningCourses ?? [];
         } else if (widget.type != "" && widget.type == "speaking") {
           locationMap1 = Globals
-                  .currentUser!.checkingMapModel.speakingCourses.first.level -
+                  .currentUser!.courseMapModel.speakingCourses.first.level -
               1;
           locationMap2 =
-              Globals.currentUser!.checkingMapModel.speakingCourses.length > 1
-                  ? Globals.currentUser!.checkingMapModel.speakingCourses[1]
+              Globals.currentUser!.courseMapModel.speakingCourses.length > 1
+                  ? Globals.currentUser!.courseMapModel.speakingCourses[1]
                           .level -
                       1
                   : 0;
           itemMaps =
-              Globals.currentUser?.checkingMapModel.speakingCourses ?? [];
+              Globals.currentUser?.courseMapModel.speakingCourses ?? [];
         }
         setState(() {});
       }
     });
   }
 
+
   Widget _buildBackground() {
-    return BackGroundCloudWidget();
+    return Stack(
+      children: [
+        BackGroundCloudWidget(),
+        Positioned(
+            top: AppSizes.maxHeight * 0.06,
+            left: AppSizes.maxWidth * 0.05,
+            child: IconTheme(
+              data: IconThemeData(size: 24.0), // Set the size here
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ))
+      ],
+    );
   }
 
   Widget _buildContent() {

@@ -216,7 +216,7 @@ late AnimationController _controller1;
     return Center(
       child: Container(
         width: AppSizes.maxWidth,
-        height: AppSizes.maxHeight,
+        height: widget.heightContent,
         child: Stack(
           fit: StackFit.loose,
           children: [

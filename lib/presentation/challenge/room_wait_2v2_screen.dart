@@ -226,7 +226,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                                 ? Matrix4.rotationY(pi)
                                 : Matrix4.rotationY(0),
                             child: Image.asset(
-                                getListOtherUserNotTeamInfo()!.length > 1 ?
+                                getListOtherUserNotTeamInfo()!.isNotEmpty ?
                                 ExtendedAssets.getAssetByCode(getListOtherUserNotTeamInfo()![0].usecolor) :
                                 Assets.ic_chicken_hidden,
                               fit: BoxFit.contain,
@@ -236,7 +236,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                           Container(
                             width: AppSizes.maxWidth * 0.16,
                             child: Text(
-                                getListOtherUserNotTeamInfo()!.length > 1 ?
+                                getListOtherUserNotTeamInfo()!.isNotEmpty ?
                                 getListOtherUserNotTeamInfo()![0].username :
                                 '...',
                               style: TextStyle(fontSize: 14, color: Colors.white,

@@ -24,7 +24,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth*0.838,
-          height: AppSizes.maxHeight * 0.44,
+          height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.44 : AppSizes.maxHeight * 0.55,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -32,7 +32,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
                 Assets.img_background_popup,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.838,
-                height: AppSizes.maxHeight * 0.45,
+                height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.45 :AppSizes.maxHeight * 0.55,
               ),
               Column(
                 children: [
@@ -130,7 +130,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
 
   Widget _gif() {
     return Container(
-      height: AppSizes.maxHeight * 0.0725,
+      height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.08 : AppSizes.maxHeight * 0.1,
       margin: EdgeInsets.symmetric(
           horizontal: AppSizes.maxHeight * 0.0386),
       decoration: BoxDecoration(

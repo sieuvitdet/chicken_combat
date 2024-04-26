@@ -152,6 +152,8 @@ class Assets {
   static final String img_bg_item_used = "assets/images/img_bg_item_used.png";
   static final String img_chicken_zombie = "assets/images/img_chicken_zombie.png";
   static final String img_bubble = "assets/images/img_bubble.png";
+  static final String img_cup_reward = "assets/images/img_cup_reward.png";
+  static final String img_halo = "assets/images/img_halo.png";
 
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";
@@ -190,6 +192,9 @@ class Assets {
   static final String ic_chicken_hidden = "assets/icons/ic_chicken_hidden.png";
   static final String img_button_small_orange = "assets/images/img_button_small_orange.png";
   static final String img_button_small_gray = "assets/images/img_button_small_gray.png";
+  static final String img_shield_chicken = "assets/images/img_shield_chicken.png";
+  static final String img_cup_chicken = "assets/images/img_cup_chicken.png";
+  static final String img_chicken_zombie_fall = "assets/images/img_chicken_zombie_fall.png";
 
   //gif
   static final String chicken_flapping_swing_gif =
