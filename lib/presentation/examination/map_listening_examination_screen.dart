@@ -151,7 +151,8 @@ class _MapListeningExaminationScreenState
             'level': (map['isCourse'] == "listening")
                 ? widget.level + 1
                 : map['level'],
-            'isCourse': map['isCourse']
+            'isCourse': map['isCourse'],
+            'isComplete': map['isComplete']
           });
         }
          if (widget.level == 9) {
@@ -159,7 +160,8 @@ class _MapListeningExaminationScreenState
               'collectionMap':
                   "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}",
               'level': 1,
-              'isCourse': "listening"
+              'isCourse': "listening",
+              'isComplete': false
             });
           }
 
