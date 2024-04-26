@@ -17,6 +17,8 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
+import 'package:chicken_combat/widgets/dialog_shield_widget.dart';
+import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
@@ -427,8 +429,8 @@ class _HomeScreenState extends State<HomeScreen>
         blueColor: iD == 1,
         redBlurColor: iD == 2,
         child: Center(
-            child: Text(name,
-                style: TextStyle(fontSize: 24, color: Colors.white))),
+            child: StrokeTextWidget(text:name,
+                size: 20, colorStroke: iD == 0 ? Color(0xFF9C4615) : iD == 1 ? Color(0xFF0D79) : Color(0xFF9C4615),)),
         onTap: () {
           onTap();
           AudioManager.playSoundEffect(AudioFile.sound_tap);

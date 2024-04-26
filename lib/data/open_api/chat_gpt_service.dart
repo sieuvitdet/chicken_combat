@@ -42,7 +42,7 @@ class ChatGPTService {
         'Authorization': 'Bearer $_apiKey'
       },
       body: jsonEncode({
-        'model': 'gpt-4',
+        'model': 'gpt-3.5-turbo',
         'messages': [
           {'role': 'user', 'content': prompt}
         ]

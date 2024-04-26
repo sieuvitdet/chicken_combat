@@ -11,6 +11,7 @@ import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_shield_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -63,37 +64,31 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
 
         if (widget.type != "" && widget.type == "reading") {
           locationMap1 =
-              Globals.currentUser!.checkingMapModel.readingCourses.first.level -
-                  1;
+              Globals.currentUser!.checkingMapModel.readingCourses.first.level;
 
           locationMap2 =
               Globals.currentUser!.checkingMapModel.readingCourses.length > 1
                   ? Globals.currentUser!.checkingMapModel.readingCourses[1]
-                          .level -
-                      1
+                          .level
                   : 0;
           itemMaps = Globals.currentUser?.checkingMapModel.readingCourses ?? [];
         } else if (widget.type != "" && widget.type == "listening") {
           locationMap1 = Globals
-                  .currentUser!.checkingMapModel.listeningCourses.first.level -
-              1;
+                  .currentUser!.checkingMapModel.listeningCourses.first.level;
           locationMap2 =
               Globals.currentUser!.checkingMapModel.listeningCourses.length > 1
                   ? Globals.currentUser!.checkingMapModel.listeningCourses[1]
-                          .level -
-                      1
+                          .level
                   : 0;
           itemMaps =
               Globals.currentUser?.checkingMapModel.listeningCourses ?? [];
         } else if (widget.type != "" && widget.type == "speaking") {
           locationMap1 = Globals
-                  .currentUser!.checkingMapModel.speakingCourses.first.level -
-              1;
+                  .currentUser!.checkingMapModel.speakingCourses.first.level;
           locationMap2 =
               Globals.currentUser!.checkingMapModel.speakingCourses.length > 1
                   ? Globals.currentUser!.checkingMapModel.speakingCourses[1]
-                          .level -
-                      1
+                          .level
                   : 0;
           itemMaps =
               Globals.currentUser?.checkingMapModel.speakingCourses ?? [];
@@ -113,7 +108,10 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
             child: IconTheme(
               data: IconThemeData(size: 24.0), // Set the size here
               child: IconButton(
-                icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -191,9 +189,12 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
             case 1:
               bool result = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Map2Screen(
-                      type: widget.type, isLesson: widget.isLesson,location: locationMap2)));
+                      type: widget.type,
+                      isLesson: widget.isLesson,
+                      location: locationMap2)));
               if (result) {
                 getUserInfo();
+                
               }
               break;
             case 2:
@@ -241,4 +242,3 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
     );
   }
 }
-

@@ -6,7 +6,7 @@ import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/maps/course_map_model.dart';
+import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -17,7 +17,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -35,9 +34,6 @@ class MapListeningExaminationScreen extends StatefulWidget {
 class _MapListeningExaminationScreenState
     extends State<MapListeningExaminationScreen> with WidgetsBindingObserver {
   String text = "";
-
-  String text2 = "";
-
   List<String> parts = [];
   List<String> results = [];
   List<int> positions = [];
@@ -59,6 +55,7 @@ class _MapListeningExaminationScreenState
     super.initState();
     AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
+    print(widget.level);
 
     _checkMicrophonePermission();
     AudioManager.pauseBackgroundMusic();
@@ -149,13 +146,24 @@ class _MapListeningExaminationScreenState
           updatedCourseMaps.add({
             'collectionMap': map['collectionMap'],
             'level': (map['isCourse'] == "listening")
-                ? widget.level + 1
+                ? (widget.level == 10) ? widget.level : (widget.level + 1)
                 : map['level'],
             'isCourse': map['isCourse'],
             'isComplete': map['isComplete']
           });
         }
-         if (widget.level == 9) {
+
+        bool skip = true;
+
+        Globals.currentUser!.checkingMapModel.listeningCourses.forEach((element) {
+          if (element.collectionMap == "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}") {
+            skip = false;
+          }
+        });
+
+     
+
+         if (widget.level == 10 && skip) {
             updatedCourseMaps.add({
               'collectionMap':
                   "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}",

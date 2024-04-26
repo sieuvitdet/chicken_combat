@@ -106,18 +106,6 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
                   height: AppSizes.maxHeight * 0.11),
               ),
             ),
-            Positioned(
-              top: AppSizes.maxHeight * 0.06,
-              left: AppSizes.maxWidth * 0.05,
-              child: IconTheme(
-                data: IconThemeData(size: 24.0), // Set the size here
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
-                  onPressed: () {
-                    Navigator.of(context).pop(_isReload);
-                  },
-                ),
-              ))
             // Positioned(
             //   top: 0,
             //   child: CustomPaint(
@@ -305,25 +293,29 @@ class _Map2ScreenState extends State<Map2Screen> with SingleTickerProviderStateM
       bottom: false,
       child: Scaffold(
         backgroundColor: Color(0xFf89E6F3),
-        body: Responsive(mobile: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [_buildBottom(), _buildContent()],
-            )), tablet: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [_buildBottom(), _buildContent()],
-            )), desktop: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [_buildBottom(), _buildContent()],
-            ))),
+        body: Stack(
+            children: [
+              SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: ClampingScrollPhysics(),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [_buildBottom(), _buildContent()],
+                  )),
+              Positioned(
+                top: MediaQuery.of(context)
+                    .padding
+                    .top, // Đảm bảo không bị che bởi notch
+                left: 0,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              )
+            ],
+          ),
       ),
     );
   }

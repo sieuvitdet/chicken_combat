@@ -145,7 +145,7 @@ class _MapReadingExaminationAnswerScreenState
         if (widget.level == 9) {
           updatedCourseMaps.add({
             'collectionMap':
-                "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}",
+                "MAP0${Globals.currentUser!.checkingMapModel.readingCourses.length + 1}",
             'level': 1,
             'isCourse': "reading",
             'isComplete': false

@@ -13,16 +13,6 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-// class DialogRandomGiftWidget extends StatelessWidget {
-//   final Function? ontap;
-//   final String type;
-
-//   DialogRandomGiftWidget({this.ontap, required this.type});
-
- 
-// }
-
-
 class DialogRandomGiftWidget extends StatefulWidget {
 
     final Function? ontap;
@@ -87,7 +77,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.838,
-          height: widget.type == "gold" ?AppSizes.maxHeight * 0.3 : AppSizes.maxHeight * 0.48,
+          height: widget.type == "gold" ?AppSizes.maxHeight * 0.44 : AppSizes.maxHeight * 0.48,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -135,7 +125,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
                             size: AppSizes.maxWidth < 350 ? 16 : 20,
                             colorStroke: Colors.red[900]),
                         SizedBox(height: AppSizes.maxHeight * 0.02),
-                        _btnBottom()
+                        _buildButton()
                       ],
                     ),
                   )),
@@ -144,15 +134,6 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
                   )
                 ],
               ),
-              // Positioned(
-              //     right: 16,
-              //     top: AppSizes.maxHeight * 0.0245,
-              //     child: ScalableButton(
-              //         onTap: () {
-              //           Navigator.of(context).pop();
-              //         },
-              //         child: Image.asset(Assets.ic_close_popup,
-              //             width: AppSizes.maxWidth * 0.116))),
             ],
           ),
         ),
@@ -207,7 +188,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
     );
   }
 
-  Widget _btnBottom() {
+  Widget _buildButton() {
     return CustomButtomImageColorWidget(
       onTap: widget.ontap,
       orangeColor: true,

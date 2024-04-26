@@ -1,4 +1,6 @@
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -20,7 +22,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
       body: Center(
         child: Container(
           width: AppSizes.maxWidth * 0.868,
-          height: AppSizes.maxHeight * 0.3,
+          height: AppSizes.maxHeight * 0.34,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -28,7 +30,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
                 Assets.img_bg_popup_confirm,
                 fit: BoxFit.fill,
                 width: AppSizes.maxWidth * 0.868,
-                height: AppSizes.maxHeight * 0.32,
+                height: AppSizes.maxHeight * 0.36,
               ),
               Column(
                 children: [
@@ -84,7 +86,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
       orangeColor: true,
       child: Center(
         child: StrokeTextWidget(
-          text: titleButton ?? "Đồng ý",
+          text: titleButton ?? AppLocalizations.text(LangKey.agree),
           size: AppSizes.maxWidth < 350 ? 14 : 20,
           colorStroke: Color(0xFFD18A5A),
         ),

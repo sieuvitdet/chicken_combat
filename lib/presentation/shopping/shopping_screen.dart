@@ -155,7 +155,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         GlobalSetting.shared.showPopupWithContext(
             context,
             CustomDialogWithTitleButtonWidget(
-              title: "Vui lòng tiềm kiếm thêm kim cương để mua vật phẩm này!",
+              title: "Please find more diamonds to purchase this item!",
               ontap: () {
                 Navigator.of(context).pop();
               },
@@ -173,7 +173,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         GlobalSetting.shared.showPopupWithContext(
             context,
             CustomDialogWithTitleButtonWidget(
-              title: "Vui lòng tiềm kiếm thêm gold để mua vật phẩm này!",
+              title: "Please find more gold to purchase this item!",
               ontap: () {
                 Navigator.of(context).pop();
               },
