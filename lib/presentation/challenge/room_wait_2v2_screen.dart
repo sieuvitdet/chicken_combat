@@ -7,6 +7,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_v2_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
+import 'package:chicken_combat/presentation/challenge/battle_map/battle_2vs2_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
 import 'package:chicken_combat/utils/utils.dart';
@@ -45,6 +46,9 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
   }
 
   UserInfoRoomV2? getCurrentUserInfo() {
+    if (isOutRoom) {
+      return null;
+    }
     try {
       return _room?.users
           .firstWhere((user) => user.userId == Globals.currentUser?.id);
@@ -105,13 +109,46 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
     }
   }
 
+  void toggleHiddenGifPK() async {
+    hiddenGifPK = false;
+    print("hiddenGifPK is now set to false");
+    await Future.delayed(Duration(seconds: 3));
+    hiddenGifPK = true;
+    print("hiddenGifPK is now set back to true");
+  }
+
+  bool isReadyBattle() {
+    if (_room?.users == null) {
+      print("Room data is not available.");
+      return false;
+    }
+    bool allReady = _room!.users.every((userInfo) => userInfo.ready);
+    return allReady;
+  }
+
   Future<void> _listenRoom(String _id) async {
     CollectionReference room =
         FirebaseFirestore.instance.collection(FirebaseEnum.roomV2);
     room.doc(_id).snapshots().listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         setState(() {
-          _room = RoomV2Model.fromSnapshot(documentSnapshot);
+          if (!isOutRoom) {
+            _room = RoomV2Model.fromSnapshot(documentSnapshot);
+            if (_room!.users.length == 4) {
+              isMatch = true;
+              if(isReadyBattle()) {
+                toggleHiddenGifPK();
+                Future.delayed(Duration(seconds: 2), () {
+                  if (_room != null) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Battle2Vs2Screen(room: _room)));
+                  }
+                });
+              }
+            } else {
+              isMatch = false;
+            }
+          }
         });
       }
     });
@@ -287,7 +324,8 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                     TextStyle(fontSize: 24, color: Colors.white),
                     seconds: 120,
                     onTimerComplete: () {
-                      //removeRoomById(_room!.id);
+                        removeRoomById(_room!.id);
+                        Navigator.of(context)..pop()..pop();
                     },
                   ),
                 ],
@@ -310,12 +348,11 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
                 height: 8,
               ),
               CustomButtomImageColorWidget(
-                orangeColor: true,
-                //_currentInfo(true)?.ready == false ? true : false,
+                orangeColor: getCurrentUserInfo()?.ready == false ? true : false,
                 child: Text(AppLocalizations.text(LangKey.ready),
                     style: TextStyle(fontSize: 24, color: Colors.white)),
                 onTap: () {
-                  //updateUserReady(_room!);
+                  updateUserReady(_room!);
                 },
               ),
             ],
@@ -327,9 +364,11 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
           left: 8.0,
           child: GestureDetector(
             onTap: () {
-              // isMatch
-              //     ? updateUserRoomById(_room!)
-              //     : removeRoomById(_room!.id);
+              if(_room?.users.length == 1) {
+                  removeRoomById(_room!.id);
+              } else {
+                  updateUserRoomById(_room!);
+              }
             },
             child: Container(
               padding: EdgeInsets.all(8),
@@ -343,6 +382,43 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
         ),
       ],
     );
+  }
+
+  Future<void> updateUserRoomById(RoomV2Model room) async {
+    try {
+      setState(() {
+        isOutRoom = true;
+      });
+      await room.updateUsersRemove(room.users);
+      Navigator.of(context)..pop()..pop();
+    } catch (e) {
+      print('Failed to update room: $e');
+    }
+  }
+
+  Future<void> removeRoomById(String roomId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.roomV2)
+          .doc(_room!.id)
+          .delete();
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.battlestatus)
+          .doc(_room!.status)
+          .delete();
+      Navigator.of(context)..pop()..pop();
+    } catch (e) {
+      print("Error removing room: $e");
+      throw Exception("Failed to remove the room: $e");
+    }
+  }
+
+  Future<void> updateUserReady(RoomV2Model room) async {
+    try {
+      await room.updateUsersReady(room.users);
+    } catch (e) {
+      print('Failed to update room: $e');
+    }
   }
 
   @override

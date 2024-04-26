@@ -93,8 +93,8 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
               isMatch = false;
             } else {
               isMatch = true;
-              hiddenGifPK = true;
               if(isReadyBattle()) {
+                toggleHiddenGifPK();
                 Future.delayed(Duration(seconds: 3), () {
                   if (_room != null) {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -107,6 +107,14 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
         });
       }
     });
+  }
+
+  void toggleHiddenGifPK() async {
+    hiddenGifPK = false;
+    print("hiddenGifPK is now set to false");
+    await Future.delayed(Duration(seconds: 3));
+    hiddenGifPK = true;
+    print("hiddenGifPK is now set back to true");
   }
 
   bool isReadyBattle()  {
