@@ -213,7 +213,7 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
         app: Firebase.app(),
         databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
       );
-      final ref = database.ref(FirebaseEnum.reading);
+      final ref = database.ref(FirebaseEnum.examination_reading);
       final snapshot = await ref.get();
       if (snapshot.exists) {
         final data = snapshot.value;

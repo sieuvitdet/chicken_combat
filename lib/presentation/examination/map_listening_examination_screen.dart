@@ -115,7 +115,7 @@ class _MapListeningExaminationScreenState
         app: Firebase.app(),
         databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
       );
-      final ref = database.ref(FirebaseEnum.listening);
+      final ref = database.ref(FirebaseEnum.examination_listening);
       final snapshot = await ref.get();
       if (snapshot.exists) {
         final data = snapshot.value;

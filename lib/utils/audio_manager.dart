@@ -36,6 +36,7 @@ class AudioManager {
     Random random = Random();
     int index = random.nextInt(soundFiles.length);
     String filePath = soundFiles[index];
+    final audioPlayer = AudioPlayer();
     final AudioContext audioContext = AudioContext(
       iOS: AudioContextIOS(
         defaultToSpeaker: true,
