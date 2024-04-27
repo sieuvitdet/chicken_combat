@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
@@ -59,8 +59,8 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   RoomModel? _room;
 
-  late AskModel _ask;
-  List<AskModel> _asks = [];
+  late AskExaminationModel _ask;
+  List<AskExaminationModel> _asks = [];
   List<String> answers = [];
   int isSelected = -1;
   int? result;
@@ -401,7 +401,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
               child: StreamBuilder(
                 stream: _bloc.outputAsk,
                 builder: (context, snapshot) {
-                  AskModel? ask = snapshot.data;
+                  AskExaminationModel? ask = snapshot.data;
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                     child: SingleChildScrollView(

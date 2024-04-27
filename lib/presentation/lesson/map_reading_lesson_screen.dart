@@ -5,7 +5,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/langkey.dart';
 import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/utils/utils.dart';
@@ -47,9 +47,9 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late AskModel _ask = AskModel(
+  late AskExaminationModel _ask = AskExaminationModel(
       Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");
-  List<AskModel> _asks = [];
+  List<AskExaminationModel> _asks = [];
   List<String> answers = [];
 
   @override
@@ -74,14 +74,14 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
     });
   }
 
-  Future<List<AskModel>> _loadAsks() async {
-    List<AskModel> loadedAsks = await _getAsk();
+  Future<List<AskExaminationModel>> _loadAsks() async {
+    List<AskExaminationModel> loadedAsks = await _getAsk();
     Random random = Random();
     if (loadedAsks.length < 5) {
       throw Exception("Not enough questions to select from.");
     }
     Set<int> usedIndexes = Set<int>();
-    List<AskModel> selectedAsks = [];
+    List<AskExaminationModel> selectedAsks = [];
     while (selectedAsks.length < 5) {
       int randomNumber = random.nextInt(loadedAsks.length);
       if (!usedIndexes.contains(randomNumber)) {
@@ -92,8 +92,8 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
     return selectedAsks;
   }
 
-  Future<List<AskModel>> _getAsk() async {
-    List<AskModel> readings = [];
+  Future<List<AskExaminationModel>> _getAsk() async {
+    List<AskExaminationModel> readings = [];
     try {
       FirebaseDatabase database = FirebaseDatabase(
         app: Firebase.app(),
@@ -105,7 +105,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
         final data = snapshot.value;
         if (data is List) {
           for (var item in data) {
-            AskModel model = AskModel.fromJson(item);
+            AskExaminationModel model = AskExaminationModel.fromJson(item);
             readings.add(model);
           }
         }

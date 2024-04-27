@@ -17,7 +17,7 @@ class MapSpeakingExaminationScreen extends StatefulWidget {
 
 class _MapSpeakingExaminationScreenState
     extends State<MapSpeakingExaminationScreen> with WidgetsBindingObserver {
-  String text = "Duck Decription";
+  String text = "What color do you get when you mix red and blue?";
   String text2 =
       "Welcome  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
       "Welcome to our random topic! Get ready  to explore some interesting questions we've prepared for you.";
@@ -223,7 +223,7 @@ class _MapSpeakingExaminationScreenState
               setState(() {
                 isListening = !_sttService.isListening;
               });
-              _sttService.toggleRecording((result) {
+              _sttService.toggleRecording(text, (result) {
                 setState(() {
                   text = result;
                   _responseText = result;

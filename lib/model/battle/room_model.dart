@@ -1,4 +1,4 @@
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +9,7 @@ class RoomModel {
   int type;
   String status;
   List<UserInfoRoom> users;
-  List<AskModel> asks;
+  List<AskExaminationModel> asks;
 
   RoomModel({
     required this.id,
@@ -25,8 +25,8 @@ class RoomModel {
     List<UserInfoRoom> users = (data?['user'] as List<dynamic>? ?? []).map((userMap) {
       return UserInfoRoom.fromMap(userMap as Map<String, dynamic>);
     }).toList();
-    List<AskModel> asks = (data?['asks'] as List<dynamic>? ?? []).map((askMap) {
-      return AskModel.fromMap(askMap as Map<String, dynamic>); // Assuming AskModel has a similar structure
+    List<AskExaminationModel> asks = (data?['asks'] as List<dynamic>? ?? []).map((askMap) {
+      return AskExaminationModel.fromMap(askMap as Map<String, dynamic>); // Assuming AskExaminationModel has a similar structure
     }).toList();
 
     return RoomModel(

@@ -1,6 +1,6 @@
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/battle/room_v2_model.dart';
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/interface/base_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,7 +24,7 @@ class Battle2vs2Bloc extends BaseBloc {
     super.dispose();
   }
 
-  late AskModel modelAsk;
+  late AskExaminationModel modelAsk;
   late RoomV2Model modelRoom;
   int currentQuestionPosition = 0;
 
@@ -36,9 +36,9 @@ class Battle2vs2Bloc extends BaseBloc {
   ValueStream<bool> get outputOutRoom => _streamOutRoom.stream;
   setRemoveRoom(bool event) => set(_streamOutRoom, event);
 
-  final _streamAsk = BehaviorSubject<AskModel>();
-  ValueStream<AskModel> get outputAsk => _streamAsk.stream;
-  setAsk(AskModel event) => set(_streamAsk, event);
+  final _streamAsk = BehaviorSubject<AskExaminationModel>();
+  ValueStream<AskExaminationModel> get outputAsk => _streamAsk.stream;
+  setAsk(AskExaminationModel event) => set(_streamAsk, event);
 
   final _streamAnswer = BehaviorSubject<List<String>>();
   ValueStream<List<String>> get outputAnswer => _streamAnswer.stream;
@@ -56,7 +56,7 @@ class Battle2vs2Bloc extends BaseBloc {
   }
 
   onCheckAsk(String team, int position, StatusBattle battle) async {
-    if (AskModel.answerToIndex(modelAsk.Answer) == position) {
+    if (AskExaminationModel.answerToIndex(modelAsk.Answer) == position) {
       await onCheck(team, currentQuestionPosition, true, battle);
       if (currentQuestionPosition < modelRoom.asks.length - 1) {
         getQuestion();

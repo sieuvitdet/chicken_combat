@@ -5,7 +5,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/battle/room_v2_model.dart';
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
@@ -435,7 +435,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
               child: StreamBuilder(
                   stream: _bloc.outputAsk,
                   builder: (context, snapshot) {
-                    AskModel? ask = snapshot.data;
+                    AskExaminationModel? ask = snapshot.data;
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                       child: SingleChildScrollView(

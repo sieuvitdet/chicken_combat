@@ -18,7 +18,7 @@ class UserMapModel {
         collectionMap: map['collectionMap'] ?? '',
         level: map['level'] ?? '',
         isCourse: map['isCourse'] ?? '',
-        isComplete: map['isComplete'] ?? '',
+        isComplete: map['isComplete'] ?? false,
       );
     }).toList();
   }

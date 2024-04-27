@@ -1,4 +1,4 @@
-class AskModel {
+class AskExaminationModel {
   String Question;
   String Answer;
   String Script;
@@ -7,7 +7,7 @@ class AskModel {
   String C;
   String D;
 
-  AskModel({
+  AskExaminationModel({
     required this.Question,
     required this.Answer,
     required this.Script,
@@ -17,8 +17,8 @@ class AskModel {
     required this.D,
   });
 
-  factory AskModel.fromJson(Map<dynamic, dynamic>? json) {
-    return AskModel(
+  factory AskExaminationModel.fromJson(Map<dynamic, dynamic>? json) {
+    return AskExaminationModel(
       Question: json?['Question'] ?? '',
       Answer: json?['Answer'] ?? '',
       Script: json?['Script'] ?? '',
@@ -41,8 +41,8 @@ class AskModel {
     };
   }
 
-  static AskModel fromMap(Map<String, dynamic> map) {
-    return AskModel(
+  static AskExaminationModel fromMap(Map<String, dynamic> map) {
+    return AskExaminationModel(
       Question: map['Question'] as String,
       Answer: map['Answer'] as String,
       Script: map['Script'] as String,

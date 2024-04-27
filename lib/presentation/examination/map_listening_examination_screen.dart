@@ -4,7 +4,7 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/langkey.dart';
 import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
@@ -45,9 +45,9 @@ class _MapListeningExaminationScreenState
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late AskModel _ask = AskModel(
+  late AskExaminationModel _ask = AskExaminationModel(
       Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");
-  List<AskModel> _asks = [];
+  List<AskExaminationModel> _asks = [];
   List<String> answers = [];
 
   @override
@@ -86,14 +86,14 @@ class _MapListeningExaminationScreenState
     }
   }
 
-  Future<List<AskModel>> _loadAsks() async {
-    List<AskModel> loadedAsks = await _getAsk();
+  Future<List<AskExaminationModel>> _loadAsks() async {
+    List<AskExaminationModel> loadedAsks = await _getAsk();
     Random random = Random();
     if (loadedAsks.length < 5) {
       throw Exception("Not enough questions to select from.");
     }
     Set<int> usedIndexes = Set<int>();
-    List<AskModel> selectedAsks = [];
+    List<AskExaminationModel> selectedAsks = [];
     while (selectedAsks.length < 5) {
       int randomNumber = random.nextInt(loadedAsks.length);
       if (!usedIndexes.contains(randomNumber)) {
@@ -104,8 +104,8 @@ class _MapListeningExaminationScreenState
     return selectedAsks;
   }
 
-  Future<List<AskModel>> _getAsk() async {
-    List<AskModel> listeningList = [];
+  Future<List<AskExaminationModel>> _getAsk() async {
+    List<AskExaminationModel> listeningList = [];
 
     try {
       FirebaseDatabase database = FirebaseDatabase(
@@ -118,7 +118,7 @@ class _MapListeningExaminationScreenState
         final data = snapshot.value;
         if (data is List) {
           for (var item in data) {
-            AskModel model = AskModel.fromJson(item);
+            AskExaminationModel model = AskExaminationModel.fromJson(item);
             listeningList.add(model);
           }
         }

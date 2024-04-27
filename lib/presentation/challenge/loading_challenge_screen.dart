@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
-import 'package:chicken_combat/model/course/ask_model.dart';
+import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/presentation/challenge/room_wait_screen.dart';
@@ -38,7 +38,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
 
   String _loadingText = 'Matching';
 
-  List<AskModel> _asks = [];
+  List<AskExaminationModel> _asks = [];
 
   void initState() {
     super.initState();
@@ -122,7 +122,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
                   .useColor, ready: false));
     }
     String battleId = await createBattleStatus();
-    List<AskModel> asks = await _loadAsks();
+    List<AskExaminationModel> asks = await _loadAsks();
     RoomModel newRoom = RoomModel(
       id: '',
       timestamp: now,
@@ -165,14 +165,14 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     }
   }
 
-  Future<List<AskModel>> _loadAsks() async {
-    List<AskModel> loadedAsks = await _getAsk();
+  Future<List<AskExaminationModel>> _loadAsks() async {
+    List<AskExaminationModel> loadedAsks = await _getAsk();
     Random random = Random();
     if (loadedAsks.length < 9) {
       throw Exception("Not enough questions to select from.");
     }
     Set<int> usedIndexes = Set<int>();
-    List<AskModel> selectedAsks = [];
+    List<AskExaminationModel> selectedAsks = [];
     while (selectedAsks.length < 9) {
       int randomNumber = random.nextInt(loadedAsks.length);
       if (!usedIndexes.contains(randomNumber)) {
@@ -184,8 +184,8 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
   }
 
 
-  Future<List<AskModel>> _getAsk() async {
-    List<AskModel> readings = [];
+  Future<List<AskExaminationModel>> _getAsk() async {
+    List<AskExaminationModel> readings = [];
     try {
       FirebaseDatabase database = FirebaseDatabase(
         app: Firebase.app(),
@@ -197,7 +197,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
         final data = snapshot.value;
         if (data is List) {
           for (var item in data) {
-            AskModel model = AskModel.fromJson(item);
+            AskExaminationModel model = AskExaminationModel.fromJson(item);
             readings.add(model);
           }
         }

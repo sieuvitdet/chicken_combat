@@ -34,7 +34,12 @@ class ChatGPTService {
       throw Exception("API Key is not loaded yet");
     }
     final url = Uri.parse(_baseUrl);
-    final prompt = "Topic: $topic\nAnswer: $answer\nHere are the topics and children's answers. Give a score, only answer in numbers and rate on a 10-point scale. The answer syntax is \"Score: xxx\" where xxx is your score.";
+    ///Ý 1 là chấm bằng điểm ý 2 là chấm bằng pass hoặc fail
+    final prompt = "Imagine being an elementary school teacher, evaluate the following topic and answer. Topic: $topic\nAnswer: $answer\nHere are the topics and children's answers. "
+        "Give a score, only answer in numbers and rate on a 10-point scale. The answer syntax is \"x\" where x is your score. Please answer x";
+    // final prompt = "Imagine you are an elementary school teacher, rate the following topic and respond. Topic: $topic\nAnswer: $answer\nHere is the topic and the child's answer."
+    //     "For scoring, answer only pass or fail. The answer syntax is \"x\" where x is the result. Please answer x";
+    print(prompt);
     final response = await http.post(
       url,
       headers: {
@@ -48,6 +53,7 @@ class ChatGPTService {
         ]
       }),
     );
+    print(response);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
