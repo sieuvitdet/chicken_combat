@@ -58,6 +58,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _asks = await _loadAsks();
+      print(_asks[0].Answer);
       if (_asks.length > 0) {
         _ask = _asks[0];
         answers = [_ask.A, _ask.B, _ask.C, _ask.D];
@@ -118,46 +119,6 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
     return readings;
   }
 
-  Future<void> updateUsersReady() async {
-    final DocumentReference docRef = FirebaseFirestore.instance
-        .collection(FirebaseEnum.userdata)
-        .doc(Globals.currentUser!.id);
-
-    docRef.get().then((DocumentSnapshot doc) {
-      if (doc.exists && doc.data() != null) {
-        var data = doc.data() as Map<String, dynamic>;
-        List<dynamic> courseMaps = data['courseMaps'];
-        List<Map<String, dynamic>> updatedCourseMaps = [];
-
-        for (var map in courseMaps) {
-          updatedCourseMaps.add({
-            'collectionMap': map['collectionMap'],
-            'level': (map['isCourse'] == "reading")
-                ? widget.level + 1
-                : map['level'],
-            'isCourse': map['isCourse']
-          });
-        }
-        if (widget.level == 9) {
-          updatedCourseMaps.add({
-            'collectionMap':
-                "MAP0${Globals.currentUser!.courseMapModel.readingCourses.length + 1}",
-            'level': 1,
-            'isCourse': "reading"
-          });
-        }
-
-        // Cập nhật document với danh sách mới
-        docRef.update({'courseMaps': updatedCourseMaps}).then((_) {
-          print('Document successfully updated with new levels');
-        }).catchError((error) {
-          print('Error updating document: $error');
-        });
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
-  }
 
   int _checkScore() {
     int score = 0;
@@ -301,7 +262,6 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
                               if (score > 5) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
-                                updateUsersReady();
                                 _updateGold(
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.gold ?? 0);

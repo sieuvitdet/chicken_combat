@@ -479,20 +479,20 @@ class _RankingScreenState extends State<RankingScreen> {
                   child: _info(),
                 )),
 
-            Positioned(
-                top: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.11 : AppSizes.maxHeight * 0.12,
-                right: AppSizes.maxWidth * 0.038,
-                child: ScalableButton(
-                  onTap: () {
-                    //  Navigator.of(context).pop();
-                    _showDialogReward();
-                  },
-                  child: Image.asset(
-                    Assets.img_treasure,
-                    width: AppSizes.maxWidth * 0.08,
-                    fit: BoxFit.fill,
-                  ),
-                )),
+            // Positioned(
+            //     top: AppSizes.maxHeight > 850 ? AppSizes.maxHeight * 0.11 : AppSizes.maxHeight * 0.12,
+            //     right: AppSizes.maxWidth * 0.038,
+            //     child: ScalableButton(
+            //       onTap: () {
+            //         //  Navigator.of(context).pop();
+            //         _showDialogReward();
+            //       },
+            //       child: Image.asset(
+            //         Assets.img_treasure,
+            //         width: AppSizes.maxWidth * 0.08,
+            //         fit: BoxFit.fill,
+            //       ),
+            //     )),
 
             // Positioned(
             // top: AppSizes.maxHeight * 0.085,

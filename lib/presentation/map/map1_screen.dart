@@ -3,8 +3,7 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/maps/user_map_model.dart';
-import 'package:chicken_combat/model/user_model.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';
@@ -12,9 +11,7 @@ import 'package:chicken_combat/presentation/lesson/map_listening_lesson_screen.d
 import 'package:chicken_combat/presentation/lesson/map_reading_lesson_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_speaking_lesson_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
-import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
-import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_scaffold.dart';
 import 'package:chicken_combat/widgets/dialog_shield_widget.dart';
 import 'package:chicken_combat/widgets/group_mountain_widget.dart';
@@ -48,7 +45,6 @@ class _Map1ScreenState extends State<Map1Screen>
   late Path _path;
   double heightContent = 0.0;
   double multiple = 0.138;
-  bool _isReload = false;
 
   late AnimationController _controller1;
   late Animation<Offset> _animation1;
@@ -56,6 +52,7 @@ class _Map1ScreenState extends State<Map1Screen>
   @override
   void initState() {
     super.initState();
+    
 
     _configUI();
     _configChickenDance();
@@ -73,6 +70,58 @@ class _Map1ScreenState extends State<Map1Screen>
       AudioManager.pauseBackgroundMusic();
     } else if (state == AppLifecycleState.resumed) {
       AudioManager.resumeBackgroundMusic();
+    }
+  }
+
+
+  Future<void> updateUsersReady(int locationCurrent, String type,) async {
+    final DocumentReference docRef = FirebaseFirestore.instance
+        .collection(FirebaseEnum.userdata)
+        .doc(Globals.currentUser!.id);
+
+    docRef.get().then((DocumentSnapshot doc) {
+      if (doc.exists && doc.data() != null) {
+        var data = doc.data() as Map<String, dynamic>;
+        List<dynamic> courseMaps = widget.isLesson ? data['courseMaps'] : data['checkingMaps'];
+        List<Map<String, dynamic>> updatedCourseMaps = [];
+
+        for (var map in courseMaps) {
+          updatedCourseMaps.add({
+            'collectionMap': map['collectionMap'],
+            'level': ((map['isCourse'] == type) && map['collectionMap'] == "MAP01")
+                ? (locationCurrent == numberMountain) ? locationCurrent : (locationCurrent + 1)
+                : map['level'],
+            'isCourse': map['isCourse'],
+            'isComplete':((map['isCourse'] == type) && map['collectionMap'] == "MAP01") ? (locationCurrent == numberMountain) : map['isComplete']
+          });
+        }
+        if (locationCurrent == numberMountain && !checkAlreadyCreateMap(type)) {
+            updatedCourseMaps.add({
+              'collectionMap':
+                  (widget.isLesson) ? "MAP0${Globals.currentUser!.courseMapModel.readingCourses.length + 1}" : "MAP0${Globals.currentUser!.checkingMapModel.readingCourses.length + 1}",
+              'level': 1,
+              'isCourse': type,
+              'isComplete': false
+            });
+          }
+
+        // Cập nhật document với danh sách mới
+        docRef.update({widget.isLesson ? 'courseMaps' : 'checkingMaps': updatedCourseMaps}).then((_) {
+          print('Document successfully updated with new levels');
+        }).catchError((error) {
+          print('Error updating document: $error');
+        });
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+  }
+
+   checkAlreadyCreateMap(String type) {
+    if (type == FirebaseEnum.reading) {
+      return (widget.isLesson) ? (Globals.currentUser!.courseMapModel.readingCourses.length > 1) : (Globals.currentUser!.checkingMapModel.readingCourses.length > 1);
+    } else if (type == FirebaseEnum.listening) {
+      return (widget.isLesson) ? (Globals.currentUser!.courseMapModel.listeningCourses.length > 1) : (Globals.currentUser!.checkingMapModel.listeningCourses.length > 1);
     }
   }
 
@@ -181,7 +230,7 @@ class _Map1ScreenState extends State<Map1Screen>
                     );
                   },
                   child: Image.asset(
-                    Assets.chicken_flapping_swing_gif,
+                    ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor),
                     fit: BoxFit.contain,
                     width: AppSizes.maxWidth * 0.18,
                     height: AppSizes.maxHeight * 0.11,
@@ -252,52 +301,63 @@ class _Map1ScreenState extends State<Map1Screen>
               }
               bool? result = null;
               if (!widget.isLesson) {
-                if (widget.type != "" && widget.type == "reading") {
+                if (widget.type != "" && widget.type == FirebaseEnum.reading) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapReadingExaminationAnswerScreen(
                             isGetReward: i < location,
                             level: location,
                           )));
-                } else if (widget.type != "" && widget.type == "listening") {
+                } else if (widget.type != "" && widget.type == FirebaseEnum.listening) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningExaminationScreen(
                             isGetReward: i < location,
                             level: location,
                           )));
-                } else if (widget.type != "" && widget.type == "speaking") {
+                } else if (widget.type != "" && widget.type == FirebaseEnum.speaking) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapSpeakingExaminationScreen()));
                 }
               } else {
-                if (widget.type != "" && widget.type == "reading") {
+                if (widget.type != "" && widget.type == FirebaseEnum.reading) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapReadingLessonScreen(
                             isGetReward: i < location,
                             level: location,
                           )));
-                } else if (widget.type != "" && widget.type == "listening") {
+                } else if (widget.type != "" && widget.type == FirebaseEnum.listening) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapListeningLessonScreen(
                           isGetReward: i < location, level: location)));
-                } else if (widget.type != "" && widget.type == "speaking") {
+                } else if (widget.type != "" && widget.type == FirebaseEnum.speaking) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MapSpeakingLessonScreen()));
                 }
               }
-
               if (result != null && result == true && (i + 1) == location) {
-                bool skip = true;
-                Globals.currentUser!.checkingMapModel.listeningCourses
-                    .forEach((element) {
-                  if (element.collectionMap !=
-                      "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length}") {
-                    skip = false;
-                  }
-                });
-                if (location == 10 && skip) {
+                print(Globals.currentUser!.checkingMapModel.readingCourses.length);
+                if (widget.type == FirebaseEnum.listening && !widget.isLesson) {
+                  if (location == numberMountain && !(Globals.currentUser!.checkingMapModel.listeningCourses.first.isComplete)) {
                   _triggerCongratulation(widget.type!);
+                  }
+                   updateUsersReady(location,FirebaseEnum.listening);
+                } else if (widget.type == FirebaseEnum.reading && !widget.isLesson) {
+                  if (location == numberMountain && !(Globals.currentUser!.checkingMapModel.readingCourses.first.isComplete)) {
+                  _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location,FirebaseEnum.reading);
+                } else if (widget.type == FirebaseEnum.listening && widget.isLesson) {
+                  if (location == numberMountain && !(Globals.currentUser!.courseMapModel.listeningCourses.first.isComplete)) {
+                  _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location,FirebaseEnum.listening);
+                } else if (widget.type == FirebaseEnum.reading && widget.isLesson) {
+                  if (location == numberMountain && !(Globals.currentUser!.courseMapModel.readingCourses.first.isComplete)) {
+                  _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location,FirebaseEnum.reading);
                 }
-                _isReload = true;
+
+
                 if ((i + 1) < numberMountain) {
                   currentPadding = _listPadding[i + 1];
                   nextPadding =
@@ -309,7 +369,6 @@ class _Map1ScreenState extends State<Map1Screen>
               }
             },
             isCactus: i == 0,
-            // isChicken: i == 0,
             isStart: i == 0,
             isWood: i == 1,
             isMoreWood: i == 2,
@@ -472,7 +531,7 @@ class _Map1ScreenState extends State<Map1Screen>
                   child: IconButton(
                     icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
                     },
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/model/maps/map_model.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/presentation/map/map2_screen.dart';
@@ -41,6 +42,7 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
     itemMaps = widget.items;
     _listMap = Globals.mapsModel;
     _listMap = List.generate(_listMap.length, (index) => _listMap[index]);
+    getUserInfo();
   }
 
   @override
@@ -60,38 +62,32 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
 
         if (widget.type != "" && widget.type == "reading") {
           locationMap1 =
-              Globals.currentUser!.courseMapModel.readingCourses.first.level -
-                  1;
+              Globals.currentUser!.courseMapModel.readingCourses.first.level;
 
           locationMap2 =
               Globals.currentUser!.courseMapModel.readingCourses.length > 1
                   ? Globals.currentUser!.courseMapModel.readingCourses[1]
-                          .level -
-                      1
-                  : 0;
+                          .level
+                  : 1;
           itemMaps = Globals.currentUser?.courseMapModel.readingCourses ?? [];
         } else if (widget.type != "" && widget.type == "listening") {
           locationMap1 = Globals
-                  .currentUser!.courseMapModel.listeningCourses.first.level -
-              1;
+                  .currentUser!.courseMapModel.listeningCourses.first.level;
           locationMap2 =
               Globals.currentUser!.courseMapModel.listeningCourses.length > 1
                   ? Globals.currentUser!.courseMapModel.listeningCourses[1]
-                          .level -
-                      1
-                  : 0;
+                          .level
+                  : 1;
           itemMaps =
               Globals.currentUser?.courseMapModel.listeningCourses ?? [];
         } else if (widget.type != "" && widget.type == "speaking") {
           locationMap1 = Globals
-                  .currentUser!.courseMapModel.speakingCourses.first.level -
-              1;
+                  .currentUser!.courseMapModel.speakingCourses.first.level;
           locationMap2 =
               Globals.currentUser!.courseMapModel.speakingCourses.length > 1
                   ? Globals.currentUser!.courseMapModel.speakingCourses[1]
-                          .level -
-                      1
-                  : 0;
+                          .level 
+                  : 1;
           itemMaps =
               Globals.currentUser?.courseMapModel.speakingCourses ?? [];
         }
@@ -127,7 +123,7 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
       children: [
         Image(
           fit: BoxFit.fitHeight,
-          image: AssetImage(Assets.chicken_flapping_swing_gif),
+          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
           width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.18,
         ),

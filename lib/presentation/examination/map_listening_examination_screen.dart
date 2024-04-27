@@ -131,59 +131,6 @@ class _MapListeningExaminationScreenState
     return listeningList;
   }
 
-  Future<void> updateUsersReady() async {
-    final DocumentReference docRef = FirebaseFirestore.instance
-        .collection(FirebaseEnum.userdata)
-        .doc(Globals.currentUser!.id);
-
-    docRef.get().then((DocumentSnapshot doc) {
-      if (doc.exists && doc.data() != null) {
-        var data = doc.data() as Map<String, dynamic>;
-        List<dynamic> courseMaps = data['checkingMaps'];
-        List<Map<String, dynamic>> updatedCourseMaps = [];
-
-        for (var map in courseMaps) {
-          updatedCourseMaps.add({
-            'collectionMap': map['collectionMap'],
-            'level': (map['isCourse'] == "listening")
-                ? (widget.level == 10) ? widget.level : (widget.level + 1)
-                : map['level'],
-            'isCourse': map['isCourse'],
-            'isComplete': map['isComplete']
-          });
-        }
-
-        bool skip = true;
-
-        Globals.currentUser!.checkingMapModel.listeningCourses.forEach((element) {
-          if (element.collectionMap == "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}") {
-            skip = false;
-          }
-        });
-
-     
-
-         if (widget.level == 10 && skip) {
-            updatedCourseMaps.add({
-              'collectionMap':
-                  "MAP0${Globals.currentUser!.checkingMapModel.listeningCourses.length + 1}",
-              'level': 1,
-              'isCourse': "listening",
-              'isComplete': false
-            });
-          }
-
-        // Cập nhật document với danh sách mới
-        docRef.update({'checkingMaps': updatedCourseMaps}).then((_) {
-          print('Document successfully updated with new levels');
-        }).catchError((error) {
-          print('Error updating document: $error');
-        });
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
-  }
 
   int _checkScore() {
     int score = 0;
@@ -329,7 +276,7 @@ class _MapListeningExaminationScreenState
                               if (score > 5) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
-                                updateUsersReady();
+                                // updateUsersReady();
                                 _updateGold(
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.gold ?? 0);
@@ -535,7 +482,7 @@ class _MapListeningExaminationScreenState
                     child: IconButton(
                       icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(false);
                       },
                     ),
                   ),

@@ -155,9 +155,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       String _userName, String _password, String financeId, String _score) async {
     List<String> bag = ['CO01'];
     List<UserMapModel> courseMaps = [];
-    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'listening', isComplete: false));
-    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'reading', isComplete: false));
-    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'speaking', isComplete: false));
+    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'listening',isComplete: false));
+    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'reading',isComplete: false));
+    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'speaking',isComplete: false));
     List<Map<String, dynamic>> courseMapsData = convertUserMapModelListToMapList(courseMaps);
 
     try {

@@ -2,8 +2,10 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/maps/course_map_model.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
+import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/presentation/lesson/list_map_lesson_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,7 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
       children: [
         Image(
           fit: BoxFit.fitHeight,
-          image: AssetImage(Assets.chicken_flapping_swing_gif),
+          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
           width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.18,
         ),

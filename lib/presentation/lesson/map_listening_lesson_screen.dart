@@ -130,47 +130,6 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
     return listeningList;
   }
 
-  Future<void> updateUsersReady() async {
-    final DocumentReference docRef = FirebaseFirestore.instance
-        .collection(FirebaseEnum.userdata)
-        .doc(Globals.currentUser!.id);
-
-    docRef.get().then((DocumentSnapshot doc) {
-      if (doc.exists && doc.data() != null) {
-        var data = doc.data() as Map<String, dynamic>;
-        List<dynamic> courseMaps = data['courseMaps'];
-        List<Map<String, dynamic>> updatedCourseMaps = [];
-
-        for (var map in courseMaps) {
-          updatedCourseMaps.add({
-            'collectionMap': map['collectionMap'],
-            'level': (map['isCourse'] == "listening")
-                ? widget.level + 1
-                : map['level'],
-            'isCourse': map['isCourse']
-          });
-        }
-         if (widget.level == 9) {
-            updatedCourseMaps.add({
-              'collectionMap':
-                  "MAP0${Globals.currentUser!.courseMapModel.listeningCourses.length + 1}",
-              'level': 1,
-              'isCourse': "listening"
-            });
-          }
-
-        // Cập nhật document với danh sách mới
-        docRef.update({'courseMaps': updatedCourseMaps}).then((_) {
-          print('Document successfully updated with new levels');
-        }).catchError((error) {
-          print('Error updating document: $error');
-        });
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
-  }
-
   int _checkScore() {
     int score = 0;
     for (int i = 0; i < _asks.length; i++) {
@@ -264,7 +223,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       children: [
         _body(),
         ..._listAnswer(),
-        Spacer(),
+        // Spacer(),
         _listening(),
         // Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
 
@@ -315,7 +274,6 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
                               if (score > 5) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
-                                updateUsersReady();
                                 _updateGold(
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.gold ?? 0);
@@ -486,7 +444,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: Text(
         _ask.Question,
-        style: TextStyle(fontSize: 24,color: Colors.white),
+        style: TextStyle(fontSize: 18,color: Colors.white),
       ),
     );
   }
