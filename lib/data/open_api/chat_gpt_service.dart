@@ -29,7 +29,7 @@ class ChatGPTService {
     }
   }
 
-  Future<String> callChatGPT(String topic, String answer) async {
+  Future<String> callChatGPT(String topic, String answer, bool isLesson) async {
     if (!_isApiKeyReady) {
       throw Exception("API Key is not loaded yet");
     }
@@ -37,8 +37,8 @@ class ChatGPTService {
     ///Ý 1 là chấm bằng điểm ý 2 là chấm bằng pass hoặc fail
     final prompt = "Imagine being an elementary school teacher, evaluate the following topic and answer. Topic: $topic\nAnswer: $answer\nHere are the topics and children's answers. "
         "Give a score, only answer in numbers and rate on a 10-point scale. The answer syntax is \"x\" where x is your score. Please answer x";
-    // final prompt = "Imagine you are an elementary school teacher, rate the following topic and respond. Topic: $topic\nAnswer: $answer\nHere is the topic and the child's answer."
-    //     "For scoring, answer only pass or fail. The answer syntax is \"x\" where x is the result. Please answer x";
+    final promptLesson = "Imagine you are an elementary school teacher, rate the following topic and answer. Question: $topic\nAnswer: $answer\nHere is the question and the child's answer."
+    "For grading, answers are only pass or fail. The answer syntax is \"x\" where x is the result. Please answer x";
     print(prompt);
     final response = await http.post(
       url,
@@ -49,7 +49,7 @@ class ChatGPTService {
       body: jsonEncode({
         'model': 'gpt-3.5-turbo',
         'messages': [
-          {'role': 'user', 'content': prompt}
+          {'role': 'user', 'content': isLesson ? promptLesson : prompt}
         ]
       }),
     );

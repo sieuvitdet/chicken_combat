@@ -16,12 +16,12 @@ class SpeechToTextService {
     }
   }
 
-  void toggleRecording(String answer, Function(String) onResult) {
+  void toggleRecording(String answer, bool isLesson,  Function(String) onResult) {
     if (isListening) {
       _speech.stop();
       isListening = false;
       print(lastWords);
-      _chatService.callChatGPT(answer, lastWords).then(onResult).catchError((e) {
+      _chatService.callChatGPT(answer, lastWords, isLesson).then(onResult).catchError((e) {
         onResult("Error calling ChatGPT: ${e.toString()}");
       });
     } else {

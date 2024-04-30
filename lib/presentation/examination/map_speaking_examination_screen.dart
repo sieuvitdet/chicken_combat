@@ -223,7 +223,7 @@ class _MapSpeakingExaminationScreenState
               setState(() {
                 isListening = !_sttService.isListening;
               });
-              _sttService.toggleRecording(text, (result) {
+              _sttService.toggleRecording(text, false, (result) {
                 setState(() {
                   text = result;
                   _responseText = result;
