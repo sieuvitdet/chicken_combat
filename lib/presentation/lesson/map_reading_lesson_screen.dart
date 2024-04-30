@@ -53,7 +53,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
   Future<List<AskLessonModel>> _loadAsks() async {
     List<AskLessonModel> loadedAsks = await _getAsk();
     Random random = Random();
-    if (loadedAsks.length < 0) {
+    if (loadedAsks.length < 1) {
       throw Exception("Not enough questions to select from.");
     }
     Set<int> usedIndexes = Set<int>();
@@ -126,7 +126,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapReadingLessonAnwserScreen(isGetReward: widget.isGetReward,level: widget.level,asks: _asks,)));
+                      builder: (context) => MapReadingLessonAnwserScreen(isGetReward: widget.isGetReward,level: widget.level,asks: _ask.Quiz,)));
         },
       ),
     );

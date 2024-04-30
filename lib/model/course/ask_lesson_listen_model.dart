@@ -9,8 +9,8 @@ class AskLessonListenModel {
     required this.quiz,
   });
 
-  factory AskLessonListenModel.fromJson(List<dynamic>? json) {
-    if (json == null || json.isEmpty) {
+  factory AskLessonListenModel.fromJson(Map<dynamic, dynamic>? json) {
+    if (json == null) {
       return AskLessonListenModel(
         script: '',
         content: [],
@@ -18,31 +18,21 @@ class AskLessonListenModel {
       );
     }
 
-    var contentList = json[0]['content'] as List<dynamic>?;
+    var contentList = json['content'] as List<dynamic>?;
     var contents = <ContentModel>[];
     if (contentList != null) {
       contents = contentList.map((contentJson) => ContentModel.fromJson(contentJson)).toList();
     }
 
-    var quizList = json[0]['quiz'] as List<dynamic>?;
+    var quizList = json['quiz'] as List<dynamic>?;
     var quizzes = <QuizModel>[];
-    if (quizList != null) {
-      quizzes = quizList.map((quizJson) => QuizModel.fromJson(quizJson)).toList();
-    }
+      quizzes = quizList!.map((quizJson) => QuizModel.fromJson(quizJson)).toList();
 
     return AskLessonListenModel(
-      script: json[0]['script'] ?? '',
+      script: json['script'] ?? '',
       content: contents,
       quiz: quizzes,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'script': script,
-      'content': content,
-      'quiz': quiz,
-    };
   }
 }
 
@@ -59,12 +49,12 @@ class ContentModel {
     required this.translate,
   });
 
-  factory ContentModel.fromJson(Map<String, dynamic> json) {
+  factory ContentModel.fromJson(Map<dynamic, dynamic>? json) {
     return ContentModel(
-      idImage: json['id_image'] ?? '',
-      pronounce: json['pronounce'] ?? '',
-      transcription: json['transcription'] ?? '',
-      translate: json['translate'] ?? '',
+      idImage: json?['id_image'] ?? '',
+      pronounce: json?['pronounce'] ?? '',
+      transcription: json?['transcription'] ?? '',
+      translate: json?['translate'] ?? '',
     );
   }
 }
@@ -80,11 +70,11 @@ class QuizModel {
     required this.answer,
   });
 
-  factory QuizModel.fromJson(Map<String, dynamic> json) {
+  factory QuizModel.fromJson(Map<dynamic, dynamic>? json) {
     return QuizModel(
-      idImage: List<String>.from(json['id_image']),
-      listen: Map<String, String>.from(json['listen']),
-      answer: json['answer'] ?? '',
+      idImage: List<String>.from(json?['id_image']),
+      listen: Map<String, String>.from(json?['listen']),
+      answer: json?['answer'] ?? '',
     );
   }
 }

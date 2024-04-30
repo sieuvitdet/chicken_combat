@@ -3,8 +3,9 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/langkey.dart';
 import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/model/course/ask_lesson_model.dart';
+import 'package:chicken_combat/model/course/ask_lesson_listen_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -12,65 +13,75 @@ import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class MapReadingLessonAnwserScreen extends StatefulWidget {
+class MapListeningLessonAnwserScreen extends StatefulWidget {
   final bool isGetReward;
   final int level;
-  final List<QuizModel> asks;
-    MapReadingLessonAnwserScreen(
-      {this.isGetReward = false, required this.level,required this.asks });
+  final List<QuizModel> quizs;
+  const MapListeningLessonAnwserScreen(
+      {super.key, this.isGetReward = false, required this.level,required this.quizs});
 
   @override
-  State<MapReadingLessonAnwserScreen> createState() => _MapReadingLessonAnwserScreenState();
+  State<MapListeningLessonAnwserScreen> createState() => _MapListeningLessonAnwserScreenState();
 }
 
-class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScreen> with WidgetsBindingObserver {
-  String text = "";
-
-  String text2 =
-      "Welcome  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready  to explore some interesting questions we've prepared for you.";
-
-  List<String> parts = [];
+class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwserScreen> with WidgetsBindingObserver {
+   String text = "";
+  List<String> results = [];
+  List<int> positions = [];
   var _isKeyboardVisible = false;
   int page = 1;
   int pages = 0;
-  List<String> results = [];
-  List<int> positions = [];
+  bool isListening = false;
+  final FlutterTts flutterTts = FlutterTts();
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late QuizModel _ask = QuizModel(
-      Question: "", Answer: "", Options: OptionQuizModel(A: "",B:"",C:"",D: ""));
-  List<QuizModel> _asks = [];
+  late QuizModel _quiz = QuizModel(answer: "",listen: {},idImage: []);
+  List<QuizModel> _quizs = [];
   List<String> answers = [];
 
   @override
   void initState() {
     super.initState();
+    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _asks = widget.asks;
-      if (_asks.length > 0) {
-        _ask = _asks[0];
-        answers = [_ask.Options.A ?? "", _ask.Options.B ?? "", _ask.Options.C ?? "",_ask.Options.D ?? ""];
-        // splitText(_ask.Question);
 
-        for (int i = 0; i < _asks.length; i++) {
-          print(_ask.Answer);
+    _checkMicrophonePermission();
+    AudioManager.pauseBackgroundMusic();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _quizs = widget.quizs;
+      if (_quizs.length > 0) {
+        _quiz = _quizs[0];
+        answers.addAll(_quiz.idImage);
+        
+
+        for (int i = 0; i < _quiz.idImage.length; i++) {
           positions.add(-1);
           results.add("");
         }
       }
-      pages = _asks.length;
+      pages = _quiz.idImage.length;
       setState(() {});
     });
   }
 
+  Future<void> _checkMicrophonePermission() async {
+    PermissionStatus permissionStatus = await Permission.microphone.status;
+    if (permissionStatus.isDenied) {
+      await Permission.microphone.request();
+    } else if (permissionStatus.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+
   int _checkScore() {
     int score = 0;
-    for (int i = 0; i < _asks.length; i++) {
-      if (results[i] == _asks[i].Answer) {
+    for (int i = 0; i < _quizs.length; i++) {
+      if (results[i] == _quizs[i].answer) {
         score += 2;
       }
     }
@@ -80,20 +91,20 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
   int _getGold(int score) {
     if (widget.isGetReward) {
       int gold = score > 9
-          ? 15
+          ? 5
           : score > 7
-              ? 10
+              ? 3
               : score > 5
-                  ? 5
+                  ? 2
                   : 0;
       return gold;
     } else {
       int gold = score > 9
-          ? 100
+          ? 30
           : score > 7
-              ? 50
+              ? 15
               : score > 5
-                  ? 20
+                  ? 5
                   : 0;
       return gold;
     }
@@ -102,7 +113,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
   int _getDiamond(int score) {
     if (widget.isGetReward) {
       int diamond = score > 9
-          ? 5
+          ? 3
           : score > 7
               ? 2
               : score > 5
@@ -111,11 +122,11 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
       return diamond;
     } else {
       int diamond = score > 9
-          ? 15
+          ? 10
           : score > 7
-              ? 10
+              ? 8
               : score > 5
-                  ? 5
+                  ? 6
                   : 0;
       return diamond;
     }
@@ -157,11 +168,12 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
 
   Widget _buildContent() {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         _body(),
         ..._listAnswer(),
-        Spacer(),
+        // Spacer(),
+        _listening(),
+
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Row(
@@ -173,8 +185,8 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
                       return;
                     }
                     page -= 1;
-                    _ask = _asks[page - 1];
-                    answers =  [_ask.Options.A ?? "", _ask.Options.B ?? "", _ask.Options.C ?? "",_ask.Options.D ?? ""];
+                    _quiz = _quizs[page - 1];
+                    // answers = [_ask.A, _ask.B, _ask.C, _ask.D];
                     setState(() {});
                   },
                   smallButton: true,
@@ -235,8 +247,8 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
                       return;
                     }
                     page += 1;
-                    _ask = _asks[page - 1];
-                    answers =  [_ask.Options.A ?? "", _ask.Options.B ?? "", _ask.Options.C ?? "",_ask.Options.D ?? ""];;
+                    _quiz = _quizs[page - 1];
+                    // answers = [_ask.A, _ask.B, _ask.C, _ask.D];
                     setState(() {});
                   },
                   smallButton: true,
@@ -255,6 +267,39 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
         ),
         Container(height: AppSizes.maxHeight * 0.03)
       ],
+    );
+  }
+
+  Widget _listening() {
+    return Container(
+      height: AppSizes.maxHeight * 0.12,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              !isListening ? _speak(_quiz.listen['A'] ?? '') : _stop();
+              print("record");
+              setState(() {
+                isListening = !isListening;
+              });
+            },
+            child: Image.asset(
+              isListening
+                  ? Assets.ic_playing_listening
+                  : Assets.ic_notplay_listening,
+              height: AppSizes.maxHeight * 0.06,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(
+              isListening ? "Click to stop" : "Click to play",
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -325,19 +370,32 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
     return itemList;
   }
 
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage('en-US'); // Thiết lập ngôn ngữ
+    await flutterTts.setPitch(0.7); // Thiết lập cường độ giọng nói
+    await flutterTts.setSpeechRate(0.4); // Thiết lập tốc độ giọng nói
+    await flutterTts.setVolume(1); // Thiết lập âm lượng
+    await flutterTts.speak(text); // Chuyển văn bản thành giọng nói
+    flutterTts.setCompletionHandler(() {
+      isListening = !isListening;
+      setState(() {});
+    });
+  }
+
+  Future<void> _stop() async {
+    await flutterTts.stop();
+  }
+
   Widget _itemReading() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Text(
-        _ask.Question,
-        style: TextStyle(fontSize: 24),
-      ),
+      child: Image.asset(ExtendedAssets.getAssetByCodeColor(_quiz.idImage.first)),
     );
   }
 
   Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: CustomButtomImageColorWidget(
         redBlurColor: positions[page - 1] != i,
         redColor: positions[page - 1] == i,
@@ -355,52 +413,50 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
       bottom: false,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconTheme(
-                  data: IconThemeData(size: 24.0), // Set the size here
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.grey,
+        child: PopScope(
+          canPop: false,
+          child: Scaffold(
+              appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  leading: IconTheme(
+                    data: IconThemeData(size: 24.0), // Set the size here
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
                   ),
-                ),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 16),
-                    child: GestureDetector(
-                        onTap: () {
-                          GlobalSetting.shared.showPopup(context,
-                              onTapClose: () {
-                            Navigator.of(context).pop();
-                          }, onTapExit: () {
-                            Navigator.of(context)..pop()..pop()..pop(false);
-                            // Navigator.of(context).pushAndRemoveUntil(
-                            //     MaterialPageRoute(
-                            //         builder: (context) => HomeScreen()),
-                            //     (Route<dynamic> route) => false);
-                          }, onTapContinous: () {
-                            Navigator.of(context).pop();
-                          });
-                        },
-                        child: Image.asset(Assets.ic_menu, height: 24)),
-                  )
-                ],
-                title: Text("Level ${widget.level}",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w500))),
-            backgroundColor: Color(0xFFFACA44),
-            body: Responsive(
-                mobile: _buildContent(),
-                tablet: _buildContent(),
-                desktop: _buildContent())),
+                  actions: [
+                    Padding( 
+                      padding: EdgeInsets.only(right: 16),
+                      child: GestureDetector(
+                          onTap: () {
+                            GlobalSetting.shared.showPopup(context,
+                                onTapClose: () {
+                              Navigator.of(context).pop();
+                            }, onTapExit: () {
+                              Navigator.of(context)
+                                ..pop()
+                                ..pop(false);
+                            }, onTapContinous: () {
+                              Navigator.of(context).pop();
+                            });
+                          },
+                          child: Image.asset(Assets.ic_menu, height: 24)),
+                    )
+                  ],
+                  title: Text("Level ${widget.level}",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500))),
+              backgroundColor: Color(0xFFFACA44),
+              body: Responsive(
+                  mobile: _buildContent(),
+                  tablet: _buildContent(),
+                  desktop: _buildContent())),
+        ),
       ),
     );
   }

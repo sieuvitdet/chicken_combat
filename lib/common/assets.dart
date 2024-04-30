@@ -150,10 +150,22 @@ class Assets {
   static final String img_star_white = "assets/images/img_star_white.png";
   static final String img_gift_gacha = "assets/images/img_gift_gacha.png";
   static final String img_bg_item_used = "assets/images/img_bg_item_used.png";
-  static final String img_chicken_zombie = "assets/images/img_chicken_zombie.png";
+  static final String img_chicken_zombie =
+      "assets/images/img_chicken_zombie.png";
   static final String img_bubble = "assets/images/img_bubble.png";
   static final String img_cup_reward = "assets/images/img_cup_reward.png";
   static final String img_halo = "assets/images/img_halo.png";
+
+  static final String TOPIC01_0001 = "assets/images/TOPIC01_0001.png";
+  static final String TOPIC01_0002 = "assets/images/TOPIC01_0002.png";
+  static final String TOPIC01_0003 = "assets/images/TOPIC01_0003.png";
+  static final String TOPIC01_0004 = "assets/images/TOPIC01_0004.png";
+  static final String TOPIC01_0005 = "assets/images/TOPIC01_0005.png";
+  static final String TOPIC01_0006 = "assets/images/TOPIC01_0006.png";
+  static final String TOPIC01_0007 = "assets/images/TOPIC01_0007.png";
+  static final String TOPIC01_0008 = "assets/images/TOPIC01_0008.png";
+  static final String TOPIC01_0009 = "assets/images/TOPIC01_0009.png";
+  static final String TOPIC01_0010 = "assets/images/TOPIC01_0010.png";
 
   //icon
   static final String ic_boom = "assets/icons/ic_boom.png";
@@ -190,11 +202,15 @@ class Assets {
   static final String img_playing = "assets/images/img_playing.png";
   static final String img_micro = "assets/images/img_micro.png";
   static final String ic_chicken_hidden = "assets/icons/ic_chicken_hidden.png";
-  static final String img_button_small_orange = "assets/images/img_button_small_orange.png";
-  static final String img_button_small_gray = "assets/images/img_button_small_gray.png";
-  static final String img_shield_chicken = "assets/images/img_shield_chicken.png";
+  static final String img_button_small_orange =
+      "assets/images/img_button_small_orange.png";
+  static final String img_button_small_gray =
+      "assets/images/img_button_small_gray.png";
+  static final String img_shield_chicken =
+      "assets/images/img_shield_chicken.png";
   static final String img_cup_chicken = "assets/images/img_cup_chicken.png";
-  static final String img_chicken_zombie_fall = "assets/images/img_chicken_zombie_fall.png";
+  static final String img_chicken_zombie_fall =
+      "assets/images/img_chicken_zombie_fall.png";
 
   //gif
   static final String chicken_flapping_swing_gif =
@@ -265,4 +281,67 @@ class AudioFile {
   static final String sound_water_splash = "audio/sound_water_splash.mp3";
   static final String sound_gun = "audio/sound_gun.mp3";
   static final String sound_buy = "audio/sound_buy.mp3";
+}
+
+class ExtendedAssets extends Assets {
+  static String getAssetByCode(String code) {
+    Map<String, String> codeToAssetMap = {
+      "CO01": Assets.img_chicken,
+      "CO02": Assets.img_chicken_green,
+      "CO03": Assets.img_chicken_black,
+      "CO04": Assets.img_chicken_blue,
+      "CO05": Assets.img_chicken_red,
+      "CO06": Assets.img_chicken_white_0,
+      "CO08": Assets.img_chicken_brown,
+      "SK01": Assets.img_hat_scholar,
+      "SK02": Assets.img_breath_machine,
+      "SK03": Assets.img_mask,
+      "DI01": Assets.gif_chicken_brown,
+      "DI02": Assets.img_chicken_bear_white_premium,
+      "DI03": Assets.img_chicken_lovely,
+      "DI04": Assets.img_chicken_brown_circleface_premium,
+      "DI05": Assets.img_chicken_zombie,
+    };
+
+    return codeToAssetMap[code] ?? Assets.img_chicken;
+  }
+
+  static String getCodeByAsset(String asset) {
+    Map<String, String> assetToCodeMap = {
+      Assets.img_chicken: "CO01",
+      Assets.img_chicken_green: "CO02",
+      Assets.img_chicken_black: "CO03",
+      Assets.img_chicken_blue: "CO04",
+      Assets.img_chicken_red: "CO05",
+      Assets.img_chicken_white_0: "CO06",
+      Assets.img_chicken_brown: "CO08",
+      Assets.img_hat_scholar: "SK01",
+      Assets.img_breath_machine: "SK02",
+      Assets.img_mask: "SK03",
+      Assets.gif_chicken_brown: "DI01",
+      Assets.img_chicken_bear_white_premium: "DI02",
+      Assets.img_chicken_lovely: "DI03",
+      Assets.img_chicken_brown_circleface_premium: "DI04",
+      Assets.img_chicken_zombie: "DI05",
+    };
+    return assetToCodeMap[asset] ?? "CO01";
+  }
+
+  static String getAssetByCodeColor(String code) {
+    Map<String, String> codeToAssetMap = {
+      "TOPIC01_0001": Assets.TOPIC01_0001,
+      "TOPIC01_0002": Assets.TOPIC01_0002,
+      "TOPIC01_0003": Assets.TOPIC01_0003,
+      "TOPIC01_0004": Assets.TOPIC01_0004,
+      "TOPIC01_0005": Assets.TOPIC01_0005,
+      "TOPIC01_0006": Assets.TOPIC01_0006,
+      "TOPIC01_0007": Assets.TOPIC01_0007,
+      "TOPIC01_0008": Assets.TOPIC01_0008,
+      "TOPIC01_0009": Assets.TOPIC01_0009,
+      "TOPIC01_0010": Assets.TOPIC01_0010,
+    };
+
+    return codeToAssetMap[code] ?? Assets.TOPIC01_0001;
+  }
+  
 }

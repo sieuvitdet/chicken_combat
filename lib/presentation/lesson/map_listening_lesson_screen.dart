@@ -2,18 +2,15 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
-import 'package:chicken_combat/common/langkey.dart';
-import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/model/course/ask_examination_model.dart';
+import 'package:chicken_combat/model/course/ask_lesson_listen_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/presentation/lesson/map_listening_lesson_anwser_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
-import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +30,7 @@ class MapListeningLessonScreen extends StatefulWidget {
 
 class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
     with WidgetsBindingObserver {
-   String text = "";
+  String text = "";
   List<String> parts = [];
   List<String> results = [];
   List<int> positions = [];
@@ -45,9 +42,9 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late AskExaminationModel _ask = AskExaminationModel(
-      Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");
-  List<AskExaminationModel> _asks = [];
+  late ContentModel _content = ContentModel(
+      idImage: "", pronounce: "", transcription: "", translate: "");
+  List<AskLessonListenModel> _asks = [];
   List<String> answers = [];
 
   @override
@@ -55,23 +52,13 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
     super.initState();
     AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
-
     _checkMicrophonePermission();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _asks = await _loadAsks();
       if (_asks.length > 0) {
-        _ask = _asks[0];
-        answers = [_ask.A, _ask.B, _ask.C, _ask.D];
-        // splitText(_ask.Question);
-
-        for (int i = 0; i < _asks.length; i++) {
-          print(_asks[i].Answer);
-          positions.add(-1);
-          results.add("");
-        }
+        pages = _asks[0].content.length;
+        _content = _asks[0].content[0];
       }
-      pages = _asks.length;
       setState(() {});
     });
   }
@@ -85,15 +72,15 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
     }
   }
 
-  Future<List<AskExaminationModel>> _loadAsks() async {
-    List<AskExaminationModel> loadedAsks = await _getAsk();
+  Future<List<AskLessonListenModel>> _loadAsks() async {
+    List<AskLessonListenModel> loadedAsks = await _getAsk();
     Random random = Random();
-    if (loadedAsks.length < 5) {
+    if (loadedAsks.length < 1) {
       throw Exception("Not enough questions to select from.");
     }
     Set<int> usedIndexes = Set<int>();
-    List<AskExaminationModel> selectedAsks = [];
-    while (selectedAsks.length < 5) {
+    List<AskLessonListenModel> selectedAsks = [];
+    while (selectedAsks.length < 1) {
       int randomNumber = random.nextInt(loadedAsks.length);
       if (!usedIndexes.contains(randomNumber)) {
         selectedAsks.add(loadedAsks[randomNumber]);
@@ -103,8 +90,8 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
     return selectedAsks;
   }
 
-  Future<List<AskExaminationModel>> _getAsk() async {
-    List<AskExaminationModel> listeningList = [];
+  Future<List<AskLessonListenModel>> _getAsk() async {
+    List<AskLessonListenModel> listeningList = [];
 
     try {
       FirebaseDatabase database = FirebaseDatabase(
@@ -117,7 +104,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
         final data = snapshot.value;
         if (data is List) {
           for (var item in data) {
-            AskExaminationModel model = AskExaminationModel.fromJson(item);
+            AskLessonListenModel model = AskLessonListenModel.fromJson(item);
             listeningList.add(model);
           }
         }
@@ -128,82 +115,6 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       print('Error fetching and parsing data: $e');
     }
     return listeningList;
-  }
-
-  int _checkScore() {
-    int score = 0;
-    for (int i = 0; i < _asks.length; i++) {
-      if (results[i] == _asks[i].Answer) {
-        score += 2;
-      }
-    }
-    return score;
-  }
-
-  int _getGold(int score) {
-    if (widget.isGetReward) {
-      int gold = score > 9
-          ? 5
-          : score > 7
-              ? 3
-              : score > 5
-                  ? 2
-                  : 0;
-      return gold;
-    } else {
-      int gold = score > 9
-          ? 30
-          : score > 7
-              ? 15
-              : score > 5
-                  ? 5
-                  : 0;
-      return gold;
-    }
-  }
-
-  int _getDiamond(int score) {
-    if (widget.isGetReward) {
-      int diamond = score > 9
-          ? 3
-          : score > 7
-              ? 2
-              : score > 5
-                  ? 1
-                  : 0;
-      return diamond;
-    } else {
-      int diamond = score > 9
-          ? 10
-          : score > 7
-              ? 8
-              : score > 5
-                  ? 6
-                  : 0;
-      return diamond;
-    }
-  }
-
-  Future<void> _updateGold(String _id, int gold) async {
-    CollectionReference _finance =
-        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
-
-    return _finance
-        .doc(_id)
-        .update({'gold': gold})
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-  }
-
-  Future<void> _updateDiamond(String _id, int dimond) async {
-    CollectionReference _finance =
-        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
-
-    return _finance
-        .doc(_id)
-        .update({'diamond': dimond})
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
   }
 
   @override
@@ -238,8 +149,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
                       return;
                     }
                     page -= 1;
-                    _ask = _asks[page - 1];
-                    answers = [_ask.A, _ask.B, _ask.C, _ask.D];
+                    _content = _asks[0].content[page - 1];
                     setState(() {});
                   },
                   smallButton: true,
@@ -261,54 +171,20 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
                 child: CustomButtomImageColorWidget(
                   onTap: () {
                     if (page == pages) {
-                      GlobalSetting.shared.showPopupWithContext(
-                          context,
-                          DialogConfirmWidget(
-                            title:
-                                AppLocalizations.text(LangKey.confirm_submit),
-                            agree: () async {
-                              // Navigator.of(context).pop();
-                              int score = _checkScore();
-                              int gold = _getGold(score);
-                              int diamond = _getDiamond(score);
-                              if (score > 5) {
-                                Globals.financeUser?.gold += gold;
-                                Globals.financeUser?.diamond += diamond;
-                                _updateGold(
-                                    Globals.currentUser?.financeId ?? "",
-                                    Globals.financeUser?.gold ?? 0);
-                                _updateDiamond(
-                                    Globals.currentUser?.financeId ?? "",
-                                    Globals.financeUser?.diamond ?? 0);
-                              }
-
-                              GlobalSetting.shared.showPopupCongratulation(
-                                  context, 1, score, gold, diamond,
-                                  ontapContinue: () {
-                                // Navigator.of(context)..pop()..pop(false);
-                              }, ontapExit: () {
-                                Navigator.of(context)
-                                  ..pop()
-                                  ..pop()
-                                  ..pop(score > 5);
-                              });
-                            },
-                            cancel: () {
-                              Navigator.of(context).pop();
-                            },
-                          ));
-                      return;
+                      Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapListeningLessonAnwserScreen(isGetReward: widget.isGetReward,level: widget.level,quizs: _asks[0].quiz,)));
+                    } else {
+                      page += 1;
+                      _content = _asks[0].content[page - 1];
+                      // answers = [_ask.A, _ask.B, _ask.C, _ask.D];
+                      setState(() {});
                     }
-                    page += 1;
-                    _ask = _asks[page - 1];
-                    answers = [_ask.A, _ask.B, _ask.C, _ask.D];
-                    setState(() {});
                   },
                   smallButton: true,
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? "Final" : "Next",
+                      text: page == pages ? "Go to test" : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -331,7 +207,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
         children: [
           GestureDetector(
             onTap: () {
-              !isListening ? _speak(_ask.Script) : _stop();
+              !isListening ? _speak(_content.pronounce) : _stop();
               print("record");
               setState(() {
                 isListening = !isListening;
@@ -442,10 +318,41 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
   Widget _itemReading() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Text(
-        _ask.Question,
-        style: TextStyle(fontSize: 18,color: Colors.white),
-      ),
+      child: _asks.length > 0 ? _contentListenLesson() : Container(),
+    );
+  }
+
+  Widget _contentListenLesson() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          _content.pronounce,
+          style:
+              TextStyle(fontSize: 24, color: getColorsByCode(_content.idImage)),
+        ),
+        SizedBox(
+          height: AppSizes.maxHeight * 0.02,
+        ),
+        Text(_content.transcription,
+            style: TextStyle(
+                fontSize: 24, color: getColorsByCode(_content.idImage))),
+        SizedBox(
+          height: AppSizes.maxHeight * 0.02,
+        ),
+        Text(_content.translate,
+            style: TextStyle(
+                fontSize: 24, color: getColorsByCode(_content.idImage))),
+        SizedBox(
+          height: AppSizes.maxHeight * 0.02,
+        ),
+        Image.asset(
+          ExtendedAssets.getAssetByCodeColor(_content.idImage),
+          width: AppSizes.maxWidth * 0.3,
+          height: AppSizes.maxWidth * 0.3,
+          fit: BoxFit.fill,
+        )
+      ],
     );
   }
 
@@ -477,14 +384,17 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
                   leading: IconTheme(
                     data: IconThemeData(size: 24.0), // Set the size here
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.grey,
+                      ),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                   ),
                   actions: [
-                    Padding( 
+                    Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
                           onTap: () {
@@ -516,6 +426,21 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       ),
     );
   }
+
+  Color getColorsByCode(String code) {
+    Map<String, Color> codeToColor = {
+      "TOPIC01_0001": Colors.red,
+      "TOPIC01_0002": Colors.blue.shade900,
+      "TOPIC01_0003": Colors.green,
+      "TOPIC01_0004": Colors.blue,
+      "TOPIC01_0005": Colors.white,
+      "TOPIC01_0006": Colors.black,
+      "TOPIC01_0007": Colors.yellow,
+      "TOPIC01_0008": Colors.orange,
+      "TOPIC01_0009": Colors.pink,
+      "TOPIC01_0010": Colors.brown,
+    };
+
+    return codeToColor[code] ?? Colors.white;
+  }
 }
-
-
