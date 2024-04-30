@@ -19,9 +19,7 @@ class AskLessonModel {
     }
     var quizList = json['quiz'] as List<dynamic>?;
     var quizzes = <QuizModel>[];
-    if (quizList != null) {
-      quizzes = quizList.map((quizJson) => QuizModel.fromJson(quizJson)).toList();
-    }
+      quizzes = quizList!.map((quizJson) => QuizModel.fromJson(quizJson)).toList();
     return AskLessonModel(
       Script: json['script'] ?? '',
       Content: json['content'] ?? '',
@@ -86,7 +84,7 @@ class QuizModel {
     };
   }
 
-  static QuizModel fromMap(Map<String, dynamic> map) {
+  static QuizModel fromMap(Map<dynamic, dynamic> map) {
     return QuizModel(
       Question: map['question'] as String,
       Answer: map['answer'] as String,
@@ -113,7 +111,7 @@ class OptionQuizModel {
     this.D,
   });
 
-  factory OptionQuizModel.fromJson(Map<String, dynamic>? json) {
+  factory OptionQuizModel.fromJson(Map<dynamic, dynamic>? json) {
     return OptionQuizModel(
       A: json?['A'] ?? '',
       B: json?['B'] ?? '',
