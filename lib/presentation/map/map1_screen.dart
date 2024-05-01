@@ -315,7 +315,7 @@ class _Map1ScreenState extends State<Map1Screen>
                           )));
                 } else if (widget.type != "" && widget.type == FirebaseEnum.speaking) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapSpeakingExaminationScreen()));
+                      builder: (context) => MapSpeakingExaminationScreen(isGetReward: i < location, level: location)));
                 }
               } else {
                 if (widget.type != "" && widget.type == FirebaseEnum.reading) {
@@ -330,7 +330,7 @@ class _Map1ScreenState extends State<Map1Screen>
                           isGetReward: i < location, level: location)));
                 } else if (widget.type != "" && widget.type == FirebaseEnum.speaking) {
                   result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MapSpeakingLessonScreen()));
+                      builder: (context) => MapSpeakingLessonScreen(isGetReward: i < location, level: location)));
                 }
               }
               if (result != null && result == true && (i + 1) == location) {
@@ -410,8 +410,8 @@ class _Map1ScreenState extends State<Map1Screen>
   Path drawPath() {
     Path path = Path();
     double bottomChicken = AppSizes.maxHeight < 800
-        ? AppSizes.maxHeight * 0.14
-        : AppSizes.maxHeight * 0.12;
+        ? AppSizes.maxHeight * 0.15
+        : AppSizes.maxHeight * 0.125;
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
     double bottom =
         heightContent - bottomChicken - AppSizes.maxHeight * multiple;

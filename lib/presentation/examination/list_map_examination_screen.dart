@@ -125,8 +125,8 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image(
-          fit: BoxFit.contain,
-          image: AssetImage(Assets.chicken_flapping_swing_gif),
+          fit: BoxFit.fitHeight,
+          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
           width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.18,
         ),

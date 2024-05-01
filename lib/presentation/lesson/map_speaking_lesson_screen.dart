@@ -1,44 +1,62 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
+import 'package:chicken_combat/common/langkey.dart';
+import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
+import 'package:chicken_combat/model/course/ask_speaking_model.dart';
+import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
+import 'package:chicken_combat/widgets/stroke_text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class MapSpeakingLessonScreen extends StatefulWidget {
-  const MapSpeakingLessonScreen({super.key});
+  final bool isGetReward;
+  final int level;
+  const MapSpeakingLessonScreen(
+      {super.key, this.isGetReward = false, required this.level});
 
   @override
   State<MapSpeakingLessonScreen> createState() => _MapSpeakingLessonScreenState();
 }
 
 class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with WidgetsBindingObserver {
-  String text =
-      "Welcome to our random topic! Get ready to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready to o our random topic! Get ready to explore some interesting Get readytopic! Get ready to explore some interesting Get rtopic! Get ready to explore some interesting Get r to explore some interesting  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us?   "
-      "ing care  a day, what would you research? Discussns with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n";
 
-  String text2 =
-      "Welcome  questions we've  prepared for you. Did you know that they say cats can jump higher than dogs? Do you think this statement is true or false? What do you think about taking care of the green environment around us? Share your thoughts! And you, if you were to be a scientist for a day, what would you research? Discuss and share your opinions with us on these intriguing questions. Remember, there are no right or wrong answers, only endless curiosity and exploration!\n\n"
-      "Welcome to our random topic! Get ready  to explore some interesting questions we've prepared for you.";
 
   List<String> parts = [];
   List<String> anwsers = [];
   var _isKeyboardVisible = false;
   int page = 1;
+  int pages = 0;
   bool isTextOverflow = false;
   bool isRecording = false;
 
   CarouselController buttonCarouselController = CarouselController();
   ScrollController _controller = ScrollController();
 
+    List<AskSpeakingModel> _speakings = [];
+    late QuizSpeakingModel _ask = QuizSpeakingModel(question: "");
+
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_scrollListener);
-    _checkTextOverflow();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     _speakings = await _loadAsks();
+     if (_speakings.length > 0) {
+      _ask = _speakings[0].quiz[0];
+
+      pages = _speakings[0].quiz.length;
+      setState(() {});
+     }
+    });
   }
 
   @override
@@ -60,42 +78,50 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
     }
   }
 
-  void _checkTextOverflow() {
-    print((AppSizes.maxHeight -
-            AppSizes.bottomHeight -
-            AppSizes.statusBarHeight -
-            48 -
-            80) ~/
-        16.round());
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Check if the text overflows
-      TextSpan span = TextSpan(style: TextStyle(fontSize: 16.0), text: text);
-      TextPainter tp = TextPainter(
-          text: span, maxLines: 28, textDirection: TextDirection.ltr);
-      tp.layout(maxWidth: MediaQuery.of(context).size.width);
-      bool newTextOverflow = tp.didExceedMaxLines;
-      print(newTextOverflow);
-
-      // Update isTextOverflow if necessary
-      if (newTextOverflow != isTextOverflow) {
-        setState(() {
-          isTextOverflow = newTextOverflow;
-        });
+  Future<List<AskSpeakingModel>> _loadAsks() async {
+    List<AskSpeakingModel> loadedAsks = await _getAsk();
+    Random random = Random();
+    if (loadedAsks.length < 1) {
+      throw Exception("Not enough questions to select from.");
+    }
+    Set<int> usedIndexes = Set<int>();
+    List<AskSpeakingModel> selectedAsks = [];
+    while (selectedAsks.length < 1) {
+      int randomNumber = random.nextInt(loadedAsks.length);
+      if (!usedIndexes.contains(randomNumber)) {
+        selectedAsks.add(loadedAsks[randomNumber]);
+        usedIndexes.add(randomNumber);
       }
-    });
+    }
+    return selectedAsks;
   }
 
-  List<InlineSpan> _listTextSpan() {
-    List<InlineSpan> textSpans = [];
-    textSpans.add(
-      TextSpan(
-        text: text,
-        style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: "Itim"),
-      ),
-    );
-
-    return textSpans;
+    Future<List<AskSpeakingModel>> _getAsk() async {
+    List<AskSpeakingModel> readings = [];
+    try {
+      FirebaseDatabase database = FirebaseDatabase(
+        app: Firebase.app(),
+        databaseURL: FirebaseEnum.URL_REALTIME_DATABASE,
+      );
+      final ref = database.ref(FirebaseEnum.lesson_speaking);
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List) {
+          for (var item in data) {
+            AskSpeakingModel model = AskSpeakingModel.fromJson(item);
+            readings.add(model);
+          }
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print('Error fetching and parsing data: $e');
+    }
+    return readings;
   }
+
 
   @override
   void didChangeMetrics() {
@@ -109,15 +135,182 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
     super.didChangeMetrics();
   }
 
+   int _checkScore() {
+    // dựa vào speaking
+    int score = 0;
+    for (int i = 0; i < _speakings[0].quiz.length; i++) {
+      // if (results[i] == _asks[i].Answer) {
+      //   score += 2;
+      // }
+    }
+    return score;
+  }
+
+  int _getGold(int score) {
+    if (widget.isGetReward) {
+      int gold = score > 9
+          ? 15
+          : score > 7
+              ? 10
+              : score > 5
+                  ? 5
+                  : 0;
+      return gold;
+    } else {
+      int gold = score > 9
+          ? 100
+          : score > 7
+              ? 50
+              : score > 5
+                  ? 20
+                  : 0;
+      return gold;
+    }
+  }
+
+  int _getDiamond(int score) {
+    if (widget.isGetReward) {
+      int diamond = score > 9
+          ? 5
+          : score > 7
+              ? 2
+              : score > 5
+                  ? 1
+                  : 0;
+      return diamond;
+    } else {
+      int diamond = score > 9
+          ? 15
+          : score > 7
+              ? 10
+              : score > 5
+                  ? 5
+                  : 0;
+      return diamond;
+    }
+  }
+
+  Future<void> _updateGold(String _id, int gold) async {
+    CollectionReference _finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+    return _finance
+        .doc(_id)
+        .update({'gold': gold})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> _updateDiamond(String _id, int dimond) async {
+    CollectionReference _finance =
+        FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+
+    return _finance
+        .doc(_id)
+        .update({'diamond': dimond})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
   Widget _buildContent() {
     return Column(
       children: [
         _body(),
         _record(),
-        Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
-        Container(
-          height: AppSizes.bottomHeight,
-        )
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Flexible(
+                child: CustomButtomImageColorWidget(
+                  onTap: () {
+                    if (page == 1) {
+                      return;
+                    }
+                    page -= 1;
+                    _ask = _speakings[0].quiz[page - 1];
+                    setState(() {});
+                  },
+                  smallButton: true,
+                  smallOrangeColor: page > 1,
+                  smallGrayColor: page == 1,
+                  child: Center(
+                    child: StrokeTextWidget(
+                      text: "Previous",
+                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                      colorStroke: Color(0xFFD18A5A),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              Flexible(
+                child: CustomButtomImageColorWidget(
+                  onTap: () {
+                    if (page == pages) {
+                      GlobalSetting.shared.showPopupWithContext(
+                          context,
+                          DialogConfirmWidget(
+                            title:
+                                AppLocalizations.text(LangKey.confirm_submit),
+                            agree: () async {
+                              // Navigator.of(context).pop();
+                              int score = _checkScore();
+                              int gold = _getGold(score);
+                              int diamond = _getDiamond(score);
+                              if (score > 5) {
+                                Globals.financeUser?.gold += gold;
+                                Globals.financeUser?.diamond += diamond;
+                                _updateGold(
+                                    Globals.currentUser?.financeId ?? "",
+                                    Globals.financeUser?.gold ?? 0);
+                                _updateDiamond(
+                                    Globals.currentUser?.financeId ?? "",
+                                    Globals.financeUser?.diamond ?? 0);
+                              }
+
+                              GlobalSetting.shared.showPopupCongratulation(
+                                  context, 1, score, gold, diamond,
+                                  ontapContinue: () {
+                                // Navigator.of(context)..pop()..pop(false);
+                              }, ontapExit: () {
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop()
+                                  ..pop(score > 5);
+                              });
+                            },
+                            cancel: () {
+                              Navigator.of(context).pop();
+                            },
+                          ));
+                      return;
+                    }
+                    page += 1;
+                    _ask = _speakings[0].quiz[page - 1];
+                    setState(() {});
+                  },
+                  smallButton: true,
+                  smallOrangeColor: true,
+                  child: Center(
+                    child: StrokeTextWidget(
+                      text: page == pages ? "Final" : "Next",
+                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                      colorStroke: Color(0xFFD18A5A),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Container(height: AppSizes.maxHeight * 0.03)
+        // Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+        // Container(
+        //   height: AppSizes.bottomHeight,
+        // )
       ],
     );
   }
@@ -142,7 +335,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
                       border: Border.all(width: 4, color: Color(0xFFE97428)),
                       color: Color(0xFF467865)),
                   child: CarouselSlider(
-                    items: [_itemReading(), _itemReading()],
+                    items: [_itemReading()],
                     carouselController: buttonCarouselController,
                     options: CarouselOptions(
                         scrollPhysics: NeverScrollableScrollPhysics(),
@@ -185,27 +378,30 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
             left: 0,
             right: 0,
             child: Image.asset(Assets.img_chicken_learning),
-          )
+          ),
+          Positioned(
+              bottom: AppSizes.maxHeight * 0.02,
+              right: AppSizes.maxWidth * 0.08,
+              child: Text(
+                "${page}/${pages}",
+                style: TextStyle(color: Colors.white),
+              ))
         ],
       ),
     );
   }
 
   Widget _itemReading() {
-    return Column(
-      children: [
-        Expanded(
-            child: SingleChildScrollView(
+    return SingleChildScrollView(
           controller: _controller,
           child: Container(
-            margin: EdgeInsets.only(left: 16, right: 24),
-            child: RichText(
-              text: TextSpan(children: _listTextSpan()),
-            ),
+    margin: EdgeInsets.only(left: 16, right: 24),
+    child: Text(
+        _ask.question,
+        style: TextStyle(fontSize: 16,color: Colors.white),
+      ),
           ),
-        )),
-      ],
-    );
+        );
   }
 
   Widget _record() {
