@@ -21,25 +21,31 @@ class MapListeningLessonAnwserScreen extends StatefulWidget {
   final int level;
   final List<QuizModel> quizs;
   const MapListeningLessonAnwserScreen(
-      {super.key, this.isGetReward = false, required this.level,required this.quizs});
+      {super.key,
+      this.isGetReward = false,
+      required this.level,
+      required this.quizs});
 
   @override
-  State<MapListeningLessonAnwserScreen> createState() => _MapListeningLessonAnwserScreenState();
+  State<MapListeningLessonAnwserScreen> createState() =>
+      _MapListeningLessonAnwserScreenState();
 }
 
-class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwserScreen> with WidgetsBindingObserver {
-   String text = "";
+class _MapListeningLessonAnwserScreenState
+    extends State<MapListeningLessonAnwserScreen> with WidgetsBindingObserver {
+  String text = "";
   List<String> results = [];
   List<int> positions = [];
   var _isKeyboardVisible = false;
   int page = 1;
   int pages = 0;
   bool isListening = false;
+  bool review = false;
   final FlutterTts flutterTts = FlutterTts();
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late QuizModel _quiz = QuizModel(answer: "",listen: {},idImage: []);
+  late QuizModel _quiz = QuizModel(answer: "", listen: {}, idImage: []);
   List<QuizModel> _quizs = [];
   List<String> answers = [];
 
@@ -56,9 +62,8 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
       if (_quizs.length > 0) {
         _quiz = _quizs[0];
         answers.addAll(_quiz.idImage);
-        
 
-        for (int i = 0; i < _quiz.idImage.length; i++) {
+        for (int i = 0; i < _quizs.length; i++) {
           positions.add(-1);
           results.add("");
         }
@@ -77,12 +82,11 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
     }
   }
 
-
   int _checkScore() {
     int score = 0;
     for (int i = 0; i < _quizs.length; i++) {
       if (results[i] == _quizs[i].answer) {
-        score += 2;
+        score += 5;
       }
     }
     return score;
@@ -94,7 +98,7 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
           ? 5
           : score > 7
               ? 3
-              : score > 5
+              : score >= 5
                   ? 2
                   : 0;
       return gold;
@@ -103,7 +107,7 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
           ? 30
           : score > 7
               ? 15
-              : score > 5
+              : score >= 5
                   ? 5
                   : 0;
       return gold;
@@ -116,7 +120,7 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
           ? 3
           : score > 7
               ? 2
-              : score > 5
+              : score >= 5
                   ? 1
                   : 0;
       return diamond;
@@ -125,7 +129,7 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
           ? 10
           : score > 7
               ? 8
-              : score > 5
+              : score >= 5
                   ? 6
                   : 0;
       return diamond;
@@ -186,7 +190,6 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
                     }
                     page -= 1;
                     _quiz = _quizs[page - 1];
-                    // answers = [_ask.A, _ask.B, _ask.C, _ask.D];
                     setState(() {});
                   },
                   smallButton: true,
@@ -208,6 +211,14 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
                 child: CustomButtomImageColorWidget(
                   onTap: () {
                     if (page == pages) {
+                      if (review) {
+                        int score = _checkScore();
+                        Navigator.of(context)
+                                  ..pop()
+                                  ..pop(score >= 5);
+                                  return;
+
+                      }
                       GlobalSetting.shared.showPopupWithContext(
                           context,
                           DialogConfirmWidget(
@@ -232,30 +243,35 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,
                                   ontapContinue: () {
-                                // Navigator.of(context)..pop()..pop(false);
+                                    
+                                Navigator.of(context)..pop()..pop();
+                                setState(() {
+                                  review = true;
+                                });
                               }, ontapExit: () {
                                 Navigator.of(context)
                                   ..pop()
                                   ..pop()
+                                  ..pop()
                                   ..pop(score > 5);
-                              });
+                              },showReivew: !review);
                             },
                             cancel: () {
                               Navigator.of(context).pop();
                             },
+                            
                           ));
                       return;
                     }
                     page += 1;
                     _quiz = _quizs[page - 1];
-                    // answers = [_ask.A, _ask.B, _ask.C, _ask.D];
                     setState(() {});
                   },
                   smallButton: true,
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? "Final" : "Next",
+                      text: page == pages ? review ? "Exit" : "Final" : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -319,7 +335,7 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
                       border: Border.all(width: 4, color: Color(0xFFE97428)),
                       color: Color(0xFF467865)),
                   child: CarouselSlider(
-                    items: [_itemReading()],
+                    items: [_listColorAnswer()],
                     carouselController: buttonCarouselController,
                     options: CarouselOptions(
                         scrollPhysics: NeverScrollableScrollPhysics(),
@@ -355,17 +371,17 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
   List<Widget> _listAnswer() {
     List<Widget> itemList = [];
     for (int i = 0; i < answers.length; i++) {
-      itemList.add(_answer(answers[i], i, ontap: () {
-        positions[page - 1] = i;
-        results[page - 1] = i == 0
-            ? "A"
-            : i == 1
-                ? "B"
-                : i == 2
-                    ? "C"
-                    : "D";
-        setState(() {});
-      }));
+      // itemList.add(_answer(answers[i], i, ontap: () {
+      //   positions[page - 1] = i;
+      //   results[page - 1] = i == 0
+      //       ? "A"
+      //       : i == 1
+      //           ? "B"
+      //           : i == 2
+      //               ? "C"
+      //               : "D";
+      //   setState(() {});
+      // }));
     }
     return itemList;
   }
@@ -386,25 +402,67 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
     await flutterTts.stop();
   }
 
-  Widget _itemReading() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Image.asset(ExtendedAssets.getAssetByCodeColor(_quiz.idImage.first)),
-    );
-  }
+  Widget _answer(int i, {Function? ontap}) {
+    return ScalableButton(
+      onTap: ontap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset(
+            ExtendedAssets.getAssetByCodeColor(_quiz.idImage[i]),
+            fit: BoxFit.cover,
+            width: AppSizes.maxWidth / 2,
+          ),
+          if (review) Center(
+            child: IconTheme(
+              data: IconThemeData(size: _quiz.idImage[i] == _quiz.answer ? 40.0: 30.0), // Set the size here
+              child: _quiz.idImage[i] == _quiz.answer
+                  ? Icon(
+                      Icons.check_circle_outline_rounded,
+                      color: Colors.green,
+                    )
+                  : Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 2.0,color: Colors.red)
+                    ),
+                    child: Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ),
+                  ),
+            ),
+          ),
 
-  Widget _answer(String answer, int i, {Function? ontap}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: CustomButtomImageColorWidget(
-        redBlurColor: positions[page - 1] != i,
-        redColor: positions[page - 1] == i,
-        child:
-            Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
-        onTap: ontap,
+          if (!review && results[page - 1] != "" && results[page-1] == _quiz.idImage[i]) IconTheme(
+              data: IconThemeData(size: 20.0), // Set the size here
+              child: Icon(
+                      Icons.check_circle_outline_rounded,
+                      color: Colors.green,
+                    ),
+            )
+        ],
       ),
     );
   }
+
+  Widget _listColorAnswer() {
+    return Wrap(
+      runSpacing: 8,
+      children: List.generate(
+        _quiz.idImage.length,
+        (index) {
+          return _answer(index, ontap: () {
+            results[page - 1] = _quiz.idImage[index];
+            setState(() {
+              
+            });
+          });
+        },
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -421,14 +479,17 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
                   leading: IconTheme(
                     data: IconThemeData(size: 24.0), // Set the size here
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.grey,
+                      ),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                   ),
                   actions: [
-                    Padding( 
+                    Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
                           onTap: () {
@@ -437,6 +498,7 @@ class _MapListeningLessonAnwserScreenState extends State<MapListeningLessonAnwse
                               Navigator.of(context).pop();
                             }, onTapExit: () {
                               Navigator.of(context)
+                                ..pop()
                                 ..pop()
                                 ..pop(false);
                             }, onTapContinous: () {

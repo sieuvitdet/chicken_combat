@@ -336,7 +336,7 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: RichText(
                   text: TextSpan(
-                      text: "Bạn chưa có tài khoản?",
+                      text: "${AppLocalizations.text(LangKey.do_not_have_account)}?",
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -344,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white),
                       children: [
                     TextSpan(
-                        text: "  " + "Đăng ký",
+                        text: "  " + AppLocalizations.text(LangKey.register),
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,

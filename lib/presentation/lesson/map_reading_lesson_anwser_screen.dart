@@ -44,6 +44,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
       Question: "", Answer: "", Options: OptionQuizModel(A: "",B:"",C:"",D: ""));
   List<QuizModel> _asks = [];
   List<String> answers = [];
+  bool review = false;
 
   @override
   void initState() {
@@ -57,7 +58,8 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
         // splitText(_ask.Question);
 
         for (int i = 0; i < _asks.length; i++) {
-          print(_ask.Answer);
+          print(_asks[i].Answer);
+          print(_asks[i].Question);
           positions.add(-1);
           results.add("");
         }
@@ -83,7 +85,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
           ? 15
           : score > 7
               ? 10
-              : score > 5
+              : score >= 5
                   ? 5
                   : 0;
       return gold;
@@ -92,7 +94,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
           ? 100
           : score > 7
               ? 50
-              : score > 5
+              : score >= 5
                   ? 20
                   : 0;
       return gold;
@@ -105,7 +107,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
           ? 5
           : score > 7
               ? 2
-              : score > 5
+              : score >= 5
                   ? 1
                   : 0;
       return diamond;
@@ -114,7 +116,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
           ? 15
           : score > 7
               ? 10
-              : score > 5
+              : score >= 5
                   ? 5
                   : 0;
       return diamond;
@@ -196,6 +198,14 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
                 child: CustomButtomImageColorWidget(
                   onTap: () {
                     if (page == pages) {
+                      if (review) {
+                        int score = _checkScore();
+                        Navigator.of(context)
+                                  ..pop()
+                                  ..pop(score >= 5);
+                                  return;
+
+                      }
                       GlobalSetting.shared.showPopupWithContext(
                           context,
                           DialogConfirmWidget(
@@ -220,13 +230,17 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,
                                   ontapContinue: () {
-                                // Navigator.of(context)..pop()..pop(false);
+                                Navigator.of(context)..pop()..pop();
+                                setState(() {
+                                  review = true;
+                                });
                               }, ontapExit: () {
                                 Navigator.of(context)
                                   ..pop()
                                   ..pop()
+                                  ..pop()
                                   ..pop(score > 5);
-                              });
+                              },showReivew: !review);
                             },
                             cancel: () {
                               Navigator.of(context).pop();
@@ -243,7 +257,7 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? "Final" : "Next",
+                      text: page == pages ? review ? "Exit" : "Final" : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -338,9 +352,27 @@ class _MapReadingLessonAnwserScreenState extends State<MapReadingLessonAnwserScr
   Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: CustomButtomImageColorWidget(
+      child: (!review) ? CustomButtomImageColorWidget(
         redBlurColor: positions[page - 1] != i,
         redColor: positions[page - 1] == i,
+        child:
+            Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
+        onTap: ontap,
+      ) : CustomButtomImageColorWidget(
+        redBlurColor: _asks[page-1].Answer != (i == 0
+            ? "A"
+            : i == 1
+                ? "B"
+                : i == 2
+                    ? "C"
+                    : "D"),
+        greenColor:_asks[page-1].Answer == (i == 0
+            ? "A"
+            : i == 1
+                ? "B"
+                : i == 2
+                    ? "C"
+                    : "D"),
         child:
             Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: ontap,

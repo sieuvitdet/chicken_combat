@@ -110,7 +110,7 @@ class GlobalSetting {
   }
 
   void showPopupCongratulation(BuildContext context, int level, int score, int gold, int diamond,
-      {Function? ontapContinue, Function? ontapExit}) {
+      {Function? ontapContinue, Function? ontapExit, bool? showReivew}) {
 
     showDialog(
         context: context,
@@ -125,6 +125,7 @@ class GlobalSetting {
                 score: score,
                 gold: gold,
                 diamond: diamond,
+                showReview: showReivew,
               );
             },
           );

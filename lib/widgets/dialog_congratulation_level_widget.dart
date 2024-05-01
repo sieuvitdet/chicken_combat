@@ -13,9 +13,10 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
   final int gold;
   final int diamond;
   final int? level;
+  final bool? showReview;
 
   DialogCongratulationLevelWidget(
-      {this.ontapContinue, this.ontapExit,required this.score,required this.gold, required this.diamond, this.level});
+      {this.ontapContinue, this.ontapExit,required this.score,required this.gold, required this.diamond, this.level,this.showReview = false});
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +213,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
 
   List<Widget> _listAction() {
     List<Widget> _list = [];
-    if (score > 5) {
+    if (score > 5 || (showReview ?? false)) {
       _list.add(_itemPlaygame());
     _list.add(SizedBox(width: AppSizes.maxWidth*0.116,));
     }
@@ -231,7 +232,8 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
               fit: BoxFit.fill,
             )),
         Text(
-         AppLocalizations.text(LangKey.continuee),
+        //  AppLocalizations.text(LangKey.continuee),
+        "Review",
           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],
