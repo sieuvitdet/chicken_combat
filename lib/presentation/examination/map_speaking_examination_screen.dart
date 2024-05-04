@@ -429,6 +429,7 @@ class _MapSpeakingExaminationScreenState
                 }
                 isListening = !_sttService.isListening;
               });
+              
               _sttService.toggleRecording(_ask.Script, false, (result) {
                 setState(() {
                   _ask.Script = 'score: ${result}';

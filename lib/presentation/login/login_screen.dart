@@ -133,6 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         require: false,
                         limitInput: 10,
+                        maxLength: 20,
                         textInputAction: TextInputAction.next,
                         error: snapshot.data,
                         onChanged: (event) {
@@ -165,9 +166,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? Assets.img_eye_close
                           : Assets.img_eye_open,
                       backgroundColor: AppColors.whiteColor,
-                      suffixIconColor: AppColors.grey15,
+                      suffixIconColor: AppColors.yellow,
                       error: snapshot1.data,
                       obscureText: snapshot.data,
+                      maxLength: 6,
                       // require: false,
                       onSuffixIconTap: () => _bloc.setPassword(!snapshot.data!),
                       onChanged: (event) {
@@ -187,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 return Padding(
                   padding: EdgeInsets.only(top: 8.0),
                   child: Text(
-                    snapshot.data ?? "Lỗi",
+                    snapshot.data ?? "error",
                     style: TextStyle(color: Colors.red),
                   ),
                 );
@@ -252,8 +254,10 @@ class _LoginScreenState extends State<LoginScreen> {
             //     ),
             //   ),
             // ),
+            SizedBox(height: 16),
             _login(),
-            _comeInNow()
+            _comeInNow(),
+            SizedBox(height: AppSizes.maxHeight*0.05),
           ],
         ),
       ),

@@ -53,7 +53,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
       children: [
         Image(
           fit: BoxFit.contain,
-          image: AssetImage(Assets.gif_chicken_white_candy),
+          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
           width: AppSizes.maxWidth * 0.34,
           height: AppSizes.maxHeight * 0.2,
         ),
