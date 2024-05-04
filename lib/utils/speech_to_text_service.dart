@@ -29,7 +29,8 @@ class SpeechToTextService {
         if (result.recognizedWords.isNotEmpty) {
           lastWords = result.recognizedWords;
         }
-      });
+      }, localeId: 'en_US'
+      );
       isListening = true;
     }
   }

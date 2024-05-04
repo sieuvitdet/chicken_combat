@@ -51,8 +51,8 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
       return _room?.users.firstWhere((user) => user.userId == Globals.currentUser?.id);
     } catch (e) {
       print("Current user not found in room.");
-      throw Exception("Current user not found in room.");
     }
+    return null;
   }
 
   UserInfoRoom? getOtherUserInfo() {
@@ -60,8 +60,8 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
       return _room?.users.firstWhere((user) => user.userId != Globals.currentUser?.id);
     } catch (e) {
       print("No other users found in room.");
-      throw Exception("No other users found in room.");
     }
+    return null;
   }
 
   UserInfoRoom? _currentInfo(bool printCurrentUser) {
