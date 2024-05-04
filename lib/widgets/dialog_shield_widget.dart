@@ -11,8 +11,9 @@ class DialogShieldWiget extends StatefulWidget {
   final Function? ontap;
   final bool isShowHalo;
   final String imgage;
+  final String? type;
 
-  DialogShieldWiget({this.ontap,this.isShowHalo = false, required this.imgage});
+  DialogShieldWiget({this.ontap,this.isShowHalo = false, required this.imgage,required this.type});
 
   @override
   State<DialogShieldWiget> createState() => _DialogShieldWigetState();
@@ -78,7 +79,7 @@ class _DialogShieldWigetState extends State<DialogShieldWiget> {
                           right: 0,
                           child: Image.asset(
                             Assets.img_halo,
-                            width: AppSizes.maxWidth * 0.9,
+                            width: AppSizes.maxWidth,
                             height: AppSizes.maxHeight * 0.5,
                             fit: BoxFit.cover,
                           ),
@@ -86,7 +87,7 @@ class _DialogShieldWigetState extends State<DialogShieldWiget> {
                         Column(
                           children: [
                             StrokeTextWidget(
-                                text: "Vượt ải thành công",
+                                text: "Passed the barrier successfully",
                                 size: AppSizes.maxWidth < 350 ? 16 : 24,
                                 colorStroke: Colors.red[900]),
                             Image.asset(
@@ -95,7 +96,7 @@ class _DialogShieldWigetState extends State<DialogShieldWiget> {
                               fit: BoxFit.fill,
                             ),
                             StrokeTextWidget(
-                                text: "Khiên học giả",
+                                text: "God of ${widget.type}",
                                 size: AppSizes.maxWidth < 350 ? 16 : 24,
                                 colorStroke: Colors.red[900]),
                             Spacer(),

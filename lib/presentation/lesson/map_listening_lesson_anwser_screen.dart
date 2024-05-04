@@ -56,7 +56,6 @@ class _MapListeningLessonAnwserScreenState
     WidgetsBinding.instance.addObserver(this);
 
     _checkMicrophonePermission();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _quizs = widget.quizs;
       if (_quizs.length > 0) {
@@ -86,7 +85,7 @@ class _MapListeningLessonAnwserScreenState
     int score = 0;
     for (int i = 0; i < _quizs.length; i++) {
       if (results[i] == _quizs[i].answer) {
-        score += 5;
+        score += 10;
       }
     }
     return score;
@@ -94,21 +93,21 @@ class _MapListeningLessonAnwserScreenState
 
   int _getGold(int score) {
     if (widget.isGetReward) {
-      int gold = score > 9
-          ? 5
-          : score > 7
-              ? 3
-              : score >= 5
-                  ? 2
+      int gold = score > 8 * _quizs.length
+          ? 15
+          : score > 7 * _quizs.length
+              ? 10
+              : score >= 5 * _quizs.length
+                  ? 5
                   : 0;
       return gold;
     } else {
-      int gold = score > 9
-          ? 30
-          : score > 7
-              ? 15
-              : score >= 5
-                  ? 5
+      int gold = score > 8 * _quizs.length
+          ? 100
+          : score > 7 * _quizs.length
+              ? 50
+              : score >= 5 * _quizs.length
+                  ? 20
                   : 0;
       return gold;
     }
@@ -116,21 +115,21 @@ class _MapListeningLessonAnwserScreenState
 
   int _getDiamond(int score) {
     if (widget.isGetReward) {
-      int diamond = score > 9
-          ? 3
-          : score > 7
+      int diamond = score > 8 * _quizs.length
+          ? 5
+          : score > 7 * _quizs.length
               ? 2
-              : score >= 5
+              : score >= 5 * _quizs.length
                   ? 1
                   : 0;
       return diamond;
     } else {
-      int diamond = score > 9
-          ? 10
-          : score > 7
-              ? 8
-              : score >= 5
-                  ? 6
+      int diamond = score > 8 * _quizs.length
+          ? 15
+          : score > 7 * _quizs.length
+              ? 10
+              : score >= 5 * _quizs.length
+                  ? 5
                   : 0;
       return diamond;
     }
@@ -214,10 +213,9 @@ class _MapListeningLessonAnwserScreenState
                       if (review) {
                         int score = _checkScore();
                         Navigator.of(context)
-                                  ..pop()
-                                  ..pop(score >= 5);
-                                  return;
-
+                          ..pop()
+                          ..pop(score >= 5 * _quizs.length);
+                        return;
                       }
                       GlobalSetting.shared.showPopupWithContext(
                           context,
@@ -229,7 +227,7 @@ class _MapListeningLessonAnwserScreenState
                               int score = _checkScore();
                               int gold = _getGold(score);
                               int diamond = _getDiamond(score);
-                              if (score > 5) {
+                              if (score > 5 * pages) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
                                 _updateGold(
@@ -242,24 +240,26 @@ class _MapListeningLessonAnwserScreenState
 
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,
-                                  ontapContinue: () {
-                                    
-                                Navigator.of(context)..pop()..pop();
+                                  numberQuestion: pages,
+                                  ontapReview: () {
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop();
                                 setState(() {
                                   review = true;
+                                  page = 1;
                                 });
                               }, ontapExit: () {
                                 Navigator.of(context)
                                   ..pop()
                                   ..pop()
                                   ..pop()
-                                  ..pop(score > 5);
-                              },showReivew: !review);
+                                  ..pop(score > 5 * pages);
+                              }, showReivew: !review);
                             },
                             cancel: () {
                               Navigator.of(context).pop();
                             },
-                            
                           ));
                       return;
                     }
@@ -271,7 +271,11 @@ class _MapListeningLessonAnwserScreenState
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? review ? "Exit" : "Final" : "Next",
+                      text: page == pages
+                          ? review
+                              ? "Exit"
+                              : "Final"
+                          : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -413,33 +417,38 @@ class _MapListeningLessonAnwserScreenState
             fit: BoxFit.cover,
             width: AppSizes.maxWidth / 2,
           ),
-          if (review) Center(
-            child: IconTheme(
-              data: IconThemeData(size: _quiz.idImage[i] == _quiz.answer ? 40.0: 30.0), // Set the size here
-              child: _quiz.idImage[i] == _quiz.answer
-                  ? Icon(
-                      Icons.check_circle_outline_rounded,
-                      color: Colors.green,
-                    )
-                  : Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 2.0,color: Colors.red)
-                    ),
-                    child: Icon(
-                        Icons.close,
-                        color: Colors.red,
+          if (review)
+            Center(
+              child: IconTheme(
+                data: IconThemeData(
+                    size: _quiz.idImage[i] == _quiz.answer
+                        ? 40.0
+                        : 30.0), // Set the size here
+                child: _quiz.idImage[i] == _quiz.answer
+                    ? Icon(
+                        Icons.check_circle_outline_rounded,
+                        color: Colors.green,
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 2.0, color: Colors.red)),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ),
                       ),
-                  ),
+              ),
             ),
-          ),
-
-          if (!review && results[page - 1] != "" && results[page-1] == _quiz.idImage[i]) IconTheme(
+          if (!review &&
+              results[page - 1] != "" &&
+              results[page - 1] == _quiz.idImage[i])
+            IconTheme(
               data: IconThemeData(size: 20.0), // Set the size here
               child: Icon(
-                      Icons.check_circle_outline_rounded,
-                      color: Colors.green,
-                    ),
+                Icons.check_circle_outline_rounded,
+                color: Colors.green,
+              ),
             )
         ],
       ),
@@ -454,15 +463,12 @@ class _MapListeningLessonAnwserScreenState
         (index) {
           return _answer(index, ontap: () {
             results[page - 1] = _quiz.idImage[index];
-            setState(() {
-              
-            });
+            setState(() {});
           });
         },
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -472,7 +478,7 @@ class _MapListeningLessonAnwserScreenState
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: PopScope(
-          canPop: false,
+          canPop: true,
           child: Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,

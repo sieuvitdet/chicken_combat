@@ -110,7 +110,7 @@ class GlobalSetting {
   }
 
   void showPopupCongratulation(BuildContext context, int level, int score, int gold, int diamond,
-      {Function? ontapContinue, Function? ontapExit, bool? showReivew}) {
+      {Function? ontapReview,Function? ontapContinue, Function? ontapExit, bool? showReivew,int? numberQuestion,bool? showContinue}) {
 
     showDialog(
         context: context,
@@ -119,6 +119,7 @@ class GlobalSetting {
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
               return DialogCongratulationLevelWidget(
+                ontapReview: ontapReview,
                 ontapContinue: ontapContinue,
                 ontapExit: ontapExit,
                 level: level,
@@ -126,6 +127,8 @@ class GlobalSetting {
                 gold: gold,
                 diamond: diamond,
                 showReview: showReivew,
+                showContinue: showContinue,
+                numberQuestion:numberQuestion ?? 0
               );
             },
           );

@@ -377,7 +377,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: PopScope(
-          canPop: false,
+          canPop: true,
           child: Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,

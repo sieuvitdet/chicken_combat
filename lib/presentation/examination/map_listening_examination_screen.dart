@@ -42,6 +42,7 @@ class _MapListeningExaminationScreenState
   int pages = 0;
   bool isListening = false;
   final FlutterTts flutterTts = FlutterTts();
+  bool review = false;
 
   CarouselController buttonCarouselController = CarouselController();
 
@@ -131,12 +132,11 @@ class _MapListeningExaminationScreenState
     return listeningList;
   }
 
-
   int _checkScore() {
     int score = 0;
     for (int i = 0; i < _asks.length; i++) {
       if (results[i] == _asks[i].Answer) {
-        score += 2;
+        score += 10;
       }
     }
     return score;
@@ -144,20 +144,20 @@ class _MapListeningExaminationScreenState
 
   int _getGold(int score) {
     if (widget.isGetReward) {
-      int gold = score > 9
+      int gold = score > 8 * _asks.length
           ? 15
-          : score > 7
+          : score > 7 * _asks.length
               ? 10
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 5
                   : 0;
       return gold;
     } else {
-      int gold = score > 9
+      int gold = score > 8 * _asks.length
           ? 100
-          : score > 7
+          : score > 7 * _asks.length
               ? 50
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 20
                   : 0;
       return gold;
@@ -166,20 +166,20 @@ class _MapListeningExaminationScreenState
 
   int _getDiamond(int score) {
     if (widget.isGetReward) {
-      int diamond = score > 9
+      int diamond = score > 8 * _asks.length
           ? 5
-          : score > 7
+          : score > 7 * _asks.length
               ? 2
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 1
                   : 0;
       return diamond;
     } else {
-      int diamond = score > 9
+      int diamond = score > 8 * _asks.length
           ? 15
-          : score > 7
+          : score > 7 * _asks.length
               ? 10
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 5
                   : 0;
       return diamond;
@@ -263,6 +263,11 @@ class _MapListeningExaminationScreenState
                 child: CustomButtomImageColorWidget(
                   onTap: () {
                     if (page == pages) {
+                      if (review) {
+                        int score = _checkScore();
+                        Navigator.of(context)..pop(score >= 5 * _asks.length);
+                        return;
+                      }
                       GlobalSetting.shared.showPopupWithContext(
                           context,
                           DialogConfirmWidget(
@@ -273,7 +278,7 @@ class _MapListeningExaminationScreenState
                               int score = _checkScore();
                               int gold = _getGold(score);
                               int diamond = _getDiamond(score);
-                              if (score > 5) {
+                              if (score > 5 * _asks.length) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
                                 // updateUsersReady();
@@ -287,14 +292,21 @@ class _MapListeningExaminationScreenState
 
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,
-                                  ontapContinue: () {
+                                  numberQuestion: _asks.length,
+                                  ontapReview: () {
                                 // Navigator.of(context)..pop()..pop(false);
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop();
+                                setState(() {
+                                  review = true;
+                                });
                               }, ontapExit: () {
                                 Navigator.of(context)
                                   ..pop()
                                   ..pop()
-                                  ..pop(score > 5);
-                              });
+                                  ..pop(score > 5 * _asks.length);
+                              }, showReivew: !review);
                             },
                             cancel: () {
                               Navigator.of(context).pop();
@@ -311,7 +323,11 @@ class _MapListeningExaminationScreenState
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? "Final" : "Next",
+                      text: page == pages
+                          ? review
+                              ? "Exit"
+                              : "Final"
+                          : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -447,21 +463,43 @@ class _MapListeningExaminationScreenState
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: Text(
         _ask.Question,
-        style: TextStyle(fontSize: 24,color: Colors.white),
+        style: TextStyle(fontSize: 24, color: Colors.white),
       ),
     );
   }
 
   Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: CustomButtomImageColorWidget(
-        redBlurColor: positions[page - 1] != i,
-        redColor: positions[page - 1] == i,
-        child:
-            Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
-        onTap: ontap,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: (!review)
+          ? CustomButtomImageColorWidget(
+              redBlurColor: positions[page - 1] != i,
+              redColor: positions[page - 1] == i,
+              child: Text(answer,
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
+              onTap: ontap,
+            )
+          : CustomButtomImageColorWidget(
+              redBlurColor: _asks[page - 1].Answer !=
+                  (i == 0
+                      ? "A"
+                      : i == 1
+                          ? "B"
+                          : i == 2
+                              ? "C"
+                              : "D"),
+              greenColor: _asks[page - 1].Answer ==
+                  (i == 0
+                      ? "A"
+                      : i == 1
+                          ? "B"
+                          : i == 2
+                              ? "C"
+                              : "D"),
+              child: Text(answer,
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
+              onTap: ontap,
+            ),
     );
   }
 
@@ -473,21 +511,24 @@ class _MapListeningExaminationScreenState
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: PopScope(
-          canPop: false,
+          canPop: true,
           child: Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   leading: IconTheme(
                     data: IconThemeData(size: 24.0), // Set the size here
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.grey,
+                      ),
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
                     ),
                   ),
                   actions: [
-                    Padding( 
+                    Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
                           onTap: () {
@@ -520,4 +561,3 @@ class _MapListeningExaminationScreenState
     );
   }
 }
-

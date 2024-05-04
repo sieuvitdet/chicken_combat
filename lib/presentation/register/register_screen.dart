@@ -47,16 +47,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFACA44),
-      body: Container(
-        width: AppSizes.maxWidth,
-        height: AppSizes.maxHeight,
-        child: Stack(
-          children: [
-            _buildBackground(),
-            _body(),
-          ],
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: Color(0xFFFACA44),
+        body: Container(
+          width: AppSizes.maxWidth,
+          height: AppSizes.maxHeight,
+          child: Stack(
+            children: [
+              _buildBackground(),
+              _body(),
+            ],
+          ),
         ),
       ),
     );
@@ -102,17 +105,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         if (_passwordController.text.trim().length > 0 &&
             _passwordController.text.trim().length < 4) {
-          _bloc.setErrorPassword("Mật khẩu từ 4 đến 6 ký tự");
+          _bloc.setErrorPassword("Password from 4 to 6 characters");
           check = false;
         }
         if (_rePasswordController.text.trim().length > 0 &&
             _rePasswordController.text.trim().length < 4) {
-          _bloc.setErrorRePassword("Mật khẩu từ 4 đến 6 ký tự");
+          _bloc.setErrorRePassword("Password from 4 to 6 characters");
           check = false;
         } else {
           if (_passwordController.text.trim() !=
               _rePasswordController.text.trim()) {
-            _bloc.setErrorRePassword("Mật khẩu không trùng khớp");
+            _bloc.setErrorRePassword("Passwords do not match");
             check = false;
           }
         }
@@ -196,9 +199,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               return CustomDialogWithTitleButtonWidget(
                 title: AppLocalizations.text(LangKey.registration_success),
                 ontap: () {
-                  print(_username);
-                  print(_password);
                   Navigator.of(context)
+                    ..pop()
                     ..pop()
                     ..pop([_username, _password]);
                 },

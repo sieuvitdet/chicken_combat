@@ -1,18 +1,9 @@
 import 'package:chicken_combat/common/config.dart';
 import 'package:chicken_combat/common/localization/localizations_config.dart';
 import 'package:chicken_combat/common/themes.dart';
-import 'package:chicken_combat/presentation/challenge/loading_2vs2_challenge_screen.dart';
-import 'package:chicken_combat/presentation/challenge/loading_challenge_screen.dart';
-import 'package:chicken_combat/presentation/challenge/room_wait_2v2_screen.dart';
-import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
-import 'package:chicken_combat/presentation/challenge/loading_ready_challenge_screen.dart';
-import 'package:chicken_combat/presentation/challenge/room_wait_screen.dart';
 import 'package:chicken_combat/presentation/flash/flash_screen.dart';
-import 'package:chicken_combat/presentation/test/test.dart';
 import 'package:chicken_combat/widgets/background_cloud_map2_widget.dart';
 import 'package:chicken_combat/widgets/custom_expanedable_draggable_fab_widget.dart';
-import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
-import 'package:chicken_combat/widgets/dialog_congratulation_level_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

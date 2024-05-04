@@ -103,7 +103,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: true,
       child: Scaffold(
         backgroundColor: Color(0xFFFACA44),
         body: Responsive(
