@@ -113,7 +113,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
       ],
     ) : Image(
       image: AssetImage(Assets.gif_boom),
-      height: AppSizes.maxHeight * 0.3,
+      height: AppSizes.maxHeight * 0.2,
     );
   }
 }
