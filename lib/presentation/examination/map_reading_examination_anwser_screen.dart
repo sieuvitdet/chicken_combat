@@ -8,6 +8,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -48,14 +49,16 @@ class _MapReadingExaminationAnswerScreenState
 
   CarouselController buttonCarouselController = CarouselController();
 
-  late AskExaminationModel _ask = AskExaminationModel(
+  late AskExaminationModel _ask = AskExaminationModel( 
       Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");
   List<AskExaminationModel> _asks = [];
   List<String> answers = [];
+  bool review = false;
 
   @override
   void initState() {
     super.initState();
+    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _asks = await _loadAsks();
@@ -123,7 +126,7 @@ class _MapReadingExaminationAnswerScreenState
     int score = 0;
     for (int i = 0; i < _asks.length; i++) {
       if (results[i] == _asks[i].Answer) {
-        score += 2;
+        score += 10;
       }
     }
     return score;
@@ -131,20 +134,20 @@ class _MapReadingExaminationAnswerScreenState
 
   int _getGold(int score) {
     if (widget.isGetReward) {
-      int gold = score > 9
+      int gold = score > 8 * _asks.length
           ? 15
-          : score > 7
+          : score > 7 * _asks.length
               ? 10
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 5
                   : 0;
       return gold;
     } else {
-      int gold = score > 9
+      int gold = score > 8 * _asks.length
           ? 100
-          : score > 7
+          : score > 7 * _asks.length
               ? 50
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 20
                   : 0;
       return gold;
@@ -153,20 +156,20 @@ class _MapReadingExaminationAnswerScreenState
 
   int _getDiamond(int score) {
     if (widget.isGetReward) {
-      int diamond = score > 9
+      int diamond = score > 8 * _asks.length
           ? 5
-          : score > 7
+          : score > 7 * _asks.length
               ? 2
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 1
                   : 0;
       return diamond;
     } else {
-      int diamond = score > 9
+      int diamond = score > 8 * _asks.length
           ? 15
-          : score > 7
+          : score > 7 * _asks.length
               ? 10
-              : score > 5
+              : score >= 5 * _asks.length
                   ? 5
                   : 0;
       return diamond;
@@ -248,6 +251,13 @@ class _MapReadingExaminationAnswerScreenState
                 child: CustomButtomImageColorWidget(
                   onTap: () {
                     if (page == pages) {
+                      if (review) {
+                        int score = _checkScore();
+                        Navigator.of(context)
+                                  ..pop(score >= 5*_asks.length);
+                                  return;
+
+                      }
                       GlobalSetting.shared.showPopupWithContext(
                           context,
                           DialogConfirmWidget(
@@ -258,9 +268,10 @@ class _MapReadingExaminationAnswerScreenState
                               int score = _checkScore();
                               int gold = _getGold(score);
                               int diamond = _getDiamond(score);
-                              if (score > 5) {
+                              if (score >= 5 * _asks.length) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
+                                // updateUsersReady();
                                 _updateGold(
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.gold ?? 0);
@@ -270,15 +281,19 @@ class _MapReadingExaminationAnswerScreenState
                               }
 
                               GlobalSetting.shared.showPopupCongratulation(
-                                  context, 1, score, gold, diamond,
-                                  ontapContinue: () {
+                                  context, 1, score, gold, diamond,numberQuestion:_asks.length,
+                                  ontapReview: () {
                                 // Navigator.of(context)..pop()..pop(false);
+                                Navigator.of(context)..pop()..pop();
+                                setState(() {
+                                  review = true;
+                                });
                               }, ontapExit: () {
                                 Navigator.of(context)
                                   ..pop()
                                   ..pop()
-                                  ..pop(score > 5);
-                              });
+                                  ..pop(score >= 5 * _asks.length);
+                              },showReivew: !review);
                             },
                             cancel: () {
                               Navigator.of(context).pop();
@@ -295,7 +310,7 @@ class _MapReadingExaminationAnswerScreenState
                   smallOrangeColor: true,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: page == pages ? "Final" : "Next",
+                      text:  page == pages ? review ? "Exit" : "Final" : "Next",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -382,17 +397,35 @@ class _MapReadingExaminationAnswerScreenState
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: Text(
         _ask.Question,
-        style: TextStyle(fontSize: 24),
+        style: TextStyle(fontSize: 16,color: Colors.white),
       ),
     );
   }
 
-  Widget _answer(String answer, int i, {Function? ontap}) {
+   Widget _answer(String answer, int i, {Function? ontap}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: CustomButtomImageColorWidget(
+      child: (!review) ? CustomButtomImageColorWidget(
         redBlurColor: positions[page - 1] != i,
         redColor: positions[page - 1] == i,
+        child:
+            Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
+        onTap: ontap,
+      ) : CustomButtomImageColorWidget(
+        redBlurColor: _asks[page-1].Answer != (i == 0
+            ? "A"
+            : i == 1
+                ? "B"
+                : i == 2
+                    ? "C"
+                    : "D"),
+        greenColor:_asks[page-1].Answer == (i == 0
+            ? "A"
+            : i == 1
+                ? "B"
+                : i == 2
+                    ? "C"
+                    : "D"),
         child:
             Text(answer, style: TextStyle(fontSize: 16, color: Colors.white)),
         onTap: ontap,

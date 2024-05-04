@@ -22,10 +22,10 @@ class AskExaminationModel {
       Question: json?['Question'] ?? '',
       Answer: json?['Answer'] ?? '',
       Script: json?['Script'] ?? '',
-      A: json?['A'] ?? '',
-      B: json?['B'] ?? '',
-      C: json?['C'] ?? '',
-      D: json?['D'] ?? '',
+      A: (json?['A'] is num) ? "${json?['A']}" : json?['A'] ?? '',
+      B: (json?['B'] is num) ? "${json?['B']}" : json?['B'] ?? '',
+      C: (json?['C'] is num) ? "${json?['C']}" : json?['C'] ?? '',
+      D: (json?['D'] is num) ? "${json?['D']}" : json?['D'] ?? '',
     );
   }
 

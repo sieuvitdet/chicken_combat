@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_username));
       check = false;
     } else if (_passwordController.text.trim() == "") {
-      _bloc.setErrorUserName(AppLocalizations.text(LangKey.enter_password));
+      _bloc.setErrorPassword(AppLocalizations.text(LangKey.enter_password));
       check = false;
     }
     return check;
@@ -234,24 +234,24 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             _inputForm(),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 16, top: 16),
-                child: ScalableButton(
-                  onTap: () {
-                    print("forget");
-                  },
-                  child: Text(
-                    AppLocalizations.text(LangKey.forget_password),
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                ),
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.centerLeft,
+            //   child: Padding(
+            //     padding: EdgeInsets.only(bottom: 16, top: 16),
+            //     child: ScalableButton(
+            //       onTap: () {
+            //         print("forget");
+            //       },
+            //       child: Text(
+            //         AppLocalizations.text(LangKey.forget_password),
+            //         style: TextStyle(
+            //             fontSize: 16,
+            //             fontWeight: FontWeight.bold,
+            //             color: Colors.black),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             _login(),
             _comeInNow()
           ],
@@ -308,48 +308,51 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
-        body: Center(
-          child: Container(
-            width: AppSizes.maxWidth,
-            height: AppSizes.maxHeight,
-            child: Stack(
-              children: [
-                _buildBackground(),
-                _body(),
-              ],
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          backgroundColor: Color(0xFFFACA44),
+          body: Center(
+            child: Container(
+              width: AppSizes.maxWidth,
+              height: AppSizes.maxHeight,
+              child: Stack(
+                children: [
+                  _buildBackground(),
+                  _body(),
+                ],
+              ),
             ),
           ),
-        ),
-        bottomNavigationBar: Container(
-          height: 80,
-          color: Color(0xFFFACA44),
-          child: Center(
-            child: InkWell(
-              onTap: () async {
-               List<String>? _result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => RegisterScreen(isGuest: false)));
-                    if (_result != null && _result.length > 1) {
-                      login(_result[0],_result[1]);
-                    }
-              },
-              child: RichText(
-                  text: TextSpan(
-                      text: "${AppLocalizations.text(LangKey.do_not_have_account)}?",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Itim",
-                          color: Colors.white),
-                      children: [
-                    TextSpan(
-                        text: "  " + AppLocalizations.text(LangKey.register),
+          bottomNavigationBar: Container(
+            height: 80,
+            color: Color(0xFFFACA44),
+            child: Center(
+              child: InkWell(
+                onTap: () async {
+                 List<String>? _result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => RegisterScreen(isGuest: false)));
+                      if (_result != null && _result.length > 1) {
+                        login(_result[0],_result[1]);
+                      }
+                },
+                child: RichText(
+                    text: TextSpan(
+                        text: "${AppLocalizations.text(LangKey.do_not_have_account)}?",
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFFE84C3D)))
-                  ])),
+                            fontFamily: "Itim",
+                            color: Colors.white),
+                        children: [
+                      TextSpan(
+                          text: "  " + AppLocalizations.text(LangKey.register),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFE84C3D)))
+                    ])),
+              ),
             ),
           ),
         ),

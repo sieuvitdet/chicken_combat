@@ -7,6 +7,8 @@ import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_speaking_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/speech_to_text_service.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -16,6 +18,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MapSpeakingLessonScreen extends StatefulWidget {
   final bool isGetReward;
@@ -24,12 +27,12 @@ class MapSpeakingLessonScreen extends StatefulWidget {
       {super.key, this.isGetReward = false, required this.level});
 
   @override
-  State<MapSpeakingLessonScreen> createState() => _MapSpeakingLessonScreenState();
+  State<MapSpeakingLessonScreen> createState() =>
+      _MapSpeakingLessonScreenState();
 }
 
-class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with WidgetsBindingObserver {
-
-
+class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
+    with WidgetsBindingObserver {
   List<String> parts = [];
   List<String> anwsers = [];
   var _isKeyboardVisible = false;
@@ -37,26 +40,41 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
   int pages = 0;
   bool isTextOverflow = false;
   bool isRecording = false;
+  final SpeechToTextService _sttService = SpeechToTextService();
+  bool isListening = false;
+  int scoreSpeaking = 0;
 
   CarouselController buttonCarouselController = CarouselController();
   ScrollController _controller = ScrollController();
 
-    List<AskSpeakingModel> _speakings = [];
-    late QuizSpeakingModel _ask = QuizSpeakingModel(question: "");
+  List<AskSpeakingModel> _speakings = [];
+  late QuizSpeakingModel _ask = QuizSpeakingModel(question: "");
 
   @override
   void initState() {
     super.initState();
+    _checkMicrophonePermission();
+    _sttService.init();
+    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     _speakings = await _loadAsks();
-     if (_speakings.length > 0) {
-      _ask = _speakings[0].quiz[0];
+      _speakings = await _loadAsks();
+      if (_speakings.length > 0) {
+        _ask = _speakings[0].quiz[0];
 
-      pages = _speakings[0].quiz.length;
-      setState(() {});
-     }
+        pages = _speakings[0].quiz.length;
+        setState(() {});
+      }
     });
+  }
+
+  Future<void> _checkMicrophonePermission() async {
+    PermissionStatus permissionStatus = await Permission.microphone.status;
+    if (permissionStatus.isDenied) {
+      await Permission.microphone.request();
+    } else if (permissionStatus.isPermanentlyDenied) {
+      openAppSettings();
+    }
   }
 
   @override
@@ -96,7 +114,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
     return selectedAsks;
   }
 
-    Future<List<AskSpeakingModel>> _getAsk() async {
+  Future<List<AskSpeakingModel>> _getAsk() async {
     List<AskSpeakingModel> readings = [];
     try {
       FirebaseDatabase database = FirebaseDatabase(
@@ -122,7 +140,6 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
     return readings;
   }
 
-
   @override
   void didChangeMetrics() {
     final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
@@ -135,33 +152,22 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
     super.didChangeMetrics();
   }
 
-   int _checkScore() {
-    // dựa vào speaking
-    int score = 0;
-    for (int i = 0; i < _speakings[0].quiz.length; i++) {
-      // if (results[i] == _asks[i].Answer) {
-      //   score += 2;
-      // }
-    }
-    return score;
-  }
-
   int _getGold(int score) {
     if (widget.isGetReward) {
-      int gold = score > 9
+      int gold = score > 8 * _speakings[0].quiz.length
           ? 15
-          : score > 7
+          : score > 7 * _speakings[0].quiz.length
               ? 10
-              : score > 5
+              : score >= 5 * _speakings[0].quiz.length
                   ? 5
                   : 0;
       return gold;
     } else {
-      int gold = score > 9
+      int gold = score > 8 * _speakings[0].quiz.length
           ? 100
-          : score > 7
+          : score > 7 * _speakings[0].quiz.length
               ? 50
-              : score > 5
+              : score >= 5 * _speakings[0].quiz.length
                   ? 20
                   : 0;
       return gold;
@@ -170,20 +176,20 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
 
   int _getDiamond(int score) {
     if (widget.isGetReward) {
-      int diamond = score > 9
+      int diamond = score > 8 * _speakings[0].quiz.length
           ? 5
-          : score > 7
+          : score > 7 * _speakings[0].quiz.length
               ? 2
-              : score > 5
+              : score >= 5 * _speakings[0].quiz.length
                   ? 1
                   : 0;
       return diamond;
     } else {
-      int diamond = score > 9
+      int diamond = score > 8 * _speakings[0].quiz.length
           ? 15
-          : score > 7
+          : score > 7 * _speakings[0].quiz.length
               ? 10
-              : score > 5
+              : score >= 5 * _speakings[0].quiz.length
                   ? 5
                   : 0;
       return diamond;
@@ -217,95 +223,96 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
       children: [
         _body(),
         _record(),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Flexible(
-                child: CustomButtomImageColorWidget(
-                  onTap: () {
-                    if (page == 1) {
-                      return;
-                    }
-                    page -= 1;
-                    _ask = _speakings[0].quiz[page - 1];
-                    setState(() {});
-                  },
-                  smallButton: true,
-                  smallOrangeColor: page > 1,
-                  smallGrayColor: page == 1,
-                  child: Center(
-                    child: StrokeTextWidget(
-                      text: "Previous",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
-                      colorStroke: Color(0xFFD18A5A),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 16,
-              ),
-              Flexible(
-                child: CustomButtomImageColorWidget(
-                  onTap: () {
-                    if (page == pages) {
-                      GlobalSetting.shared.showPopupWithContext(
-                          context,
-                          DialogConfirmWidget(
-                            title:
-                                AppLocalizations.text(LangKey.confirm_submit),
-                            agree: () async {
-                              // Navigator.of(context).pop();
-                              int score = _checkScore();
-                              int gold = _getGold(score);
-                              int diamond = _getDiamond(score);
-                              if (score > 5) {
-                                Globals.financeUser?.gold += gold;
-                                Globals.financeUser?.diamond += diamond;
-                                _updateGold(
-                                    Globals.currentUser?.financeId ?? "",
-                                    Globals.financeUser?.gold ?? 0);
-                                _updateDiamond(
-                                    Globals.currentUser?.financeId ?? "",
-                                    Globals.financeUser?.diamond ?? 0);
-                              }
+        Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 16),
+        //   child: Row(
+        //     children: [
+        //       Flexible(
+        //         child: CustomButtomImageColorWidget(
+        //           onTap: () {
+        //             if (page == 1) {
+        //               return;
+        //             }
+        //             page -= 1;
+        //             _ask = _speakings[0].quiz[page - 1];
+        //             setState(() {});
+        //           },
+        //           smallButton: true,
+        //           smallOrangeColor: page > 1,
+        //           smallGrayColor: page == 1,
+        //           child: Center(
+        //             child: StrokeTextWidget(
+        //               text: "Previous",
+        //               size: AppSizes.maxWidth < 350 ? 14 : 20,
+        //               colorStroke: Color(0xFFD18A5A),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         width: 16,
+        //       ),
+        //       Flexible(
+        //         child: CustomButtomImageColorWidget(
+        //           onTap: () {
+        //             if (page == pages) {
+        //               GlobalSetting.shared.showPopupWithContext(
+        //                   context,
+        //                   DialogConfirmWidget(
+        //                     title:
+        //                         AppLocalizations.text(LangKey.confirm_submit),
+        //                     agree: () async {
+        //                       // Navigator.of(context).pop();
+        //                       int score = _checkScore();
+        //                       int gold = _getGold(score);
+        //                       int diamond = _getDiamond(score);
+        //                       if (score > 5) {
+        //                         Globals.financeUser?.gold += gold;
+        //                         Globals.financeUser?.diamond += diamond;
+        //                         _updateGold(
+        //                             Globals.currentUser?.financeId ?? "",
+        //                             Globals.financeUser?.gold ?? 0);
+        //                         _updateDiamond(
+        //                             Globals.currentUser?.financeId ?? "",
+        //                             Globals.financeUser?.diamond ?? 0);
+        //                       }
 
-                              GlobalSetting.shared.showPopupCongratulation(
-                                  context, 1, score, gold, diamond,
-                                  ontapContinue: () {
-                                // Navigator.of(context)..pop()..pop(false);
-                              }, ontapExit: () {
-                                Navigator.of(context)
-                                  ..pop()
-                                  ..pop()
-                                  ..pop(score > 5);
-                              });
-                            },
-                            cancel: () {
-                              Navigator.of(context).pop();
-                            },
-                          ));
-                      return;
-                    }
-                    page += 1;
-                    _ask = _speakings[0].quiz[page - 1];
-                    setState(() {});
-                  },
-                  smallButton: true,
-                  smallOrangeColor: true,
-                  child: Center(
-                    child: StrokeTextWidget(
-                      text: page == pages ? "Final" : "Next",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
-                      colorStroke: Color(0xFFD18A5A),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
+        //                       GlobalSetting.shared.showPopupCongratulation(
+        //                           context, 1, score, gold, diamond,
+        //                           ontapContinue: () {
+        //                         // Navigator.of(context)..pop()..pop(false);
+        //                       }, ontapExit: () {
+        //                         Navigator.of(context)
+        //                           ..pop()
+        //                           ..pop()
+        //                           ..pop(score > 5);
+        //                       });
+        //                     },
+        //                     cancel: () {
+        //                       Navigator.of(context).pop();
+        //                     },
+        //                   ));
+        //               return;
+        //             }
+        //             page += 1;
+        //             _ask = _speakings[0].quiz[page - 1];
+        //             setState(() {});
+        //           },
+        //           smallButton: true,
+        //           smallOrangeColor: true,
+        //           child: Center(
+        //             child: StrokeTextWidget(
+        //               text: page == pages ? "Final" : "Next",
+        //               size: AppSizes.maxWidth < 350 ? 14 : 20,
+        //               colorStroke: Color(0xFFD18A5A),
+        //             ),
+        //           ),
+        //         ),
+        //       )
+        //     ],
+        //   ),
+        // ),
         Container(height: AppSizes.maxHeight * 0.03)
         // Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
         // Container(
@@ -393,15 +400,15 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
 
   Widget _itemReading() {
     return SingleChildScrollView(
-          controller: _controller,
-          child: Container(
-    margin: EdgeInsets.only(left: 16, right: 24),
-    child: Text(
-        _ask.question,
-        style: TextStyle(fontSize: 16,color: Colors.white),
+      controller: _controller,
+      child: Container(
+        margin: EdgeInsets.only(left: 16, right: 24),
+        child: Text(
+          _ask.question,
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
       ),
-          ),
-        );
+    );
   }
 
   Widget _record() {
@@ -412,20 +419,53 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
         children: [
           GestureDetector(
             onTap: () {
-              print("record");
               setState(() {
-                isRecording = !isRecording;
+                if (_ask.question.contains('score:')) {
+                  return;
+                }
+                isListening = !_sttService.isListening;
+              });
+              _sttService.toggleRecording(_ask.question, false, (result) {
+                setState(() {
+                  _ask.question = 'score: ${result}';
+                  scoreSpeaking += (int.tryParse(result) ?? 0);
+                  print(scoreSpeaking);
+                  if (page == pages) {
+                    int score = scoreSpeaking;
+                    int gold = _getGold(score);
+                    int diamond = _getDiamond(score);
+                    if (score >= 5 * _speakings.length) {
+                      Globals.financeUser?.gold += gold;
+                      Globals.financeUser?.diamond += diamond;
+                      _updateGold(Globals.currentUser?.financeId ?? "",
+                          Globals.financeUser?.gold ?? 0);
+                      _updateDiamond(Globals.currentUser?.financeId ?? "",
+                          Globals.financeUser?.diamond ?? 0);
+                    }
+
+                    GlobalSetting.shared.showPopupCongratulation(
+                        context, 1, score, gold, diamond,
+                        numberQuestion: pages, ontapReview: () {
+                      // Navigator.of(context)..pop()..pop(false);
+                    }, ontapExit: () {
+                      Navigator.of(context)
+                        ..pop()
+                        ..pop(score >= 5 * pages);
+                    });
+                    return;
+                  }
+                });
               });
             },
             child: Image.asset(
-              isRecording ? Assets.ic_mic_recording : Assets.ic_mic,
+              isListening ? Assets.ic_mic_recording : Assets.ic_mic,
               width: 48,
             ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
-              isRecording ? "Click to stop" : "Click to reply",
+              isListening ? "Click to stop" : "Click to reply",
               style: TextStyle(color: Colors.white),
             ),
           )
@@ -440,10 +480,16 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
       child: CustomButtomImageColorWidget(
         orangeColor: true,
         child:
-            Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
+            Text(page == pages ? "Final" : "Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
-          page += 1;
-          setState(() {});
+          {
+            if (isListening || page == pages) {
+              return;
+            }
+            page += 1;
+            _ask = _speakings[0].quiz[page - 1];
+            setState(() {});
+          }
         },
       ),
     );
@@ -462,7 +508,10 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
                 leading: IconTheme(
                   data: IconThemeData(size: 24.0), // Set the size here
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.grey,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -487,7 +536,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen> with 
                         child: Image.asset(Assets.ic_menu, height: 24)),
                   )
                 ],
-                title: Text("Level 1",
+                title: Text("Level ${widget.level}",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 28,

@@ -9,6 +9,7 @@ import 'package:chicken_combat/model/course/ask_speaking_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_reading_lesson_anwser_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -41,6 +42,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
   @override
   void initState() {
     super.initState();
+    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _asks = await _loadAsks();

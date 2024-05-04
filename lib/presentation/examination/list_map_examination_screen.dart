@@ -176,7 +176,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
           }
           switch (index) {
             case 0:
-              bool result = await Navigator.of(context).push(MaterialPageRoute(
+              var result = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Map1Screen(
                         type: widget.type,
                         isLesson: widget.isLesson,
@@ -211,7 +211,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: true,
       child: Scaffold(
         backgroundColor: Color(0xFFFACA44),
         body: Responsive(

@@ -7,19 +7,23 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:flutter/material.dart';
 
 class DialogCongratulationLevelWidget extends StatelessWidget {
-  final Function? ontapContinue;
+  final Function? ontapReview;
   final Function? ontapExit;
+  final Function? ontapContinue;
   final int score;
   final int gold;
   final int diamond;
   final int? level;
   final bool? showReview;
+  final bool? showContinue;
+  final int numberQuestion;
 
   DialogCongratulationLevelWidget(
-      {this.ontapContinue, this.ontapExit,required this.score,required this.gold, required this.diamond, this.level,this.showReview = false});
+      {this.ontapReview,this.ontapContinue ,this.ontapExit,required this.score,required this.gold, required this.diamond, this.level,this.showReview = false,this.showContinue = false, this.numberQuestion = 0});
 
   @override
   Widget build(BuildContext context) {
+    print(numberQuestion);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
@@ -91,14 +95,14 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
           children: [
             Transform.rotate(
           angle: -20 * 3.14 / 180,
-          child: score > 5 ? _starYellow() : _starWhite(),
+          child: score >= 5*numberQuestion ? _starYellow() : _starWhite(),
         ),
         SizedBox(height: 24,)
           ],
         ),
         Column(
           children: [
-             score > 7 ? _starYellow() : _starWhite(),
+             score >= 7*numberQuestion ? _starYellow() : _starWhite(),
             StrokeTextWidget(text: "${score.toDouble()}",size: AppSizes.maxWidth < 350 ? 30 : 40,colorStroke: Color(0xFF974026),)
           ],
         ),
@@ -106,7 +110,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
           children: [
             Transform.rotate(
           angle: 20 * 3.14 / 180,
-          child: score > 9 ? _starYellow() : _starWhite(),
+          child: score >= 9*numberQuestion ? _starYellow() : _starWhite(),
         ),
         SizedBox(height: 24,)
           ],
@@ -213,15 +217,39 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
 
   List<Widget> _listAction() {
     List<Widget> _list = [];
-    if (score > 5 || (showReview ?? false)) {
-      _list.add(_itemPlaygame());
+    if ((showReview ?? false)) {
+      _list.add(_itemReview());
     _list.add(SizedBox(width: AppSizes.maxWidth*0.116,));
+    }
+
+    if (showContinue ?? false) {
+      _list.add(_itemNext());
+      _list.add(SizedBox(width: AppSizes.maxWidth*0.116,));
     }
     _list.add(_itemExit());
     return _list;
   }
 
-  Widget _itemPlaygame() {
+  Widget _itemReview() {
+    return Column(
+      children: [
+        GestureDetector(
+            onTap: ontapReview as void Function()?,
+            child: Image.asset(
+              Assets.ic_playgame_popup,
+              width:  AppSizes.maxWidth*0.116,
+              fit: BoxFit.fill,
+            )),
+        Text(
+        //  AppLocalizations.text(LangKey.continuee),
+        "Review",
+          style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
+        )
+      ],
+    );
+  }
+
+  Widget _itemNext() {
     return Column(
       children: [
         GestureDetector(
@@ -233,7 +261,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
             )),
         Text(
         //  AppLocalizations.text(LangKey.continuee),
-        "Review",
+        "Continue",
           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],

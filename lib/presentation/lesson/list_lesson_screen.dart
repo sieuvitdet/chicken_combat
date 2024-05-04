@@ -103,7 +103,7 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: true,
       child: Scaffold(
         body: Responsive(
             mobile: Stack(

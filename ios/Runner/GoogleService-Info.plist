@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.chickenCombat.RunnerTests</string>
+	<string>chickencombat</string>
 	<key>PROJECT_ID</key>
 	<string>hocgiagacon</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:230523064998:ios:6c4d3814520a9c5355da67</string>
+	<string>1:230523064998:ios:4b51083c391cc64a55da67</string>
+	<key>DATABASE_URL</key>
+	<string>https://hocgiagacon-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

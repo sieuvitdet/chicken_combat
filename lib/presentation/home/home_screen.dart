@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _info() {
     return Container(
       margin: EdgeInsets.only(top: AppSizes.sizeAppBar / 2),
-      padding: EdgeInsets.symmetric(horizontal: 4.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

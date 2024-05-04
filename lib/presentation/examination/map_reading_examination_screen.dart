@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -34,6 +35,7 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
   @override
   void initState() {
     super.initState();
+    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     splitText(text);
   }
@@ -157,8 +159,6 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
         child:
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
-          // Navigator.of(context).push(MaterialPageRoute(
-          //             builder: (context) => MapReadingExaminationAnswerScreen()));
         },
       ),
     );
