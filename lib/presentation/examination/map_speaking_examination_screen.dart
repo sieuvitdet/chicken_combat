@@ -423,18 +423,17 @@ class _MapSpeakingExaminationScreenState
         children: [
           GestureDetector(
             onTap: () {
-              setState(() {
-                if (_ask.Script.contains('score:')) {
+              if (_ask.Script.contains('score:')) {
                   return;
                 }
+              setState(() {
                 isListening = !_sttService.isListening;
               });
-              
+
               _sttService.toggleRecording(_ask.Script, false, (result) {
                 setState(() {
                   _ask.Script = 'score: ${result}';
                   scoreSpeaking += (int.tryParse(result) ?? 0);
-                  print(scoreSpeaking);
                   if (page == pages) {
                     int score = scoreSpeaking;
                     int gold = _getGold(score);
@@ -483,11 +482,15 @@ class _MapSpeakingExaminationScreenState
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: true,
+        orangeColor: !isListening,
+        
         child:
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           {
+            if (isListening || page == pages) {
+              return;
+            }
             page += 1;
             _ask = _speakings[page - 1];
             setState(() {});

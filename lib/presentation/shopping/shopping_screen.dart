@@ -124,7 +124,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             int j = random.nextInt(100);
             if (j >= 50 && j <= 100) {
               type = "chicken_premium";
-              print("Nhận gà hiếm");
             }
           } else {
             type = "gold";
