@@ -8,6 +8,7 @@ class SpeechToTextService {
   stt.SpeechToText _speech = stt.SpeechToText();
   String lastWords = '';
   bool isListening = false;
+  List<RecognizedWord> recognizedWordsList = [];
 
   ChatGPTService _chatService = ChatGPTService();
 
@@ -16,6 +17,9 @@ class SpeechToTextService {
     if (!hasSpeech) {
       throw Exception('Speech recognition unavailable.');
     }
+  }
+  String recognizedWordsToString(List<RecognizedWord> recognizedWordsList) {
+    return recognizedWordsList.map((word) => word.words).join(' ');
   }
 
   void toggleRecording(String answer, bool isLesson,  Function(String) onResult) {
@@ -40,6 +44,11 @@ class SpeechToTextService {
         }
         lastWords = Globals.alternates;
 
+        // print(result.alternates);
+        // if (result.alternates.isNotEmpty) {
+        //   recognizedWordsList = result.alternates.map((word) => RecognizedWord.fromJson(word.toJson())).toList();
+        // }
+        // lastWords = recognizedWordsToString(recognizedWordsList);
         // if (result.recognizedWords.isNotEmpty) {
         //   lastWords = result.recognizedWords;
         // }
@@ -47,5 +56,26 @@ class SpeechToTextService {
       );
       isListening = true;
     }
+  }
+}
+
+class RecognizedWord {
+  String words;
+  double confidence;
+
+  RecognizedWord({required this.words, required this.confidence});
+
+  factory RecognizedWord.fromJson(Map<String, dynamic> json) {
+    return RecognizedWord(
+      words: json['words'],
+      confidence: json['confidence'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'words': words,
+      'confidence': confidence,
+    };
   }
 }

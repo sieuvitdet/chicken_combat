@@ -46,13 +46,13 @@ class ChatGPTService {
         'Authorization': 'Bearer $_apiKey'
       },
       body: jsonEncode({
-        'model': 'gpt-3.5-turbo',
+        'model': 'gpt-4',
         'messages': [
           {'role': 'user', 'content': isLesson ? promptLesson : prompt}
         ]
       }),
     );
-    print(response);
+    print(" ===> Response: $response");
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
