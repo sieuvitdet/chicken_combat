@@ -2,7 +2,6 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/maps/course_map_model.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
-import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/presentation/lesson/list_map_lesson_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
@@ -55,10 +54,10 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image(
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.fill,
           image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
-          width: AppSizes.maxWidth * 0.3,
-          height: AppSizes.maxHeight * 0.18,
+          width: AppSizes.maxWidth * 0.2,
+          height: AppSizes.maxHeight * 0.15,
         ),
         ..._listMap()
       ],

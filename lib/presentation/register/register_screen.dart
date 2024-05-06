@@ -16,6 +16,7 @@ import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.da
 import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RegisterScreen extends StatefulWidget {
   bool isGuest;
@@ -338,7 +339,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _bloc.setUserName(false),
                         },
                         require: false,
-                        limitInput: 10,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(20),
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                        ],
                         textInputAction: TextInputAction.next,
                         error: snapshot.data,
                         onChanged: (event) {
@@ -374,6 +378,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       suffixIconColor: AppColors.grey15,
                       error: snapshot1.data,
                       obscureText: snapshot.data,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                      ],
                       // require: false,
                       onSuffixIconTap: () => _bloc.setPassword(!snapshot.data!),
                       onChanged: (event) {

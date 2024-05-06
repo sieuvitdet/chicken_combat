@@ -157,7 +157,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
                   smallGrayColor: page == 1,
                   child: Center(
                     child: StrokeTextWidget(
-                      text: "Previous",
+                      text: "Back",
                       size: AppSizes.maxWidth < 350 ? 14 : 20,
                       colorStroke: Color(0xFFD18A5A),
                     ),
@@ -348,8 +348,8 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
         ),
         Image.asset(
           ExtendedAssets.getAssetByCodeColor(_content.idImage),
-          width: AppSizes.maxWidth * 0.3,
-          height: AppSizes.maxWidth * 0.3,
+          width: AppSizes.maxWidth * 0.6,
+          height: AppSizes.maxWidth * 0.6,
           fit: BoxFit.fill,
         )
       ],

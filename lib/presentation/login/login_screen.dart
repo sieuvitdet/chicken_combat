@@ -16,6 +16,7 @@ import 'package:chicken_combat/widgets/custom_textfield_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -132,8 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           _bloc.setUserName(false),
                         },
                         require: false,
-                        limitInput: 10,
-                        maxLength: 20,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(20),
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                        ],
                         textInputAction: TextInputAction.next,
                         error: snapshot.data,
                         onChanged: (event) {
@@ -170,6 +173,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       error: snapshot1.data,
                       obscureText: snapshot.data,
                       maxLength: 6,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                      ],
                       // require: false,
                       onSuffixIconTap: () => _bloc.setPassword(!snapshot.data!),
                       onChanged: (event) {

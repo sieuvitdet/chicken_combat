@@ -165,7 +165,7 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
                           Container(
                             width: AppSizes.maxWidth * 0.16,
                             child: Text(
-                              _currentInfo(true)!.username,
+                              _currentInfo(true)?.username ?? "",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.white,

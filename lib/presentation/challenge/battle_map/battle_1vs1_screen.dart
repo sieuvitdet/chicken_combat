@@ -447,12 +447,20 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                             showPopupWin(isWin: false);
                           } else {
                             _currentEnemyBlood -= 2;
+                            if (_currentEnemyBlood == 0) {
+                              _isShowPopup = true;
+                              showPopupWin(isWin: false);
+                            }
                           }
                           if (_currentMyBlood == 0) {
                             _isShowPopup = true;
                             showPopupWin(isWin: false);
                           } else {
                             _currentMyBlood -= 2;
+                            if (_currentMyBlood == 0) {
+                              _isShowPopup = true;
+                              showPopupWin(isWin: false);
+                            }
                           }
                           setState(() {});
                         },
