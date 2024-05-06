@@ -1,5 +1,7 @@
 import 'package:chicken_combat/data/open_api/chat_gpt_service.dart';
+import 'package:chicken_combat/utils/utils.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SpeechToTextService {
@@ -30,11 +32,23 @@ class SpeechToTextService {
       });
     } else {
       _speech.listen(onResult: (result) {
-        print(result.alternates);
-        if (result.alternates.isNotEmpty) {
-          recognizedWordsList = result.alternates.map((word) => RecognizedWord.fromJson(word.toJson())).toList();
+       Globals.alternates == "";
+        if (result.alternates.length > 0) {
+          result.alternates.forEach((element) {
+             if (Globals.alternates == "") {
+            Globals.alternates = element.recognizedWords;
+          } else {
+            Globals.alternates += "/${element.recognizedWords}";
+          }
+           });
         }
-        lastWords = recognizedWordsToString(recognizedWordsList);
+        lastWords = Globals.alternates;
+
+        // print(result.alternates);
+        // if (result.alternates.isNotEmpty) {
+        //   recognizedWordsList = result.alternates.map((word) => RecognizedWord.fromJson(word.toJson())).toList();
+        // }
+        // lastWords = recognizedWordsToString(recognizedWordsList);
         // if (result.recognizedWords.isNotEmpty) {
         //   lastWords = result.recognizedWords;
         // }

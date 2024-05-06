@@ -142,6 +142,7 @@ class Globals {
   static FinanceModel? financeUser;
   static List<MapModel> mapsModel = [];
   static List<StoreModel> listStore = [];
+  static String alternates = "";
 }
 
 class CustomNavigator {

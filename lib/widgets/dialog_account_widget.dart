@@ -128,11 +128,18 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                           Container(height: AppSizes.maxHeight * 0.02),
                           CustomButtomImageColorWidget(
                             onTap: () {
-                              Navigator.of(context, rootNavigator: true)
+                                GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Are you sure you want to logout",agree: () async {
+                                 Navigator.of(context).pop();
+                                  Navigator.of(context, rootNavigator: true)
                                   .popUntil((route) => route.isFirst);
                               Navigator.of(context, rootNavigator: true)
                                   .pushReplacement(
                                       CustomRoute(page: LoginScreen()));
+                                },
+                                cancel: () {
+                                  Navigator.of(context).pop();
+
+                                },));
                             },
                             orangeColor: true,
                             child: Center(
@@ -158,7 +165,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                         onTap: () {
                           AudioManager.playSoundEffect(AudioFile.sound_tap);
                           if (Globals.currentUser!.username != _userNameController.text) {
-                            GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Bạn có chắc chắn muốn đổi tên!",
+                            GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Are you sure you want to change your name?",
                             agree: () {
                               Navigator.of(context).pop();
                               _updateUserName(Globals.currentUser!.id, _userNameController.text);

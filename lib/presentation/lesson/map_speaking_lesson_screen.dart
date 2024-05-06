@@ -419,10 +419,10 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
         children: [
           GestureDetector(
             onTap: () {
-              setState(() {
-                if (_ask.question.contains('score:')) {
+              if (_ask.question.contains('score:')) {
                   return;
                 }
+              setState(() {
                 isListening = !_sttService.isListening;
               });
               _sttService.toggleRecording(_ask.question, false, (result) {
@@ -478,7 +478,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
-        orangeColor: true,
+        orangeColor: !isListening,
         child:
             Text(page == pages ? "Final" : "Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
