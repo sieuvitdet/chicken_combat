@@ -123,7 +123,9 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
                             text: content,
                             size: AppSizes.maxWidth < 350 ? 16 : 20,
                             colorStroke: Colors.red[900]),
-                        SizedBox(height: AppSizes.maxHeight * 0.02),
+                        // SizedBox(height: AppSizes.maxHeight * 0.02),
+                        Spacer(),
+
                         _buildButton()
                       ],
                     ),
