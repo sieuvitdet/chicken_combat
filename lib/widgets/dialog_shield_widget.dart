@@ -81,7 +81,7 @@ class _DialogShieldWigetState extends State<DialogShieldWiget> {
                             Assets.img_halo,
                             width: AppSizes.maxWidth,
                             height: AppSizes.maxHeight * 0.5,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                           ),
                         ),
                         Column(

@@ -14,6 +14,7 @@ class StoreModel {
   String type;
   String id;
   String? asset;
+  String? desc;
 
   StoreModel(
       {required this.id,
@@ -21,6 +22,7 @@ class StoreModel {
       required this.cast,
       required this.key,
       required this.type,
+      this.desc,
       this.asset});
 
   factory StoreModel.fromSnapshot(DocumentSnapshot snapshot) {
@@ -31,6 +33,7 @@ class StoreModel {
         cast: data?['cast'] ?? '',
         key: data?['key'] ?? '',
         type: data?['type'] ?? '',
+        desc: data?['desc'] ?? '',
         asset: ExtendedAssets.getAssetByCode(snapshot.id));
   }
 }

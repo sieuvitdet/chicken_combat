@@ -92,7 +92,7 @@ class _MapReadingLessonAnwserScreenState
 
   int _getGold(int score) {
     if (widget.isGetReward) {
-      int gold = score > 8 * _asks.length
+      int gold = score > 9 * _asks.length
           ? 15
           : score > 7 * _asks.length
               ? 10
@@ -101,7 +101,7 @@ class _MapReadingLessonAnwserScreenState
                   : 0;
       return gold;
     } else {
-      int gold = score > 8 * _asks.length
+      int gold = score > 9 * _asks.length
           ? 100
           : score > 7 * _asks.length
               ? 50
@@ -114,7 +114,7 @@ class _MapReadingLessonAnwserScreenState
 
   int _getDiamond(int score) {
     if (widget.isGetReward) {
-      int diamond = score > 8 * _asks.length
+      int diamond = score > 9 * _asks.length
           ? 5
           : score > 7 * _asks.length
               ? 2
@@ -123,7 +123,7 @@ class _MapReadingLessonAnwserScreenState
                   : 0;
       return diamond;
     } else {
-      int diamond = score > 8 * _asks.length
+      int diamond = score > 9 * _asks.length
           ? 15
           : score > 7 * _asks.length
               ? 10

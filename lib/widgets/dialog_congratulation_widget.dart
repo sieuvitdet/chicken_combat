@@ -8,9 +8,13 @@ class DialogCongratulationWidget extends StatelessWidget {
   final Function? ontapContinue;
   final Function? ontapExit;
   final bool isWin;
+  final int? coin;
+  final int? diamond;
+  final bool? showContinue;
+  final bool? isLesson;
 
   DialogCongratulationWidget(
-      {this.ontapContinue, this.ontapExit, this.isWin = false});
+      {this.ontapContinue, this.ontapExit, this.isWin = false,this.coin,this.diamond,this.showContinue = false,this.isLesson = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +42,14 @@ class DialogCongratulationWidget extends StatelessWidget {
                   Container(
                     height: AppSizes.maxHeight * 0.223,
                   ),
-                  Center(
+                  (isLesson ?? false) ? Center(
                     child: Text(
-                      isWin ? "Victory" : "Closer",
+                      isWin ? "Pass" : "Fail",
+                      style: TextStyle(fontSize: 40, color: Colors.white),
+                    ),
+                  ) : Center(
+                    child: Text(
+                      isWin ? "Victory" : "Lose",
                       style: TextStyle(fontSize: 40, color: Colors.white),
                     ),
                   ),
@@ -51,6 +60,7 @@ class DialogCongratulationWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         _gif(),
+                        Spacer(),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: _listAction())
@@ -73,7 +83,7 @@ class DialogCongratulationWidget extends StatelessWidget {
     return Container(
       height: AppSizes.maxHeight * 0.0725,
       margin: EdgeInsets.symmetric(
-          horizontal: AppSizes.maxHeight * 0.0386, vertical: AppSizes.maxHeight * 0.0178),
+          horizontal: AppSizes.maxHeight * 0.0386, vertical: AppSizes.maxHeight * 0.03),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         color: Color(0xFFB96747),
@@ -119,7 +129,7 @@ class DialogCongratulationWidget extends StatelessWidget {
             left: AppSizes.maxWidth * 0.019,
           ),
           child: Text(
-            "100",
+            "${coin ?? 0}",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
@@ -141,7 +151,7 @@ class DialogCongratulationWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: AppSizes.maxWidth * 0.019),
           child: Text(
-            "100",
+            "${diamond ?? 0}",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: AppSizes.maxWidth < 350 ? 10 : 14),
@@ -153,10 +163,12 @@ class DialogCongratulationWidget extends StatelessWidget {
 
   List<Widget> _listAction() {
     List<Widget> _list = [];
-    _list.add(_itemPlaygame());
+    if (showContinue ?? false) {
+      _list.add(_itemPlaygame());
     _list.add(Container(
       width: AppSizes.maxWidth * 0.05,
     ));
+    }
     _list.add(_itemExit());
     return _list;
   }

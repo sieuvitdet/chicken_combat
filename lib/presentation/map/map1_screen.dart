@@ -480,9 +480,9 @@ class _Map1ScreenState extends State<Map1Screen>
 
   Path drawPath() {
     Path path = Path();
-    double bottomChicken = AppSizes.maxHeight < 800
-        ? AppSizes.maxHeight * 0.15
-        : AppSizes.maxHeight * 0.125;
+    double bottomChicken = AppSizes.maxHeight < 850
+        ? AppSizes.maxHeight * 0.14
+        : AppSizes.maxHeight * 0.12;
     heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
     double bottom =
         heightContent - bottomChicken - AppSizes.maxHeight * multiple;

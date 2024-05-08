@@ -29,7 +29,7 @@ class Map2Screen extends StatefulWidget {
 }
 
 class _Map2ScreenState extends State<Map2Screen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   ScrollController _scrollController = ScrollController(keepScrollOffset: true);
   bool enableScroll = true;
   final random = Random();
@@ -47,11 +47,15 @@ class _Map2ScreenState extends State<Map2Screen>
   double heightContent = 0.0;
   double multiple = 0.138;
 
+   late AnimationController _controller1;
+  late Animation<Offset> _animation1;
+
   @override
   void initState() {
     super.initState();
 
     _configUI();
+    _configMapShake() ;
     _configChickenDance();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
@@ -62,7 +66,7 @@ class _Map2ScreenState extends State<Map2Screen>
   void _configUI() {
     currentPadding = _listPadding[0];
     nextPadding = _listPadding[1];
-    heightContent = AppSizes.maxHeight * multiple * (numberMountain + 2);
+    heightContent = AppSizes.maxHeight * multiple * (numberMountain + 3);
     location = widget.location;
   }
 
@@ -87,6 +91,22 @@ class _Map2ScreenState extends State<Map2Screen>
       }
     });
     _path = drawPath();
+  }
+
+  void _configMapShake() {
+    _controller1 = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..repeat(reverse: true);
+    _animation1 = Tween<Offset>(
+      begin: Offset(0, -0.05),
+      end: Offset(0, 0.05),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller1,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   _triggerCongratulation(String type) {
@@ -226,11 +246,21 @@ class _Map2ScreenState extends State<Map2Screen>
                 transform: (location - 1) % 2 == 0
                     ? Matrix4.rotationY(0)
                     : Matrix4.rotationY(pi),
-                child: Image.asset(
-                  ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor),
-                  fit: BoxFit.contain,
-                  width: AppSizes.maxWidth * 0.18,
-                  height: AppSizes.maxHeight * 0.08,
+                child: AnimatedBuilder(
+                  animation: _animation1,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: _animation1.value *
+                          200, // Adjust the curve radius here
+                      child: child,
+                    );
+                  },
+                  child: Image.asset(
+                    ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor),
+                    fit: BoxFit.contain,
+                    width: AppSizes.maxWidth * 0.18,
+                    height: AppSizes.maxHeight * 0.08,
+                  ),
                 ),
               ),
             ),
@@ -266,127 +296,135 @@ class _Map2ScreenState extends State<Map2Screen>
 
   Widget _item(int i, double bottom) {
     return Positioned(
-        bottom: i * AppSizes.maxHeight * multiple + bottom,
-        child: Group_Mountain_Green(
-          heightMountain: AppSizes.maxHeight * 0.15,
-          isLeft: i % 2 == 0,
-          horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
-          count: i + 1,
-          onTap: () async {
-            if ((i + 1) > location) {
-              return;
-            }
-            var result = null;
-            if (!widget.isLesson) {
-              if (widget.type != "" && widget.type == FirebaseEnum.reading) {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapReadingExaminationAnswerScreen(
-                          isGetReward: i < location,
-                          level: location,
-                        )));
-              } else if (widget.type != "" &&
-                  widget.type == FirebaseEnum.listening) {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapListeningExaminationScreen(
-                          isGetReward: i < location,
-                          level: location,
-                        )));
-              } else if (widget.type != "" &&
-                  widget.type == FirebaseEnum.speaking) {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapSpeakingExaminationScreen(
-                        isGetReward: i < location, level: location)));
-              }
-            } else {
-              if (widget.type != "" && widget.type == FirebaseEnum.reading) {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapReadingLessonScreen(
-                          isGetReward: i < location,
-                          level: location,
-                        )));
-              } else if (widget.type != "" &&
-                  widget.type == FirebaseEnum.listening) {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapListeningLessonScreen(
-                        isGetReward: i < location, level: location)));
-              } else if (widget.type != "" &&
-                  widget.type == FirebaseEnum.speaking) {
-                result = await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MapSpeakingLessonScreen(
-                        isGetReward: i < location, level: location)));
-              }
-            }
-            if (result != null && result == true && (i + 1) == location) {
-              print(
-                  Globals.currentUser!.checkingMapModel.readingCourses.length);
-              if (widget.type == FirebaseEnum.listening && !widget.isLesson) {
-                if (location == numberMountain &&
-                    !(Globals.currentUser!.checkingMapModel.listeningCourses
-                        .first.isComplete)) {
-                  _triggerCongratulation(widget.type!);
-                }
-                updateUsersReady(location, FirebaseEnum.listening);
-              } else if (widget.type == FirebaseEnum.reading &&
-                  !widget.isLesson) {
-                if (location == numberMountain &&
-                    !(Globals.currentUser!.checkingMapModel.readingCourses.first
-                        .isComplete)) {
-                  _triggerCongratulation(widget.type!);
-                }
-                updateUsersReady(location, FirebaseEnum.reading);
-              } else if (widget.type == FirebaseEnum.speaking &&
-                  !widget.isLesson) {
-                if (location == numberMountain &&
-                    !(Globals.currentUser!.checkingMapModel.speakingCourses
-                        .first.isComplete)) {
-                  _triggerCongratulation(widget.type!);
-                }
-                updateUsersReady(location, FirebaseEnum.speaking);
-              } else if (widget.type == FirebaseEnum.listening &&
-                  widget.isLesson) {
-                if (location == numberMountain &&
-                    !(Globals.currentUser!.courseMapModel.listeningCourses.first
-                        .isComplete)) {
-                  _triggerCongratulation(widget.type!);
-                }
-                updateUsersReady(location, FirebaseEnum.listening);
-              } else if (widget.type == FirebaseEnum.reading &&
-                  widget.isLesson) {
-                if (location == numberMountain &&
-                    !(Globals.currentUser!.courseMapModel.readingCourses.first
-                        .isComplete)) {
-                  _triggerCongratulation(widget.type!);
-                }
-                updateUsersReady(location, FirebaseEnum.reading);
-              } else if (widget.type == FirebaseEnum.speaking &&
-                  widget.isLesson) {
-                if (location == numberMountain &&
-                    !(Globals.currentUser!.courseMapModel.speakingCourses.first
-                        .isComplete)) {
-                  _triggerCongratulation(widget.type!);
-                }
-                updateUsersReady(location, FirebaseEnum.speaking);
-              }
-
-              if ((i + 1) < numberMountain) {
-                currentPadding = _listPadding[i + 1];
-                nextPadding =
-                    i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
-                _scrollToTop(maxScroll -
-                    (location * (distance + 60) * AppSizes.maxHeight / 896));
-                _controller.forward();
-              }
-            }
+        bottom: AppSizes.maxHeight > 850 ? (i * AppSizes.maxHeight * multiple + bottom*1.1) : (i * AppSizes.maxHeight * multiple + bottom ),
+        child: AnimatedBuilder(
+          animation: _animation1,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: _animation1.value * 200, // Adjust the curve radius here
+              child: child,
+            );
           },
-          isStorehouse: i == 5,
-          isTruck: i == 5,
-          isTreeLeft: i == 4,
-          isTreeRight: i == 2 || i == 3,
-          isSmallTruck: i == 4,
-          isCloud: i == 4,
-          isBush: i == 1 || i == 2 || i == 4 || i == 5,
-          isStart: i == 0,
-          isFarmerWaterTheTree: i == 3,
+          child: Group_Mountain_Green(
+            heightMountain: AppSizes.maxHeight * 0.15,
+            isLeft: i % 2 == 0,
+            horizontal: _listPadding[i] * AppSizes.maxWidth / 414,
+            count: i + 1,
+            onTap: () async {
+              if ((i + 1) > location) {
+                return;
+              }
+              var result = null;
+              if (!widget.isLesson) {
+                if (widget.type != "" && widget.type == FirebaseEnum.reading) {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapReadingExaminationAnswerScreen(
+                            isGetReward: i < location,
+                            level: location,
+                          )));
+                } else if (widget.type != "" &&
+                    widget.type == FirebaseEnum.listening) {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapListeningExaminationScreen(
+                            isGetReward: i < location,
+                            level: location,
+                          )));
+                } else if (widget.type != "" &&
+                    widget.type == FirebaseEnum.speaking) {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapSpeakingExaminationScreen(
+                          isGetReward: i < location, level: location)));
+                }
+              } else {
+                if (widget.type != "" && widget.type == FirebaseEnum.reading) {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapReadingLessonScreen(
+                            isGetReward: i < location,
+                            level: location,
+                          )));
+                } else if (widget.type != "" &&
+                    widget.type == FirebaseEnum.listening) {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapListeningLessonScreen(
+                          isGetReward: i < location, level: location)));
+                } else if (widget.type != "" &&
+                    widget.type == FirebaseEnum.speaking) {
+                  result = await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapSpeakingLessonScreen(
+                          isGetReward: i < location, level: location)));
+                }
+              }
+              if (result != null && result == true && (i + 1) == location) {
+                print(location);
+                if (widget.type == FirebaseEnum.listening && !widget.isLesson) {
+                  if (location == numberMountain &&
+                      !(Globals.currentUser!.checkingMapModel.listeningCourses
+                          [1].isComplete)) {
+                    _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location, FirebaseEnum.listening);
+                } else if (widget.type == FirebaseEnum.reading &&
+                    !widget.isLesson) {
+                  if (location == numberMountain &&
+                      !(Globals.currentUser!.checkingMapModel.readingCourses[1]
+                          .isComplete)) {
+                    _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location, FirebaseEnum.reading);
+                } else if (widget.type == FirebaseEnum.speaking &&
+                    !widget.isLesson) {
+                  if (location == numberMountain &&
+                      !(Globals.currentUser!.checkingMapModel.speakingCourses
+                          [1].isComplete)) {
+                    _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location, FirebaseEnum.speaking);
+                } else if (widget.type == FirebaseEnum.listening &&
+                    widget.isLesson) {
+                  if (location == numberMountain &&
+                      !(Globals.currentUser!.courseMapModel.listeningCourses[1]
+                          .isComplete)) {
+                    _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location, FirebaseEnum.listening);
+                } else if (widget.type == FirebaseEnum.reading &&
+                    widget.isLesson) {
+                  if (location == numberMountain &&
+                      !(Globals.currentUser!.courseMapModel.readingCourses[1]
+                          .isComplete)) {
+                    _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location, FirebaseEnum.reading);
+                } else if (widget.type == FirebaseEnum.speaking &&
+                    widget.isLesson) {
+                  if (location == numberMountain &&
+                      !(Globals.currentUser!.courseMapModel.speakingCourses[1]
+                          .isComplete)) {
+                    _triggerCongratulation(widget.type!);
+                  }
+                  updateUsersReady(location, FirebaseEnum.speaking);
+                }
+          
+                if ((i + 1) < numberMountain) {
+                  currentPadding = _listPadding[i + 1];
+                  nextPadding =
+                      i > (numberMountain - 2) ? 0.0 : _listPadding[i + 2];
+                  _scrollToTop(maxScroll -
+                      (location * (distance + 60) * AppSizes.maxHeight / 896));
+                  _controller.forward();
+                }
+              }
+            },
+            isStorehouse: i == 5,
+            isTruck: i == 5,
+            isTreeLeft: i == 4,
+            isTreeRight: i == 2 || i == 3,
+            isSmallTruck: i == 4,
+            isCloud: i == 4,
+            isBush: i == 1 || i == 2 || i == 4 || i == 5,
+            isStart: i == 0,
+            isFarmerWaterTheTree: i == 3,
+          ),
         ));
   }
 
