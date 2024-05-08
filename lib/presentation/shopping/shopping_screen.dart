@@ -13,6 +13,7 @@ import 'package:chicken_combat/utils/notification_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
+import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/dialog_random_gift_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,7 +90,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-  Future<void> _updateUseSkinColor(String _idUser,String type) async {
+  Future<void> _updateUseSkinColor(String _idUser, String type) async {
     CollectionReference _user =
         FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
 
@@ -280,7 +281,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   Widget _listTabSelected() {
     return Positioned(
-        top:AppSizes.maxHeight > 850 ? -AppSizes.maxHeight * 0.07 : -AppSizes.maxHeight * 0.075,
+        top: AppSizes.maxHeight > 850
+            ? -AppSizes.maxHeight * 0.07
+            : -AppSizes.maxHeight * 0.075,
         right: 0,
         left: 0,
         child: Row(
@@ -376,13 +379,32 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               children: [
                 Expanded(
                     flex: 5,
-                    child: Center(
-                        child: Image.asset(
-                      model.asset!,
-                      fit: BoxFit.contain,
-                      height: AppSizes.maxHeight * 0.07,
-                      width: (AppSizes.maxWidth * 0.6) / 3,
-                    ))),
+                    child: ScalableButton(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context,
+                                    void Function(void Function()) setState) {
+                                  return CustomDialogWithTitleButtonWidget(
+                                    title: model.desc == "" ? "I'm chicken" : model.desc!,
+                                    ontap: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                },
+                              );
+                            });
+                      },
+                      child: Center(
+                          child: Image.asset(
+                        model.asset!,
+                        fit: BoxFit.contain,
+                        height: AppSizes.maxHeight * 0.07,
+                        width: (AppSizes.maxWidth * 0.6) / 3,
+                      )),
+                    )),
                 Expanded(
                     flex: 4,
                     child: (Globals.currentUser?.bags.contains(model.id)) ??
@@ -399,7 +421,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                 Globals.currentUser?.useColor = model.id;
                                 Globals.currentUser?.useSkin = "";
                               }
-                              _updateUseSkinColor(Globals.currentUser!.id,type);
+                              _updateUseSkinColor(
+                                  Globals.currentUser!.id, type);
                             },
                             child: Stack(
                               alignment: Alignment.center,
@@ -412,9 +435,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                       ? Assets.img_bg_item_used
                                       : Assets.img_bg_money_shop,
                                   height: AppSizes.maxHeight * 0.03,
-                                  width: (Globals.currentUser?.useColor == model.id ||
+                                  width: (Globals.currentUser?.useColor ==
+                                              model.id ||
                                           Globals.currentUser?.useSkin ==
-                                              model.id) ? (AppSizes.maxWidth * 0.7) / 3 : (AppSizes.maxWidth * 0.55) / 3,
+                                              model.id)
+                                      ? (AppSizes.maxWidth * 0.7) / 3
+                                      : (AppSizes.maxWidth * 0.55) / 3,
                                   fit: BoxFit.contain,
                                 )),
                                 Center(
@@ -422,14 +448,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                                     text: tab == 1 || tab == 2
                                         ? Globals.currentUser?.useColor ==
                                                 model.id
-                                            ? AppLocalizations.text(LangKey.used)
+                                            ? AppLocalizations.text(
+                                                LangKey.used)
                                             : AppLocalizations.text(LangKey.use)
                                         : Globals.currentUser?.useSkin ==
                                                 model.id
-                                            ? AppLocalizations.text(LangKey.used)
-                                            : AppLocalizations.text(LangKey.use),
+                                            ? AppLocalizations.text(
+                                                LangKey.used)
+                                            : AppLocalizations.text(
+                                                LangKey.use),
                                     size: 12,
-                                    colorStroke:  tab == 1 || tab == 2
+                                    colorStroke: tab == 1 || tab == 2
                                         ? Globals.currentUser?.useColor ==
                                                 model.id
                                             ? Colors.grey
@@ -445,7 +474,19 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           )
                         : ScalableButton(
                             onTap: () {
+
+                              GlobalSetting.shared.showPopupWithContext(
+                          context,
+                          DialogConfirmWidget(
+                            title: "Are you sure you want to buy this item?",
+                            agree: () async {
+                               Navigator.of(context).pop();
                               _buyItem(model);
+                            },
+                            cancel: () {
+                              Navigator.of(context).pop();
+                            },
+                          ));
                             },
                             child: Stack(
                               alignment: Alignment.center,
@@ -557,7 +598,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   Widget _coin() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
-      height: AppSizes.maxHeight*0.045,
+      height: AppSizes.maxHeight * 0.045,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -571,7 +612,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   Widget _dimond() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
-      height: AppSizes.maxHeight*0.045,
+      height: AppSizes.maxHeight * 0.045,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -584,9 +625,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   Widget _number(String number) {
     return Container(
-      height: AppSizes.maxHeight*0.027,
-      width: AppSizes.maxWidth*0.17,
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+      height: AppSizes.maxHeight * 0.03,
+      width: AppSizes.maxWidth * 0.17,
+      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
       decoration: BoxDecoration(
           color: Color(0xFFD13F06), borderRadius: BorderRadius.circular(8.0)),
       child: Container(
@@ -595,7 +636,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             color: Color(0xFFB94416), borderRadius: BorderRadius.circular(8.0)),
         alignment: Alignment.center,
         child: Text("$number",
-            style: TextStyle(fontSize: 12, color: Colors.white)),
+            style: TextStyle(fontSize: 10, color: Colors.white)),
       ),
     );
   }
@@ -608,8 +649,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Assets.img_coin_border_white,
         fit: BoxFit.fill,
       ),
-      width: AppSizes.maxWidth*0.077,
-      height: AppSizes.maxWidth*0.077,
+      width: AppSizes.maxWidth * 0.077,
+      height: AppSizes.maxWidth * 0.077,
     );
   }
 
@@ -621,8 +662,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Assets.img_diamond_border_white,
         fit: BoxFit.fill,
       ),
-      width: AppSizes.maxWidth*0.077,
-      height: AppSizes.maxWidth*0.077,
+      width: AppSizes.maxWidth * 0.077,
+      height: AppSizes.maxWidth * 0.077,
     );
   }
 
@@ -640,7 +681,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               ],
             )),
         width: AppSizes.maxWidth * 0.9,
-        height: AppSizes.maxHeight * 0.65,
+        height: AppSizes.maxHeight > 850
+            ? AppSizes.maxHeight * 0.65
+            : AppSizes.maxHeight * 0.7,
         child: Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
@@ -682,19 +725,19 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   },
                   child: Image.asset(
                     Assets.ic_close_popup,
-                    height: AppSizes.maxHeight*0.05,
-                    width: AppSizes.maxWidth*0.116,
+                    height: AppSizes.maxHeight * 0.05,
+                    width: AppSizes.maxWidth * 0.116,
                     fit: BoxFit.contain,
                   ),
                 )),
             Positioned(
-                bottom: AppSizes.maxHeight*0.65,
+                bottom: AppSizes.maxHeight * 0.65,
                 child: StrokeTextWidget(
                   text: AppLocalizations.text(LangKey.shop),
                   size: 32,
                 )),
             Positioned(
-                bottom: 0,
+                bottom: AppSizes.maxHeight > 850 ? 0 : 8,
                 child: Row(
                   children: [_coin(), _dimond()],
                 ))

@@ -93,7 +93,7 @@ class _MapListeningLessonAnwserScreenState
 
   int _getGold(int score) {
     if (widget.isGetReward) {
-      int gold = score > 8 * _quizs.length
+      int gold = score > 9 * _quizs.length
           ? 15
           : score > 7 * _quizs.length
               ? 10
@@ -102,7 +102,7 @@ class _MapListeningLessonAnwserScreenState
                   : 0;
       return gold;
     } else {
-      int gold = score > 8 * _quizs.length
+      int gold = score > 9 * _quizs.length
           ? 100
           : score > 7 * _quizs.length
               ? 50
@@ -115,7 +115,7 @@ class _MapListeningLessonAnwserScreenState
 
   int _getDiamond(int score) {
     if (widget.isGetReward) {
-      int diamond = score > 8 * _quizs.length
+      int diamond = score > 9 * _quizs.length
           ? 5
           : score > 7 * _quizs.length
               ? 2
@@ -124,7 +124,7 @@ class _MapListeningLessonAnwserScreenState
                   : 0;
       return diamond;
     } else {
-      int diamond = score > 8 * _quizs.length
+      int diamond = score > 9 * _quizs.length
           ? 15
           : score > 7 * _quizs.length
               ? 10
@@ -227,7 +227,7 @@ class _MapListeningLessonAnwserScreenState
                               int score = _checkScore();
                               int gold = _getGold(score);
                               int diamond = _getDiamond(score);
-                              if (score > 5 * pages) {
+                              if (score >= 5 * pages) {
                                 Globals.financeUser?.gold += gold;
                                 Globals.financeUser?.diamond += diamond;
                                 _updateGold(
@@ -248,13 +248,14 @@ class _MapListeningLessonAnwserScreenState
                                 setState(() {
                                   review = true;
                                   page = 1;
+                                 _quiz = _quizs[page - 1];
                                 });
                               }, ontapExit: () {
                                 Navigator.of(context)
                                   ..pop()
                                   ..pop()
                                   ..pop()
-                                  ..pop(score > 5 * pages);
+                                  ..pop(score >= 5 * pages);
                               }, showReivew: !review);
                             },
                             cancel: () {
@@ -482,18 +483,19 @@ class _MapListeningLessonAnwserScreenState
           child: Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,
-                  leading: IconTheme(
-                    data: IconThemeData(size: 24.0), // Set the size here
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
+                  leading: Container(),
+                  // leading: IconTheme(
+                  //   data: IconThemeData(size: 24.0), // Set the size here
+                  //   child: IconButton(
+                  //     icon: Icon(
+                  //       Icons.arrow_back_ios,
+                  //       color: Colors.grey,
+                  //     ),
+                  //     onPressed: () {
+                  //       Navigator.of(context).pop();
+                  //     },
+                  //   ),
+                  // ),
                   actions: [
                     Padding(
                       padding: EdgeInsets.only(right: 16),

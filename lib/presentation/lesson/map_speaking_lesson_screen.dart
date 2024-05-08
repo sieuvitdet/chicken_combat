@@ -10,6 +10,9 @@ import 'package:chicken_combat/utils/speech_to_text_service.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
+import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
+import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -214,6 +217,45 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
         .catchError((error) => print("Failed to update user: $error"));
   }
 
+  void showPopupWin({bool isWin = false}) {
+    int score = scoreSpeaking;
+    int gold = _getGold(score);
+    int diamond = _getDiamond(score);
+    if (score >= 5 * _speakings.length) {
+      Globals.financeUser?.gold += gold;
+      Globals.financeUser?.diamond += diamond;
+      _updateGold(
+          Globals.currentUser?.financeId ?? "", Globals.financeUser?.gold ?? 0);
+      _updateDiamond(Globals.currentUser?.financeId ?? "",
+          Globals.financeUser?.diamond ?? 0);
+    }
+
+    isWin
+        ? AudioManager.playSoundEffect(AudioFile.sound_victory)
+        : AudioManager.playSoundEffect(AudioFile.sound_lose);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return DialogCongratulationWidget(
+                isWin: isWin,
+                showContinue: false,
+                isLesson: true,
+                diamond: diamond,
+                coin:gold,
+                ontapExit: () {
+                  Navigator.of(context)
+                    ..pop()
+                    ..pop(scoreSpeaking >= 5 * pages);
+                },
+              );
+            },
+          );
+        });
+  }
+
   Widget _buildContent() {
     return Column(
       children: [
@@ -416,8 +458,8 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
           GestureDetector(
             onTap: () {
               if (_ask.question.contains('score:')) {
-                  return;
-                }
+                return;
+              }
               setState(() {
                 isListening = !_sttService.isListening;
               });
@@ -427,27 +469,28 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
                   scoreSpeaking += (int.tryParse(result) ?? 0);
                   print(scoreSpeaking);
                   if (page == pages) {
-                    int score = scoreSpeaking;
-                    int gold = _getGold(score);
-                    int diamond = _getDiamond(score);
-                    if (score >= 5 * _speakings.length) {
-                      Globals.financeUser?.gold += gold;
-                      Globals.financeUser?.diamond += diamond;
-                      _updateGold(Globals.currentUser?.financeId ?? "",
-                          Globals.financeUser?.gold ?? 0);
-                      _updateDiamond(Globals.currentUser?.financeId ?? "",
-                          Globals.financeUser?.diamond ?? 0);
-                    }
+                    showPopupWin(isWin: scoreSpeaking >= 5 * _speakings.length);
+                    // int score = scoreSpeaking;
+                    // int gold = _getGold(score);
+                    // int diamond = _getDiamond(score);
+                    // if (score >= 5 * _speakings.length) {
+                    //   Globals.financeUser?.gold += gold;
+                    //   Globals.financeUser?.diamond += diamond;
+                    //   _updateGold(Globals.currentUser?.financeId ?? "",
+                    //       Globals.financeUser?.gold ?? 0);
+                    //   _updateDiamond(Globals.currentUser?.financeId ?? "",
+                    //       Globals.financeUser?.diamond ?? 0);
+                    // }
 
-                    GlobalSetting.shared.showPopupCongratulation(
-                        context, 1, score, gold, diamond,
-                        numberQuestion: pages, ontapReview: () {
-                      // Navigator.of(context)..pop()..pop(false);
-                    }, ontapExit: () {
-                      Navigator.of(context)
-                        ..pop()
-                        ..pop(score >= 5 * pages);
-                    });
+                    // GlobalSetting.shared.showPopupCongratulation(
+                    //     context, 1, score, gold, diamond,
+                    //     numberQuestion: pages, ontapReview: () {
+                    //   // Navigator.of(context)..pop()..pop(false);
+                    // }, ontapExit: () {
+                    //   Navigator.of(context)
+                    //     ..pop()
+                    //     ..pop(score >= 5 * pages);
+                    // });
                     return;
                   }
                 });
@@ -475,8 +518,8 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
         orangeColor: !isListening,
-        child:
-            Text(page == pages ? "Final" : "Next", style: TextStyle(fontSize: 24, color: Colors.white)),
+        child: Text(page == pages ? "Final" : "Next",
+            style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
           {
             if (isListening || page == pages) {

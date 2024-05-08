@@ -54,7 +54,7 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image(
-          fit: BoxFit.fill,
+          fit: BoxFit.contain,
           image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
           width: AppSizes.maxWidth * 0.2,
           height: AppSizes.maxHeight * 0.15,
