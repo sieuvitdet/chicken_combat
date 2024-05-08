@@ -568,7 +568,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     );
   }
 
-  Widget _dimond() {
+  Widget _diamond() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
       height: AppSizes.maxHeight*0.045,
@@ -696,7 +696,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             Positioned(
                 bottom: 0,
                 child: Row(
-                  children: [_coin(), _dimond()],
+                  children: [_coin(), _diamond()],
                 ))
           ],
         ),
