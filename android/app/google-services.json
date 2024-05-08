@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230523064998",
+    "project_id": "hocgiagacon",
+    "storage_bucket": "hocgiagacon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230523064998:android:3dc7d4c6eb4cce5a55da67",
+        "android_client_info": {
+          "package_name": "com.example.chicken_combat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRXOJwNtna3EKFtDSFEBYasVBhaPri0oo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1" 
+}
