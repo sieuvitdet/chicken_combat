@@ -6,7 +6,6 @@ import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
 import 'package:chicken_combat/utils/utils.dart';

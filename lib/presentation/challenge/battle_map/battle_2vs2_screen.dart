@@ -7,7 +7,7 @@ import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/battle/room_v2_model.dart';
 import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/store_model.dart';
+import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
@@ -56,7 +56,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
   double _topWaterShot = 0.0, maxWidthTomato = 0.0;
 
   bool? isEnemyWin, waterShotLeftToRight;
-  bool _isTomato = false, _startDelayed = false, _isOutRoom = false, _showQuestion = false, _isClick = false, _isShowPopup = false;
+  bool _isTomato = false, _isOutRoom = false, _showQuestion = false, _isClick = false, _isShowPopup = false;
 
   RoomV2Model? _room;
 
@@ -487,6 +487,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
                       showPopupWin(isWin: false);
                     } else {
                       _currentMyBlood -= 2;
+                      if (_currentMyBlood == 0) {
+                        _isShowPopup = true;
+                        showPopupWin(isWin: false);
+                      }
                     }
                     setState(() {});
                   },
@@ -897,6 +901,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
           .collection(FirebaseEnum.roomV2)
           .doc(roomId)
           .delete();
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.battlestatus)
+          .doc(_room!.status)
+          .delete();
       Navigator.of(context)
         ..pop()
         ..pop()
@@ -909,7 +917,10 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     }
   }
 
-  void showPopupWin({bool isWin = false}) {
+  Future<void> showPopupWin({bool isWin = false}) async {
+    AudioManager.pauseBackgroundMusic();
+    AudioManager.playSoundEffect(AudioFile.sound_victory);
+    await checkAndUpdateScore(isWin);
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -930,6 +941,84 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
             },
           );
         });
+  }
+
+  Future<void> checkAndUpdateScore(bool isWin) async {
+    List<RankingModel> _rankingScore = [];
+    int number1 = 0;
+    int number2 = 0;
+    CollectionReference score =
+    FirebaseFirestore.instance.collection(FirebaseEnum.score);
+    await score.get().then((QuerySnapshot querySnapshot) async {
+      querySnapshot.docs.forEach((doc) {
+        RankingModel model = RankingModel.fromSnapshot(doc);
+        _rankingScore.add(model);
+      });
+      if (_rankingScore.isNotEmpty) {
+        RankingModel _currentScore = _rankingScore
+            .firstWhere((ranking) => ranking.id == getCurrentUserInfo()?.score);
+        RankingModel _currentTeamScore = _rankingScore
+            .firstWhere((ranking) => ranking.id == getCurrentTeamUserInfo()?.score);
+
+        RankingModel _other1 = _rankingScore
+            .firstWhere((ranking) => ranking.id == getListOtherUserNotTeamInfo()?[0].score);
+        RankingModel _other2 = _rankingScore
+            .firstWhere((ranking) => ranking.id == getListOtherUserNotTeamInfo()?[1].score);
+
+        int _currentTeam = _currentScore.PK22 > _currentTeamScore.PK22 ? _currentScore.PK22 : _currentTeamScore.PK22;
+        int _otherTeam = _other1.PK22 > _other2.PK22 ? _other1.PK22 : _other2.PK22;
+
+
+        if (isWin == true) {
+          if (_currentTeam > _otherTeam) {
+            number1 = (_currentScore.PK22 + ( ( _currentTeam - _otherTeam ) ~/ 8 ) );
+            number2 = (_currentTeamScore.PK22 + ( ( _currentTeam - _otherTeam ) ~/ 8 ) );
+          } else if (_currentTeam == _otherTeam) {
+            number1 = (_currentScore.PK22 +  ( ( _currentScore.PK11  ~/ 10 ) ~/ 2) );
+            number2 = (_currentTeamScore.PK22 +  ( ( _currentScore.PK11  ~/ 10 ) ~/ 2) );
+          } else {
+            number1 = (_currentScore.PK22 +  ( ( _otherTeam - _currentTeam ) ~/ 2) );
+            number2 = (_currentTeamScore.PK22 +  ( ( _otherTeam - _currentTeam ) ~/ 2) );
+          }
+        } else {
+          if (_currentScore.PK22 > 0 &&  _currentTeamScore.PK22  > 0) {
+            if (_currentTeam > _otherTeam) {
+              number1 = (_currentScore.PK22 - ( ( _currentTeam - _otherTeam ) ~/ 8 ) );
+              number2 = (_currentTeamScore.PK22 - ( ( _currentTeam - _otherTeam ) ~/ 8 ) );
+            } else if (_currentTeam == _otherTeam) {
+              number1 = (_currentScore.PK22 -  ( ( _currentScore.PK11  ~/ 10 ) ~/ 2) );
+              number2 = (_currentTeamScore.PK22 - ( ( _currentScore.PK11  ~/ 10 ) ~/ 2) );
+            } else {
+              number1 = (_currentScore.PK22 -  ( ( _otherTeam - _currentTeam ) ~/ 2) );
+              number2 = (_currentTeamScore.PK22 -  ( ( _otherTeam - _currentTeam ) ~/ 2) );
+            }
+          } else {
+            if (_currentScore.PK22 == 0) {
+              number1 = _currentScore.PK22;
+            }
+            if (_currentTeamScore.PK22 == 0) {
+              number2 = _currentTeamScore.PK22;
+            }
+          }
+        }
+        await updateScore(number1, number2);
+      }
+    });
+  }
+
+  Future<void> updateScore(int score1, int score2) async {
+    CollectionReference _score =
+    FirebaseFirestore.instance.collection(FirebaseEnum.score);
+    _score
+        .doc(getCurrentTeamUserInfo()?.score)
+        .update({'PK22' : score2})
+        .then((value) => print("Score Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+    _score
+        .doc(getCurrentTeamUserInfo()?.score)
+        .update({'PK22' : score1})
+        .then((value) => print("Score Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Widget _answer(int i, {Function? onTap}) {

@@ -110,6 +110,7 @@ class RoomV2Model {
             userId: element.userId,
             username: element.username,
             usecolor: element.usecolor,
+            score: element.score,
             team: element.team,
             ready: true,
           );
@@ -131,16 +132,18 @@ class UserInfoRoomV2 {
   String userId;
   String username;
   String usecolor;
+  String score;
   int team;
   bool ready;
 
-  UserInfoRoomV2({required this.userId, required this.username, required this.usecolor, required this.team, required this.ready});
+  UserInfoRoomV2({required this.userId, required this.username, required this.usecolor,required this.score, required this.team, required this.ready});
 
   static UserInfoRoomV2 fromMap(Map<String, dynamic> map) {
     return UserInfoRoomV2(
       userId: map['userid'] as String,
       username: map['username'] as String,
       usecolor: map['usecolor'] as String,
+      score: map['score'] as String,
       team: map['team'] as int,
       ready: map['ready'] as bool,
     );
@@ -151,6 +154,7 @@ class UserInfoRoomV2 {
       'userid': userId,
       'username': username,
       'usecolor': usecolor,
+      'score': score,
       'team': team,
       'ready': ready,
     };

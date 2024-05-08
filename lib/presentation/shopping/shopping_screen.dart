@@ -9,6 +9,7 @@ import 'package:chicken_combat/model/finance_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/notification_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_dialog_with_title_button_widget.dart';
@@ -84,7 +85,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     return _user
         .doc(_idUser)
         .update({'bag': bags})
-        .then((value) => print("User Updated"))
+        .then((value) => NotificationManager.showNotification('Store', 'You have buy success, Thanks!'))
         .catchError((error) => print("Failed to update user: $error"));
   }
 
@@ -95,7 +96,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     return _user
         .doc(_idUser)
         .update({type:type == 'useColor' ? Globals.currentUser?.useColor ?? "" : Globals.currentUser?.useSkin ?? ""})
-        .then((value) => print("User Updated"))
+        .then((value) => NotificationManager.showNotification('Store', 'You update skin success, Thanks!'))
         .catchError((error) => print("Failed to update user: $error"));
   }
 

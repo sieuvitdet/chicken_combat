@@ -5,7 +5,6 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/presentation/challenge/room_wait_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
@@ -15,8 +14,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
-import 'battle_map/battle_1vs1_screen.dart';
 
 class LoadingChallegenScreen extends StatefulWidget {
   const LoadingChallegenScreen({super.key});
@@ -38,7 +35,6 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
 
   String _loadingText = 'Matching';
 
-  List<AskExaminationModel> _asks = [];
 
   void initState() {
     super.initState();
@@ -118,8 +114,9 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
           username: Globals.currentUser!.username,
           usecolor: Globals.currentUser!.useSkin != ""
               ? Globals.currentUser!.useSkin
-              : Globals.currentUser!
-                  .useColor, ready: false));
+              : Globals.currentUser!.useColor,
+          score: Globals.currentUser!.score,
+          ready: false));
     }
     String battleId = await createBattleStatus();
     List<AskExaminationModel> asks = await _loadAsks();
@@ -158,7 +155,9 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
             username: Globals.currentUser!.username,
             usecolor: Globals.currentUser!.useSkin != ""
                 ? Globals.currentUser!.useSkin
-                : Globals.currentUser!.useColor, ready: false));
+                : Globals.currentUser!.useColor,
+            score: Globals.currentUser!.score,
+            ready: false));
         await emptyRoom.updateUsers();
       }
       return RoomCheckResult(room: emptyRoom, isNew: false);

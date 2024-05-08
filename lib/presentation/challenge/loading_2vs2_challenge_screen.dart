@@ -6,9 +6,7 @@ import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/battle/room_v2_model.dart';
 import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/presentation/challenge/loading_meeting_challenge_screen.dart';
 import 'package:chicken_combat/presentation/challenge/room_wait_2v2_screen.dart';
-import 'package:chicken_combat/presentation/challenge/room_wait_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
@@ -17,8 +15,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
-import 'battle_map/battle_1vs1_screen.dart';
 
 class Loading2V2ChallegenScreen extends StatefulWidget {
   const Loading2V2ChallegenScreen({super.key});
@@ -122,6 +118,7 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
               ? Globals.currentUser!.useSkin
               : Globals.currentUser!
               .useColor,
+          score: Globals.currentUser!.score,
           ready: false,
           team: 1));
       // initialUsers.add(UserInfoRoomV2(
@@ -179,6 +176,7 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
             userId: Globals.currentUser!.id,
             username: Globals.currentUser!.username,
             usecolor: Globals.currentUser!.useSkin != "" ? Globals.currentUser!.useSkin : Globals.currentUser!.useColor,
+            score: Globals.currentUser!.score,
             ready: false,
             team: teamAssignment));
         await emptyRoom.updateUsers();

@@ -7,7 +7,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/store_model.dart';
+import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
 import 'package:chicken_combat/utils/utils.dart';
@@ -59,8 +59,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
 
   RoomModel? _room;
 
-  late AskExaminationModel _ask;
-  List<AskExaminationModel> _asks = [];
   List<String> answers = [];
   int isSelected = -1;
   int? result;
@@ -137,6 +135,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
       await FirebaseFirestore.instance
           .collection(FirebaseEnum.room)
           .doc(roomId)
+          .delete();
+      await FirebaseFirestore.instance
+          .collection(FirebaseEnum.battlestatus)
+          .doc(_room!.status)
           .delete();
       Navigator.of(context)
         ..pop()
@@ -447,10 +449,6 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                             showPopupWin(isWin: false);
                           } else {
                             _currentEnemyBlood -= 2;
-                            if (_currentEnemyBlood == 0) {
-                              _isShowPopup = true;
-                              showPopupWin(isWin: false);
-                            }
                           }
                           if (_currentMyBlood == 0) {
                             _isShowPopup = true;
@@ -751,9 +749,10 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return itemList;
   }
 
-  void showPopupWin({bool isWin = false}) {
+  Future<void> showPopupWin({bool isWin = false}) async {
     AudioManager.pauseBackgroundMusic();
     AudioManager.playSoundEffect(AudioFile.sound_victory);
+    await checkAndUpdateScore(isWin);
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -768,12 +767,66 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                   } else {
                     updateUserRoomById(widget.room!);
                   }
-                  AudioManager.stopBackgroundMusic();
                 },
               );
             },
           );
         });
+  }
+
+  Future<void> checkAndUpdateScore(bool isWin) async {
+    List<RankingModel> _rankingScore = [];
+    int number = 0;
+    CollectionReference score =
+    FirebaseFirestore.instance.collection(FirebaseEnum.score);
+    await score.get().then((QuerySnapshot querySnapshot) async {
+      querySnapshot.docs.forEach((doc) {
+        RankingModel model = RankingModel.fromSnapshot(doc);
+        _rankingScore.add(model);
+      });
+      if (_rankingScore.isNotEmpty) {
+        RankingModel _currentScore = _rankingScore
+            .firstWhere((ranking) => ranking.id == _currentInfo(true)?.score);
+        RankingModel _emptyScore = _rankingScore
+            .firstWhere((ranking) => ranking.id != _currentInfo(true)?.score);
+
+        if (isWin == true) {
+          if (_currentScore.PK11 > _emptyScore.PK11) {
+              number = (_currentScore.PK11 + ( ( _currentScore.PK11 - _emptyScore.PK11 ) ~/ 8 ) );
+          } else if (_currentScore.PK11 == _emptyScore.PK11) {
+              number = (_currentScore.PK11 +  ( ( _currentScore.PK11  ~/ 10 ) ~/ 2) );
+          } else {
+              number = (_currentScore.PK11 +  ( ( _emptyScore.PK11 - _currentScore.PK11 ) ~/ 2) );
+          }
+        } else {
+          if (_currentScore.PK11 > 0) {
+            if (_currentScore.PK11 > _emptyScore.PK11) {
+              number = (_currentScore.PK11 -
+                  ((_currentScore.PK11 - _emptyScore.PK11) ~/ 8));
+            } else if (_currentScore.PK11 == _emptyScore.PK11) {
+              number = (_currentScore.PK11 - ((_currentScore.PK11 ~/ 10) ~/ 2));
+            } else {
+              number = (_currentScore.PK11 -
+                  ((_emptyScore.PK11 - _currentScore.PK11) ~/ 2));
+            }
+          } else {
+            number = _currentScore.PK11;
+          }
+        }
+        await updateScore(number);
+      }
+    });
+  }
+
+  Future<void> updateScore(int score) async {
+    CollectionReference _score =
+    FirebaseFirestore.instance.collection(FirebaseEnum.score);
+
+    return _score
+        .doc( _currentInfo(true)?.score)
+        .update({'PK11' : score})
+        .then((value) => print("Score Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   Widget _answer(int i, {Function? onTap}) {

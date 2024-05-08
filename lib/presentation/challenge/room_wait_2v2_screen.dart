@@ -6,7 +6,6 @@ import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_v2_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/presentation/challenge/battle_map/battle_2vs2_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/countdown_timer.dart';
@@ -42,7 +41,7 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
   }
 
   void setupData() {
-    _listenRoom(widget.room.id ?? '');
+    _listenRoom(widget.room.id);
   }
 
   UserInfoRoomV2? getCurrentUserInfo() {

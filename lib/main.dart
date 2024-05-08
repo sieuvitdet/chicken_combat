@@ -2,18 +2,28 @@ import 'package:chicken_combat/common/config.dart';
 import 'package:chicken_combat/common/localization/localizations_config.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/presentation/flash/flash_screen.dart';
+import 'package:chicken_combat/utils/notification_manager.dart';
 import 'package:chicken_combat/widgets/background_cloud_map2_widget.dart';
 import 'package:chicken_combat/widgets/custom_expanedable_draggable_fab_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationManager.init();
   await Config.getPreferences();
+  await configureLocalTimeZone();
   runApp(const MyApp());
+}
+
+Future<void> configureLocalTimeZone() async {
+  tz.initializeTimeZones();
+  var locationName = 'Asia/Ho_Chi_Minh'; // Đặt múi giờ phù hợp tại đây
+  tz.setLocalLocation(tz.getLocation(locationName));
 }
 
 class MyApp extends StatelessWidget {

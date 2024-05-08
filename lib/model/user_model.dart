@@ -1,4 +1,3 @@
-import 'package:chicken_combat/model/ranking/ranking_model.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

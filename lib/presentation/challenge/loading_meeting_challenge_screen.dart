@@ -5,7 +5,6 @@ import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/battle/room_model.dart';
 import 'package:chicken_combat/presentation/challenge/battle_map/battle_1vs1_screen.dart';
-import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/widgets/animation/loading_animation.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';

@@ -52,6 +52,7 @@ class AudioManager {
         contentType: AndroidContentType.sonification,
         usageType: AndroidUsageType.assistanceSonification,
         audioFocus: AndroidAudioFocus.gain,
+
       ),
     );
     AudioPlayer.global.setGlobalAudioContext(audioContext);

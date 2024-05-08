@@ -8,6 +8,7 @@ import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
 import 'package:chicken_combat/presentation/register/register_screen.dart';
 import 'package:chicken_combat/utils/generate_hash.dart';
+import 'package:chicken_combat/utils/notification_manager.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -293,7 +294,9 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
             child: Text(AppLocalizations.text(LangKey.come_in_now),
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: () {}
+        onTap: () {
+          NotificationManager.showNotification("Notifycation", "Hé lô");
+        }
           // showDialog(
           //     context: context,
           //     builder: (BuildContext context) {

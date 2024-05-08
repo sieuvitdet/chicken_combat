@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
-import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/presentation/examination/map_listening_examination_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_reading_examination_anwser_screen.dart';
 import 'package:chicken_combat/presentation/examination/map_speaking_examination_screen.dart';

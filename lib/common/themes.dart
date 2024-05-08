@@ -475,28 +475,16 @@ class AppBoxShadow {
 
 extension MoneyFormat on double {
   String getMoneyFormat() {
-    if (this == null) {
-      return "0 VND";
-    } else {
-      return AppFormat.moneyFormat.format(this) + " VND";
+    return AppFormat.moneyFormat.format(this) + " VND";
     }
-  }
 
   String getMoneyFormatWithoutVND() {
-    if (this == null) {
-      return "0";
-    } else {
-      return AppFormat.moneyFormat.format(this);
+    return AppFormat.moneyFormat.format(this);
     }
-  }
 
   String getNumberFormat() {
-    if (this == null) {
-      return "0";
-    } else {
-      return AppFormat.moneyFormat.format(this) + "";
+    return AppFormat.moneyFormat.format(this) + "";
     }
-  }
 }
 
 class RadiantGradientMask extends StatelessWidget {
