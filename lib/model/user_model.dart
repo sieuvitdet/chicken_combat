@@ -14,6 +14,7 @@ class UserModel {
    String useColor;
    String useSkin;
    String score;
+   bool isGuest;
    // RankingModel score;
    List<dynamic> bag;
    List<dynamic> courseMaps;
@@ -32,6 +33,7 @@ class UserModel {
     required this.useColor,
     required this.useSkin,
     required this.score,
+    required this.isGuest,
     required this.bag,
     required this.courseMaps,
     required this.checkingMaps,
@@ -51,6 +53,7 @@ class UserModel {
       useColor: data?['useColor'] ?? '',
       useSkin: data?['useSkin'] ?? '',
       score: data?['score'] ?? '',
+      isGuest: data?['isGuest'] ?? false,
       bag: data?['bag'] ?? [],
       courseMaps: data?['courseMaps'] ?? [],
       checkingMaps: data?['checkingMaps'] ?? [],

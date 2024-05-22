@@ -3,6 +3,7 @@ import 'package:chicken_combat/common/langkey.dart';
 import 'package:chicken_combat/common/localization/app_localization.dart';
 import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
+import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/login/login_bloc.dart';
@@ -94,10 +95,10 @@ class _LoginScreenState extends State<LoginScreen> {
            Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen()));
         } else {
-          _bloc.setErrorLogin("Tên đăng nhập hoặc mật khẩu không đúng.");
+          _bloc.setErrorLogin("Username or password is incorrect.");
         }
       } else {
-        _bloc.setErrorLogin("Tên đăng nhập không tồn tại.");
+        _bloc.setErrorLogin("Username does not exist.");
       }
     }).catchError((error) {
       _bloc.setErrorLogin("${error}");
@@ -295,7 +296,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Text(AppLocalizations.text(LangKey.come_in_now),
                 style: TextStyle(fontSize: 24, color: Colors.white))),
         onTap: () {
-          NotificationManager.showNotification("Notifycation", "Hé lô");
+          String userName = StringUtils.generateRandomName();
+          _addScore(userName);
         }
           // showDialog(
           //     context: context,
@@ -318,7 +320,80 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-    @override
+  void _addScore(String _userName) async {
+    CustomNavigator.showProgressDialog(context);
+    CollectionReference score =
+    FirebaseFirestore.instance.collection(FirebaseEnum.score);
+    DocumentReference newDocRef =
+    await score.add({'PK11': 0, 'PK22': 0, 'username': _userName});
+    String scoreId = newDocRef.id;
+    _addFinanceDocument(_userName, scoreId);
+  }
+
+  void _addFinanceDocument(String _userName, String _score) async {
+    CustomNavigator.showProgressDialog(context);
+    CollectionReference finance =
+    FirebaseFirestore.instance.collection(FirebaseEnum.finance);
+    DocumentReference newDocRef =
+    await finance.add({'gold': 0, 'diamond': 0, 'userId': _userName});
+    String financeId = newDocRef.id;
+    // Sau đó, đăng ký người dùng và chuyển đưa financeId
+    bool registrationResult =
+    await _registerWithFinanceId(_userName, financeId, _score);
+    if (registrationResult) {
+      print('Đăng ký thành công');
+      await Future.delayed(Duration(seconds: 2));
+      login(_userName, "");
+    } else {
+    }
+  }
+
+  List<Map<String, dynamic>> convertUserMapModelListToMapList(List<UserMapModel> userMapModels) {
+    return userMapModels.map((userMapModel) => {
+      'collectionMap': userMapModel.collectionMap,
+      'level': userMapModel.level,
+      'isCourse': userMapModel.isCourse,
+    }).toList();
+  }
+
+  Future<bool> _registerWithFinanceId(
+      String _userName, String financeId, String _score) async {
+    List<String> bag = ['CO01'];
+    List<UserMapModel> courseMaps = [];
+    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'listening',isComplete: false));
+    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'reading',isComplete: false));
+    courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'speaking',isComplete: false));
+    List<Map<String, dynamic>> courseMapsData = convertUserMapModelListToMapList(courseMaps);
+
+    try {
+      CollectionReference users =
+      FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
+      await users.doc(_userName).set({
+        'username': _userNameController.text,
+        'password': "",
+        'level': 1, //Mặc định 1
+        'financeId': financeId,
+        'avatar': 1, //Mặc định 1
+        'bag' : bag,
+        'useColor' : 'CO01',
+        'useSkin' : '',
+        'score' : _score,
+        'isGuest' : true,
+        'courseMaps' : courseMapsData,
+        'checkingMaps' : courseMapsData
+      });
+      CustomNavigator.hideProgressDialog();
+      return true;
+    } catch (error) {
+      CustomNavigator.hideProgressDialog();
+      print("Error: $error");
+      return false;
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,

@@ -178,6 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'useColor' : 'CO01',
         'useSkin' : '',
         'score' : _score,
+        'isGuest' : false,
         'courseMaps' : courseMapsData,
         'checkingMaps' : courseMapsData
       });
