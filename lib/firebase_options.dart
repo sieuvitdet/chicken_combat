@@ -52,9 +52,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCRXOJwNtna3EKFtDSFEBYasVBhaPri0oo',
-    appId: '1:230523064998:android:3dc7d4c6eb4cce5a55da67',
+    appId: '1:230523064998:android:bd5adbd10dc4009955da67',
     messagingSenderId: '230523064998',
     projectId: 'hocgiagacon',
+    databaseURL: 'https://hocgiagacon-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hocgiagacon.appspot.com',
   );
 
@@ -63,6 +64,7 @@ class DefaultFirebaseOptions {
     appId: '1:230523064998:ios:4b51083c391cc64a55da67',
     messagingSenderId: '230523064998',
     projectId: 'hocgiagacon',
+    databaseURL: 'https://hocgiagacon-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hocgiagacon.appspot.com',
     iosBundleId: 'chickencombat',
   );

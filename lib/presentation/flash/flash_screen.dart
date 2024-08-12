@@ -204,7 +204,7 @@ class _FlashScreenState extends State<FlashScreen>
               padding: EdgeInsets.only(bottom: 16),
               child: RichText(
                 text: TextSpan(
-                  text: "Học giả gà con",
+                  text: "ChickBrain",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

@@ -1,4 +1,4 @@
-package com.example.chicken_combat
+package com.chickbrain.linhtk
 
 import io.flutter.embedding.android.FlutterActivity
 

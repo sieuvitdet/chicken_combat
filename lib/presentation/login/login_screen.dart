@@ -237,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: Text(
-                "Học giả gà con",
+                "ChickBrain",
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
