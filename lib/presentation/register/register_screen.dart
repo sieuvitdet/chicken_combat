@@ -224,8 +224,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final String originalString = _rePasswordController.text.trim();
     String encryptedString = GenerateHash.encryptString(originalString, key);
     print("Encrypted String: $encryptedString");
-    bool registrationResult =
-        await _registerWithFinanceId(_userName, encryptedString, financeId, _score);
+    bool registrationResult = await _registerWithFinanceId(_userName, encryptedString, financeId, _score);
     if (registrationResult) {
       print('Đăng ký thành công');
       showPopup(_userName, originalString);
@@ -296,8 +295,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   fontSize: 24, color: Colors.white))),
                       onTap: () async {
                         if (checkValidInputField()) {
-                          String userName = StringUtils.convertToLowerCase(
-                              _userNameController.text);
+                          String userName = StringUtils.convertToLowerCase(_userNameController.text);
                           if (await _validateUserName(userName)) {
                             _addScore(userName);
                           } else {

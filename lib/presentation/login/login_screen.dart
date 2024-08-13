@@ -295,37 +295,45 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
             child: Text(AppLocalizations.text(LangKey.come_in_now),
                 style: TextStyle(fontSize: 24, color: Colors.white))),
-        onTap: () {
+        onTap: () async {
           String userName = StringUtils.generateRandomName();
-          _addScore(userName);
+          while (!await _validateUserName(userName)) {
+            userName = StringUtils.generateRandomName();
+          }
+         String key = StringUtils.convertToLowerCase(userName);
+          _addScore(key);
         }
-          // showDialog(
-          //     context: context,
-          //     builder: (BuildContext context) {
-          //       return StatefulBuilder(
-          //         builder: (BuildContext context,
-          //             void Function(void Function()) setState) {
-          //           return DialogConfirmWidget(
-          //             cancel: () {
-          //               Navigator.of(context).pop();
-          //             },
-          //             agree: () {
-          //               Navigator.of(context).pop(true);
-          //             },
-          //           );
-          //         },
-          //       );
-          //     });
       ),
     );
+  }
+
+  Future<bool> _validateUserName(String _userName) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(FirebaseEnum.userdata)
+          .get();
+
+      List<String> docIds = [];
+      querySnapshot.docs.forEach((doc) {
+        docIds.add(doc.id);
+      });
+      for (String doc in docIds) {
+        if (doc == _userName) {
+          return false;
+        }
+      }
+      return true;
+    } catch (e) {
+      print("Error: $e");
+      return false;
+    }
   }
 
   void _addScore(String _userName) async {
     CustomNavigator.showProgressDialog(context);
     CollectionReference score =
     FirebaseFirestore.instance.collection(FirebaseEnum.score);
-    DocumentReference newDocRef =
-    await score.add({'PK11': 0, 'PK22': 0, 'username': _userName});
+    DocumentReference newDocRef = await score.add({'PK11': 0, 'PK22': 0, 'username': _userName});
     String scoreId = newDocRef.id;
     _addFinanceDocument(_userName, scoreId);
   }
@@ -334,16 +342,16 @@ class _LoginScreenState extends State<LoginScreen> {
     CustomNavigator.showProgressDialog(context);
     CollectionReference finance =
     FirebaseFirestore.instance.collection(FirebaseEnum.finance);
-    DocumentReference newDocRef =
-    await finance.add({'gold': 0, 'diamond': 0, 'userId': _userName});
+    DocumentReference newDocRef = await finance.add({'gold': 0, 'diamond': 0, 'userId': _userName});
     String financeId = newDocRef.id;
-    // Sau đó, đăng ký người dùng và chuyển đưa financeId
-    bool registrationResult =
-    await _registerWithFinanceId(_userName, financeId, _score);
+    final String key = _userName;
+    final String originalString = '000000';
+    String encryptedString = GenerateHash.encryptString(originalString, key);
+    bool registrationResult = await _registerWithFinanceId(_userName, encryptedString, financeId, _score);
     if (registrationResult) {
       print('Đăng ký thành công');
       await Future.delayed(Duration(seconds: 2));
-      login(_userName, "");
+      login(_userName, "000000");
     } else {
     }
   }
@@ -357,7 +365,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<bool> _registerWithFinanceId(
-      String _userName, String financeId, String _score) async {
+      String _userName,String _password, String financeId, String _score) async {
     List<String> bag = ['CO01'];
     List<UserMapModel> courseMaps = [];
     courseMaps.add(UserMapModel(collectionMap: 'MAP01', level: 1, isCourse: 'listening',isComplete: false));
@@ -370,8 +378,8 @@ class _LoginScreenState extends State<LoginScreen> {
       FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
 
       await users.doc(_userName).set({
-        'username': _userNameController.text,
-        'password': "",
+        'username': _userName,
+        'password': _password,
         'level': 1, //Mặc định 1
         'financeId': financeId,
         'avatar': 1, //Mặc định 1
