@@ -52,9 +52,8 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
   @override
   void initState() {
     super.initState();
-    _checkMicrophonePermission();
     _sttService.init();
-    AudioManager.pauseBackgroundMusic();
+    _checkMicrophonePermission();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _speakings = await _loadAsks();
@@ -74,12 +73,14 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.pauseBackgroundMusic();
   }
 
   @override
   void dispose() {
     _controller.removeListener(_scrollListener);
     _controller.dispose();
+    //AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     super.dispose();
   }
 

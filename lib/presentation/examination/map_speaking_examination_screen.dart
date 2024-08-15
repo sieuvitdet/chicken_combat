@@ -52,7 +52,6 @@ class _MapSpeakingExaminationScreenState
     super.initState();
     _sttService.init();
     _checkMicrophonePermission();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _speakings = await _loadAsks();
@@ -69,6 +68,7 @@ class _MapSpeakingExaminationScreenState
   void dispose() {
     _controller.removeListener(_scrollListener);
     _controller.dispose();
+    //AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     super.dispose();
   }
 
@@ -91,6 +91,8 @@ class _MapSpeakingExaminationScreenState
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.pauseBackgroundMusic();
+
   }
 
   Future<List<AskExaminationModel>> _loadAsks() async {

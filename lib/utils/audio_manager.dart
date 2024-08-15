@@ -78,11 +78,11 @@ class AudioManager {
         ],
       ),
       android: AudioContextAndroid(
-        isSpeakerphoneOn: true,
-        stayAwake: true,
+        isSpeakerphoneOn: false,
+        stayAwake: false,
         contentType: AndroidContentType.sonification,
         usageType: AndroidUsageType.assistanceSonification,
-        audioFocus: AndroidAudioFocus.none,
+        audioFocus: AndroidAudioFocus.gain,
       ),
     );
     AudioPlayer.global.setGlobalAudioContext(audioContext);
