@@ -91,8 +91,6 @@ class _MapSpeakingExaminationScreenState
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
-    AudioManager.pauseBackgroundMusic();
-
   }
 
   Future<List<AskExaminationModel>> _loadAsks() async {
@@ -420,13 +418,14 @@ class _MapSpeakingExaminationScreenState
         children: [
           GestureDetector(
             onTap: () {
+
               if (_ask.Script.contains('score:')) {
                   return;
                 }
               setState(() {
                 isListening = !_sttService.isListening;
               });
-
+              isListening ? AudioManager.stopBackgroundMusic() : AudioManager.resumeBackgroundMusic();
               _sttService.toggleRecording(_ask.Script, false, (result) {
                 setState(() {
                   _ask.Script = 'score: ${result}';

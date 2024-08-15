@@ -73,7 +73,6 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
-    AudioManager.pauseBackgroundMusic();
   }
 
   @override
@@ -464,6 +463,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
               setState(() {
                 isListening = !_sttService.isListening;
               });
+              isListening ? AudioManager.stopBackgroundMusic() : AudioManager.resumeBackgroundMusic();
               _sttService.toggleRecording(_ask.question, false, (result) {
                 setState(() {
                   _ask.question = 'score: ${result}';

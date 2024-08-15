@@ -41,15 +41,6 @@ class SpeechToTextService {
            });
         }
         lastWords = Globals.alternates;
-
-        // print(result.alternates);
-        // if (result.alternates.isNotEmpty) {
-        //   recognizedWordsList = result.alternates.map((word) => RecognizedWord.fromJson(word.toJson())).toList();
-        // }
-        // lastWords = recognizedWordsToString(recognizedWordsList);
-        // if (result.recognizedWords.isNotEmpty) {
-        //   lastWords = result.recognizedWords;
-        // }
       }, localeId: 'en_US'
       );
       isListening = true;
