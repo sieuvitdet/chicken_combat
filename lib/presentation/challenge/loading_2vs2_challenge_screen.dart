@@ -37,18 +37,19 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
   String _loadingText = 'Matching';
 
   List<AskExaminationModel> _asks = [];
+  late AudioManager _audioManager;
 
   void initState() {
     super.initState();
     _configAnimation();
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
     _initializeData();
   }
 
   @override
   void dispose() {
+    _audioManager.dispose();
     _controller1.dispose();
     _controller2.dispose();
     _controller3.dispose();

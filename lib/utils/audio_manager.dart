@@ -1,10 +1,11 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:math';
 
-class AudioManager {
+import 'package:flutter/cupertino.dart';
+
+class AudioManager with WidgetsBindingObserver {
   static final AudioPlayer _backgroundAudioPlayer = AudioPlayer();
   static final AudioPlayer _voiceAudioPlayer = AudioPlayer();
-
   static final AudioPlayer _soundEffectPlayer = AudioPlayer();
 
   static final List<String> soundFiles = [
@@ -23,6 +24,10 @@ class AudioManager {
     "audio/sound_chicken_sing_7.mp3",
   ];
 
+  AudioManager() {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
   static Future<void> playBackgroundMusic(String filePath) async {
     await _backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
     try {
@@ -32,7 +37,7 @@ class AudioManager {
     }
   }
 
-  static Future<void> playRandomBackgroundMusic() async {
+  Future<void> playRandomBackgroundMusic() async {
     Random random = Random();
     int index = random.nextInt(soundFiles.length);
     String filePath = soundFiles[index];
@@ -142,5 +147,18 @@ class AudioManager {
 
   static Future<void> setVolume(double volume) async {
     await _backgroundAudioPlayer.setVolume(volume);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached || state == AppLifecycleState.inactive || state == AppLifecycleState.hidden) {
+      stopBackgroundMusic();
+    } else if (state == AppLifecycleState.resumed) {
+      resumeBackgroundMusic();
+    }
+  }
+
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
   }
 }

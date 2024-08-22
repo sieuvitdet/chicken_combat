@@ -38,12 +38,14 @@ class _LoadingMeetingChallengeScreenState
 
   String _loadingText = 'Matching';
   bool hiddenGifPK = false;
+  late AudioManager _audioManager;
 
   @override
   void dispose() {
     _controller1.dispose();
     _controller3.dispose();
     _controllerChicken1.dispose();
+    _audioManager.dispose();
     super.dispose();
   }
 
@@ -65,9 +67,8 @@ class _LoadingMeetingChallengeScreenState
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Battle1Vs1Screen(room: widget.room,)));
     });
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
   }
 
   void _configAnamation() {
