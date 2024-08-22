@@ -6,8 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 class LocalizationsConfig {
   static Locale getCurrentLocale() {
-
-    return Locale("en");
+    return supportedLocales.first;
   }
 
   static const List<Locale> supportedLocales = [

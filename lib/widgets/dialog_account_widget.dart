@@ -237,7 +237,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
           height: AppSizes.maxWidth * 0.097,
           child: StrokeTextWidget(
             text: "${AppLocalizations.text(LangKey.account)}:",
-            size: AppSizes.maxWidth < 350 ? 12 : 16,
+            size: AppSizes.maxWidth < 350 ? 10 : 14,
             colorStroke: Color(0xFFD18A5A),
           ),
         ),

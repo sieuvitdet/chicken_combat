@@ -73,6 +73,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.stopBackgroundMusic();
   }
 
   @override
@@ -463,10 +464,10 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
               setState(() {
                 isListening = !_sttService.isListening;
               });
-              isListening ? AudioManager.stopBackgroundMusic() : AudioManager.resumeBackgroundMusic();
+              String result = '';
               _sttService.toggleRecording(_ask.question, false, (result) {
                 setState(() {
-                  _ask.question = 'score: ${result}';
+                  result = result;
                   scoreSpeaking += (int.tryParse(result) ?? 0);
                   print(scoreSpeaking);
                   if (page == pages) {
@@ -494,6 +495,10 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
                     // });
                     return;
                   }
+                });
+              }, (question) {
+                setState(() {
+                  _ask.question = question;
                 });
               });
             },
@@ -553,6 +558,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
                       color: Colors.grey,
                     ),
                     onPressed: () {
+                      AudioManager.resumeBackgroundMusic();
                       Navigator.of(context).pop();
                     },
                   ),

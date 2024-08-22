@@ -52,9 +52,7 @@ class _MapListeningLessonAnwserScreenState
   @override
   void initState() {
     super.initState();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
-
     _checkMicrophonePermission();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _quizs = widget.quizs;
@@ -79,6 +77,7 @@ class _MapListeningLessonAnwserScreenState
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.pauseBackgroundMusic();
   }
 
   int _checkScore() {

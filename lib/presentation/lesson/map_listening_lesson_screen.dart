@@ -50,7 +50,6 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
   @override
   void initState() {
     super.initState();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     _checkMicrophonePermission();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -70,6 +69,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.stopBackgroundMusic();
   }
 
   Future<List<AskLessonListenModel>> _loadAsks() async {
@@ -389,6 +389,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
                         color: Colors.grey,
                       ),
                       onPressed: () {
+                        AudioManager.resumeBackgroundMusic();
                         Navigator.of(context).pop();
                       },
                     ),
