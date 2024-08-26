@@ -17,6 +17,7 @@ import 'package:chicken_combat/widgets/dialog_change_password_widget.dart';
 import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DialogAccountWidget extends StatefulWidget {
@@ -83,8 +84,8 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
           child: Container(
             width: AppSizes.maxWidth * 0.868,
             height: AppSizes.maxHeight > 850
-                ? AppSizes.maxHeight * 0.45
-                : AppSizes.maxHeight * 0.5,
+                ? AppSizes.maxHeight * 0.5
+                : AppSizes.maxHeight * 0.55,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -107,7 +108,8 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                     ),
                     Expanded(
                         child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50.0),
@@ -128,23 +130,54 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                           Container(height: AppSizes.maxHeight * 0.02),
                           CustomButtomImageColorWidget(
                             onTap: () {
-                                GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Are you sure you want to logout",agree: () async {
-                                 Navigator.of(context).pop();
-                                  Navigator.of(context, rootNavigator: true)
-                                  .popUntil((route) => route.isFirst);
-                              Navigator.of(context, rootNavigator: true)
-                                  .pushReplacement(
-                                      CustomRoute(page: LoginScreen()));
-                                },
-                                cancel: () {
-                                  Navigator.of(context).pop();
-
-                                },));
+                              GlobalSetting.shared.showPopupWithContext(
+                                  context,
+                                  DialogConfirmWidget(
+                                    title: "Are you sure you want to logout",
+                                    agree: () async {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context, rootNavigator: true)
+                                          .popUntil((route) => route.isFirst);
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pushReplacement(
+                                              CustomRoute(page: LoginScreen()));
+                                    },
+                                    cancel: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ));
                             },
                             orangeColor: true,
                             child: Center(
                               child: StrokeTextWidget(
                                 text: AppLocalizations.text(LangKey.logout),
+                                size: AppSizes.maxWidth < 350 ? 14 : 20,
+                                colorStroke: Color(0xFFD18A5A),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          CustomButtomImageColorWidget(
+                            onTap: () {
+                              GlobalSetting.shared.showPopupWithContext(
+                                  context,
+                                  DialogConfirmWidget(
+                                    title:
+                                        "Are you sure you want to delete this account",
+                                    agree: () async {
+                                      deleteAccount(context);
+                                    },
+                                    cancel: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ));
+                            },
+                            orangeColor: true,
+                            child: Center(
+                              child: StrokeTextWidget(
+                                text: "Delete Account",
                                 size: AppSizes.maxWidth < 350 ? 14 : 20,
                                 colorStroke: Color(0xFFD18A5A),
                               ),
@@ -164,24 +197,29 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                     child: ScalableButton(
                         onTap: () {
                           AudioManager.playSoundEffect(AudioFile.sound_tap);
-                          if (Globals.currentUser!.username != _userNameController.text) {
-                            GlobalSetting.shared.showPopupWithContext(context, DialogConfirmWidget(title: "Are you sure you want to change your name?",
-                            agree: () {
-                              Navigator.of(context).pop();
-                              _updateUserName(Globals.currentUser!.id, _userNameController.text);
-                            },
-                            cancel: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                _userNameController.text = Globals.currentUser!.username;
-
-                              });
-                            },
-                            ));
+                          if (Globals.currentUser!.username !=
+                              _userNameController.text) {
+                            GlobalSetting.shared.showPopupWithContext(
+                                context,
+                                DialogConfirmWidget(
+                                  title:
+                                      "Are you sure you want to change your name?",
+                                  agree: () {
+                                    Navigator.of(context).pop();
+                                    _updateUserName(Globals.currentUser!.id,
+                                        _userNameController.text);
+                                  },
+                                  cancel: () {
+                                    Navigator.of(context).pop();
+                                    setState(() {
+                                      _userNameController.text =
+                                          Globals.currentUser!.username;
+                                    });
+                                  },
+                                ));
                           } else {
                             Navigator.of(context).pop();
                           }
-                          
                         },
                         child: Image.asset(Assets.ic_close_popup,
                             width: AppSizes.maxWidth * 0.116))),
@@ -191,6 +229,23 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
         ),
       ),
     );
+  }
+
+  deleteAccount(BuildContext context) async {
+    try {
+      CollectionReference _user =
+          FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+
+      return _user.doc(Globals.currentUser!.id).delete().then((value) {
+        Navigator.of(context).pop();
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
+        Navigator.of(context, rootNavigator: true)
+            .pushReplacement(CustomRoute(page: LoginScreen()));
+      });
+    } catch (e) {
+      print('Error deleting account: $e');
+    }
   }
 
   Widget _level() {
