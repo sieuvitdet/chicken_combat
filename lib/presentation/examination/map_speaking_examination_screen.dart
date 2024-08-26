@@ -52,13 +52,11 @@ class _MapSpeakingExaminationScreenState
     super.initState();
     _sttService.init();
     _checkMicrophonePermission();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _speakings = await _loadAsks();
       if (_speakings.length > 0) {
         _ask = _speakings[page - 1];
-
         pages = _speakings.length;
         setState(() {});
       }
@@ -69,6 +67,7 @@ class _MapSpeakingExaminationScreenState
   void dispose() {
     _controller.removeListener(_scrollListener);
     _controller.dispose();
+    //AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     super.dispose();
   }
 
@@ -91,6 +90,7 @@ class _MapSpeakingExaminationScreenState
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.stopBackgroundMusic();
   }
 
   Future<List<AskExaminationModel>> _loadAsks() async {
@@ -424,10 +424,10 @@ class _MapSpeakingExaminationScreenState
               setState(() {
                 isListening = !_sttService.isListening;
               });
-
+              String result = '';
               _sttService.toggleRecording(_ask.Script, false, (result) {
                 setState(() {
-                  _ask.Script = 'score: ${result}';
+                  result = result;
                   scoreSpeaking += (int.tryParse(result) ?? 0);
                   if (page == pages) {
                     int score = scoreSpeaking;
@@ -441,11 +441,9 @@ class _MapSpeakingExaminationScreenState
                       _updateDiamond(Globals.currentUser?.financeId ?? "",
                           Globals.financeUser?.diamond ?? 0);
                     }
-
                     GlobalSetting.shared.showPopupCongratulation(
                         context, 1, score, gold, diamond,
                         numberQuestion: _speakings.length, ontapReview: () {
-                      // Navigator.of(context)..pop()..pop(false);
                     }, ontapExit: () {
                       Navigator.of(context)
                         ..pop()
@@ -453,6 +451,10 @@ class _MapSpeakingExaminationScreenState
                     });
                     return;
                   }
+                });
+              }, (question) {
+                _ask.Script = question;
+                setState(() {
                 });
               });
             },
@@ -478,7 +480,6 @@ class _MapSpeakingExaminationScreenState
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CustomButtomImageColorWidget(
         orangeColor: !isListening,
-        
         child:
             Text("Next", style: TextStyle(fontSize: 24, color: Colors.white)),
         onTap: () {
@@ -513,6 +514,7 @@ class _MapSpeakingExaminationScreenState
                       color: Colors.grey,
                     ),
                     onPressed: () {
+                      AudioManager.resumeBackgroundMusic();
                       Navigator.of(context).pop();
                     },
                   ),

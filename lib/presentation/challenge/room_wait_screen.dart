@@ -31,14 +31,15 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
   bool isMatch = false;
   bool isOutRoom = false;
   RoomModel? _room;
-
+  late AudioManager _audioManager;
+  @override
   void initState() {
     super.initState();
     setupData();
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
   }
+
 
   void setupData() {
     _room = widget.room;
@@ -77,6 +78,7 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
 
   @override
   void dispose() {
+    _audioManager.dispose();
     super.dispose();
   }
 

@@ -38,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isEnablePlay = false;
   bool _isEnableResume = false;
   bool _showMicro = false;
+  late AudioManager _audioManager;
 
   @override
   void initState() {
@@ -46,15 +47,13 @@ class _HomeScreenState extends State<HomeScreen>
     _initializeData();
     _configAnamation();
     WidgetsBinding.instance.addObserver(this);
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
   }
 
   @override
   void dispose() {
-    AudioManager.stopBackgroundMusic();
-    //  _pauseChickenSing();
+    _audioManager.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -406,7 +405,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Center(
                       child: Text(
-                        "Touch me"),
+                        "Chạm vào tôi"),
                     )
                   ],
                 ),

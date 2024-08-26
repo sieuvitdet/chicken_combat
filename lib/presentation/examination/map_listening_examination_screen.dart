@@ -53,7 +53,6 @@ class _MapListeningExaminationScreenState
   @override
   void initState() {
     super.initState();
-    AudioManager.pauseBackgroundMusic();
     WidgetsBinding.instance.addObserver(this);
     print(widget.level);
 
@@ -84,6 +83,7 @@ class _MapListeningExaminationScreenState
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.pauseBackgroundMusic();
   }
 
   Future<List<AskExaminationModel>> _loadAsks() async {
@@ -523,6 +523,7 @@ class _MapListeningExaminationScreenState
                         color: Colors.grey,
                       ),
                       onPressed: () {
+                        AudioManager.resumeBackgroundMusic();
                         Navigator.of(context).pop(false);
                       },
                     ),

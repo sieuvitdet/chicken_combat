@@ -34,19 +34,20 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
   late Animation<double> _animation3;
 
   String _loadingText = 'Matching';
+  late AudioManager _audioManager;
 
-
+  @override
   void initState() {
     super.initState();
     _configAnimation();
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
     _initializeData();
   }
 
   @override
   void dispose() {
+    _audioManager.dispose();
     _controller1.dispose();
     _controller2.dispose();
     _controller3.dispose();

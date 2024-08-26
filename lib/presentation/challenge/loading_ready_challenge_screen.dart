@@ -26,6 +26,7 @@ class _LoadingReadyChallengeScreenState
 
   bool hiddenGifPK = false;
 
+  late AudioManager _audioManager;
   void initState() {
     super.initState();
     _configAnimation();
@@ -35,15 +36,15 @@ class _LoadingReadyChallengeScreenState
         hiddenGifPK = true;
       });
     });
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
   }
 
   @override
   void dispose() {
     _controllerLeft.dispose();
     _controllerRight.dispose();
+    _audioManager.dispose();
     super.dispose();
   }
 

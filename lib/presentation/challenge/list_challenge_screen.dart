@@ -15,14 +15,20 @@ class ListChallengeScreen extends StatefulWidget {
 }
 
 class _ListChallengeScreenState extends State<ListChallengeScreen> {
+  late AudioManager _audioManager;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
   }
 
+  @override
+  void dispose() {
+    _audioManager.dispose();
+    super.dispose();
+  }
   Widget _buildBackground() {
     return Stack(
       children: [

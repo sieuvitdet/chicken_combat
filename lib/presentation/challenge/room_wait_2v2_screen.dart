@@ -31,13 +31,19 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
   bool isMatch = false;
   bool isOutRoom = false;
   RoomV2Model? _room;
+  late AudioManager _audioManager;
 
+  @override
   void initState() {
     super.initState();
     setupData();
-    Future.delayed(Duration.zero, () {
-      AudioManager.playRandomBackgroundMusic();
-    });
+    _audioManager = AudioManager();
+    _audioManager.playRandomBackgroundMusic();
+  }
+  @override
+  void dispose() {
+    _audioManager.dispose();
+    super.dispose();
   }
 
   void setupData() {
