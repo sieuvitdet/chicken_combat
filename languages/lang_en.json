@@ -53,5 +53,24 @@
     "change_pass_enter_new_pass": "Please enter a new password",
     "change_pass_not_same_old_pass": "Cannot be the same as the old password",
     "change_pass_enter_new_pass_again": "Please re-enter the new password",
-    "change_pass_not_same_new_pass": "Does not match the new password"
+    "change_pass_not_same_new_pass": "Does not match the new password",
+    "confirm_buy_item":"Are you sure you want to buy this item?",
+    "warning_find_gold":"Please find more gold to purchase this item!",
+    "warning_find_dimonds":"Please find more diamonds to purchase this item!",
+    "change_password_success":"Change password success!",
+    "old_pass":"Old pass:",
+    "new_pass":"New pass:",
+    "again_new_pass:":"Again new pass:",
+    "confirm_logout":"Are you sure you want to logout?",
+    "confirm_delete_account":"Are you sure you want to delete this account?",
+    "delete_account":"Delete account",
+    "confirm_change_name":"Are you sure you want to change your name?",
+    "ranking":"Ranking:",
+    "review":"Review",
+    "your_reward":"Your Reward:",
+    "pass": "Pass",
+    "fail": "Fail",
+    "victory": "Victory",
+    "lose": "Lose"
+      
 }

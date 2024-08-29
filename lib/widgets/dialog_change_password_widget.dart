@@ -117,7 +117,7 @@ class _DialogChangePasswordWidgetState
             builder: (BuildContext context,
                 void Function(void Function()) setState) {
               return CustomDialogWithTitleButtonWidget(
-                title: "Change password success",
+                title: AppLocalizations.text(LangKey.change_password_success),
                 ontap: () {
                   Globals.prefs!.setBool(SharedPrefsKey.is_login, false);
                   Navigator.of(context, rootNavigator: true)
@@ -256,7 +256,7 @@ class _DialogChangePasswordWidgetState
               width: AppSizes.maxWidth * 0.32,
               height: AppSizes.maxWidth * 0.097,
               child: StrokeTextWidget(
-                text: "Old pass:",
+                text: AppLocalizations.text(LangKey.old_pass),
                 size: AppSizes.maxWidth < 350 ? 12 : 16,
                 colorStroke: Color(0xFFD18A5A),
               ),
@@ -361,7 +361,7 @@ class _DialogChangePasswordWidgetState
               width: AppSizes.maxWidth * 0.32,
               height: AppSizes.maxWidth * 0.097,
               child: StrokeTextWidget(
-                text: "New pass:",
+                text: AppLocalizations.text(LangKey.new_pass),
                 size: AppSizes.maxWidth < 350 ? 12 : 16,
                 colorStroke: Color(0xFFD18A5A),
               ),
@@ -468,7 +468,7 @@ class _DialogChangePasswordWidgetState
               width: AppSizes.maxWidth * 0.32,
               height: AppSizes.maxWidth * 0.097,
               child: StrokeTextWidget(
-                text: "Again New Pass:",
+                text: AppLocalizations.text(LangKey.again_new_pass),
                 size: AppSizes.maxWidth < 350 ? 12 : 16,
                 colorStroke: Color(0xFFD18A5A),
               ),

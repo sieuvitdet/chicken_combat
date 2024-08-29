@@ -53,6 +53,23 @@
     "change_pass_enter_new_pass":"Vui lòng nhập mật khẩu mới",
     "change_pass_not_same_old_pass":"Không được trùng với mật khẩu cũ",
     "change_pass_enter_new_pass_again":"Vui lòng nhập lại mật khẩu mới",
-    "change_pass_not_same_new_pass":"Không trùng với mật khẩu mới"
-
+    "change_pass_not_same_new_pass":"Không trùng với mật khẩu mới",
+    "confirm_buy_item":"Bạn có chắc muốn mua vật phẩm này?",
+    "warning_find_gold":"Vui lòng tìm thêm vàng để mua vật phẩm này!",
+    "warning_find_dimonds":"Vui lòng tìm thêm kim cương để mua vật phẩm này!",
+    "change_password_success":"Thay đổi mật khẩu thành công!",
+    "old_pass":"MK cũ:",
+    "new_pass":"MK mới:",
+    "again_new_pass:":"Nhập lại MK:",
+    "confirm_logout":"Bạn có chắc chắn muốn đăng xuất tài khoản này?",
+    "confirm_delete_account":"Bạn có chắc chắn muốn xóa tài khoản này?",
+    "delete_account":"Xóa tài khoản",
+    "confirm_change_name":"Bạn có chắc chắn muốn thay đổi tên?",
+    "ranking":"Xếp hạng:",
+    "review":"Xem lại",
+    "your_reward":"Phần thưởng:",
+    "pass": "Vượt qua",
+    "fail": "Thất bại",
+    "victory": "Chiến thắng",
+    "lose": "Thua"
 }

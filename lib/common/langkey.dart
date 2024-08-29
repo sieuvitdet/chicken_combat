@@ -57,4 +57,26 @@ class LangKey {
   static const String change_pass_not_same_old_pass = "change_pass_not_same_old_pass";
   static const String change_pass_enter_new_pass_again = "change_pass_enter_new_pass_again";
   static const String change_pass_not_same_new_pass = "change_pass_not_same_new_pass";
+  static const String confirm_buy_item = "confirm_buy_item";
+  static const String warning_find_gold = "warning_find_gold";
+  static const String warning_find_dimonds = "warning_find_dimonds";
+  static const String change_password_success = "change_password_success";
+  static const String old_pass = "old_pass";
+  static const String new_pass = "new_pass";
+  static const String again_new_pass = "again_new_pass";
+  static const String confirm_logout = "confirm_logout";
+  static const String confirm_delete_account = "confirm_delete_account";
+  static const String delete_account = "delete_account";
+  static const String confirm_change_name = "confirm_change_name";
+  static const String ranking = "ranking";
+  static const String review = "review";
+  static const String your_reward = "your_reward";
+  static const String pass = "pass";
+  static const String fail = "fail";
+  static const String victory = "victory";
+  static const String lose = "lose";
+
+
+
+
 }

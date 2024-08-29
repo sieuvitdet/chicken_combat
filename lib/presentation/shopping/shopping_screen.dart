@@ -156,7 +156,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         GlobalSetting.shared.showPopupWithContext(
             context,
             CustomDialogWithTitleButtonWidget(
-              title: "Please find more diamonds to purchase this item!",
+              title:AppLocalizations.text(LangKey.warning_find_dimonds),
               ontap: () {
                 Navigator.of(context).pop();
               },
@@ -174,7 +174,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         GlobalSetting.shared.showPopupWithContext(
             context,
             CustomDialogWithTitleButtonWidget(
-              title: "Please find more gold to purchase this item!",
+              title: AppLocalizations.text(LangKey.warning_find_gold),
               ontap: () {
                 Navigator.of(context).pop();
               },
@@ -478,7 +478,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                               GlobalSetting.shared.showPopupWithContext(
                           context,
                           DialogConfirmWidget(
-                            title: "Are you sure you want to buy this item?",
+                            title: AppLocalizations.text(LangKey.confirm_buy_item),
                             agree: () async {
                                Navigator.of(context).pop();
                               _buyItem(model);

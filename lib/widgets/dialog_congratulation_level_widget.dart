@@ -150,7 +150,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
           children: [
             Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
-                child: Text("Your Reward:",
+                child: Text(AppLocalizations.text(LangKey.your_reward),
                     style: TextStyle(
                         color: Color(0xFFB96747),
                         fontWeight: FontWeight.bold,
@@ -241,8 +241,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
               fit: BoxFit.fill,
             )),
         Text(
-        //  AppLocalizations.text(LangKey.continuee),
-        "Review",
+         AppLocalizations.text(LangKey.review),
           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],
@@ -260,8 +259,7 @@ class DialogCongratulationLevelWidget extends StatelessWidget {
               fit: BoxFit.fill,
             )),
         Text(
-        //  AppLocalizations.text(LangKey.continuee),
-        "Continue",
+         AppLocalizations.text(LangKey.continuee),
           style: TextStyle(fontSize:AppSizes.maxWidth < 350 ? 16 : 24, color: Colors.white),
         )
       ],

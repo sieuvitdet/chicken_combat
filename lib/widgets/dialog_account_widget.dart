@@ -133,7 +133,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                               GlobalSetting.shared.showPopupWithContext(
                                   context,
                                   DialogConfirmWidget(
-                                    title: "Are you sure you want to logout",
+                                    title: AppLocalizations.text(LangKey.confirm_logout),
                                     agree: () async {
                                       Navigator.of(context).pop();
                                       Navigator.of(context, rootNavigator: true)
@@ -165,7 +165,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                                   context,
                                   DialogConfirmWidget(
                                     title:
-                                        "Are you sure you want to delete this account",
+                                        AppLocalizations.text(LangKey.confirm_delete_account),
                                     agree: () async {
                                       deleteAccount(context);
                                     },
@@ -177,7 +177,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                             orangeColor: true,
                             child: Center(
                               child: StrokeTextWidget(
-                                text: "Delete Account",
+                                text: AppLocalizations.text(LangKey.delete_account),
                                 size: AppSizes.maxWidth < 350 ? 14 : 20,
                                 colorStroke: Color(0xFFD18A5A),
                               ),
@@ -203,7 +203,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                                 context,
                                 DialogConfirmWidget(
                                   title:
-                                      "Are you sure you want to change your name?",
+                                      AppLocalizations.text(LangKey.confirm_change_name),
                                   agree: () {
                                     Navigator.of(context).pop();
                                     _updateUserName(Globals.currentUser!.id,
@@ -410,7 +410,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
           width: AppSizes.maxWidth * 0.16,
           height: AppSizes.maxWidth * 0.097,
           child: StrokeTextWidget(
-            text: "Ranking:",
+            text: AppLocalizations.text(LangKey.ranking),
             size: AppSizes.maxWidth < 350 ? 12 : 14,
             colorStroke: Color(0xFFD18A5A),
           ),

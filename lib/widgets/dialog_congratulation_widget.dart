@@ -44,12 +44,12 @@ class DialogCongratulationWidget extends StatelessWidget {
                   ),
                   (isLesson ?? false) ? Center(
                     child: Text(
-                      isWin ? "Pass" : "Fail",
+                      isWin ? AppLocalizations.text(LangKey.pass) : AppLocalizations.text(LangKey.fail),
                       style: TextStyle(fontSize: 40, color: Colors.white),
                     ),
                   ) : Center(
                     child: Text(
-                      isWin ? "Victory" : "Lose",
+                      isWin ? AppLocalizations.text(LangKey.victory) : AppLocalizations.text(LangKey.lose),
                       style: TextStyle(fontSize: 40, color: Colors.white),
                     ),
                   ),
@@ -96,7 +96,7 @@ class DialogCongratulationWidget extends StatelessWidget {
           children: [
             Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
-                child: Text("Your Reward:",
+                child: Text(AppLocalizations.text(LangKey.your_reward),
                     style: TextStyle(
                         color: Color(0xFFB96747),
                         fontWeight: FontWeight.bold,

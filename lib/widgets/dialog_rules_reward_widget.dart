@@ -75,14 +75,14 @@ class _DialogRulesRewardWidgetState extends State<DialogRulesRewardWidget> {
                               ),
                               WidgetSpan(
                                 child: Text(
-                                   "Mức 1: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng",
+                                   "Mức 1: Người chơi A làm mức 2 sẽ đạt được phần thưởng tương ứng",
                                    style: TextStyle(fontSize: 16,color: Colors.black),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
                               WidgetSpan(
                                 child: Text(
-                                   "Mức 1: Người chơi A làm mức 1 sẽ đạt được phần thưởng tương ứng",
+                                   "Mức 1: Người chơi A làm mức 3 sẽ đạt được phần thưởng tương ứng",
                                    style: TextStyle(fontSize: 16,color: Colors.black),
                                   textAlign: TextAlign.start,
                                 ),
