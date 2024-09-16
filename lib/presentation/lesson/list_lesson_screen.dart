@@ -4,7 +4,9 @@ import 'package:chicken_combat/model/maps/course_map_model.dart';
 import 'package:chicken_combat/model/maps/user_map_model.dart';
 import 'package:chicken_combat/presentation/lesson/list_map_lesson_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
+import 'package:chicken_combat/utils/video_dialog.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +74,21 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
     return itemList;
   }
 
+  void showVideoDialogIfNeeded(BuildContext context, GestureTapCallback onTap, String video) async {
+    bool? doNotShowAgain = Globals.prefs!.getBool(SharedPrefsKey.doNotShowAgainLession);
+    if (doNotShowAgain == null || !doNotShowAgain) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return VideoDialog(onTap: onTap, urlVideo: video, keyPrefs: SharedPrefsKey.doNotShowAgainLession);
+        },
+      );
+    } else {
+      onTap();
+    }
+  }
+
   Widget _map(int typeId, String type) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -91,9 +108,15 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
             case 2:
               items = mapsModel.readingCourses;
           }
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ListMapLessonScreen(
-                  type: type.toLowerCase(), isLesson: true, items: items)));
+          showVideoDialogIfNeeded(context, () {
+            CustomNavigator.pop(context);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+              builder: (context) =>
+                  ListMapLessonScreen(
+                  type: type.toLowerCase(), isLesson: true, items: items)
+              ));
+          }, typeId == 0 ? 'assets/video/speaking_1.mp4' : typeId == 1 ? 'assets/video/listening_1.mp4' : 'assets/video/reading_1.mp4');
         },
       ),
     );

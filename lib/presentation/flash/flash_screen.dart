@@ -58,6 +58,9 @@ class _FlashScreenState extends State<FlashScreen>
         }
       });
     } else {
+      Globals.prefs!.setBool(SharedPrefsKey.doNotShowAgainLession, false);
+      Globals.prefs!.setBool(SharedPrefsKey.doNotShowAgainExamination, false);
+      Globals.prefs!.setBool(SharedPrefsKey.doNotShowAgainPK, false);
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await Future.delayed(Duration(seconds: 3));
         Navigator.of(context)

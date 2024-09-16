@@ -13,7 +13,9 @@ import 'package:chicken_combat/presentation/examination/list_examination_screen.
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
+import 'package:chicken_combat/utils/video_dialog.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
@@ -191,9 +193,7 @@ class _HomeScreenState extends State<HomeScreen>
               await _pauseChickenSing();
             }
             bool result = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ListLessonScreen(
-                      courseMapModel: _userModel!.courseMapModel,
-                    )));
+                builder: (context) => ListLessonScreen(courseMapModel: _userModel!.courseMapModel,)));
             if (result) {
               _triggerVoice();
             }
@@ -203,8 +203,7 @@ class _HomeScreenState extends State<HomeScreen>
               await _pauseChickenSing();
             }
             bool result = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ListExaminationScreen(
-                    mapModel: _userModel!.checkingMapModel)));
+                builder: (context) => ListExaminationScreen(mapModel: _userModel!.checkingMapModel)));
             if (result) {
               _triggerVoice();
             }
@@ -213,15 +212,33 @@ class _HomeScreenState extends State<HomeScreen>
             if (_isPlay) {
               await _pauseChickenSing();
             }
-            bool result = await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ListChallengeScreen()));
-            if (result) {
-              _triggerVoice();
-            }
+            showVideoDialogIfNeeded(context, () async {
+              CustomNavigator.pop(context);
+              bool result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListChallengeScreen()));
+              if (result) {
+                _triggerVoice();
+              }
+            }, 'assets/video/pk_2.mp4');
+
           })
         ],
       ),
     );
+  }
+
+  void showVideoDialogIfNeeded(BuildContext context, GestureTapCallback onTap, String video) async {
+    bool? doNotShowAgain = Globals.prefs!.getBool(SharedPrefsKey.doNotShowAgainExamination);
+    if (doNotShowAgain == null || !doNotShowAgain) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return VideoDialog(onTap: onTap, urlVideo: video, keyPrefs: SharedPrefsKey.doNotShowAgainPK);
+        },
+      );
+    } else {
+      onTap();
+    }
   }
 
   Widget _info() {

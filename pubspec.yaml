@@ -24,7 +24,7 @@ dependencies:
   cloud_firestore: ^4.16.0
   firebase_database: ^10.5.1
   rxdart: ^0.27.4
-  intl: ^0.19.0
+  intl: any
   firebase_auth: ^4.19.0
   shared_preferences: any
   pointycastle: ^3.8.0
@@ -38,6 +38,7 @@ dependencies:
   timezone: ^0.8.0
   flutter_sound: ^9.2.13
   file_picker: ^5.0.0
+  video_player: ^2.9.1
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +49,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/audio/
+    - assets/video/
     - languages/
   fonts:
     - family: Itim

@@ -28,8 +28,8 @@ class DialogMenuActionWidget extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: Center(
           child: Container( 
-            width: AppSizes.maxWidth*0.838,
-            height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight*0.45 : AppSizes.maxHeight*0.5,
+            width: AppSizes.maxWidth*0.828,
+            height: AppSizes.maxHeight > 850 ? AppSizes.maxHeight*0.25 : AppSizes.maxHeight*0.3,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -50,30 +50,31 @@ class DialogMenuActionWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
-                        child: Container(
+                    Container(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50.0),
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Color(0xFFEDB371),
-                              Color(0xFFFFD383),
-                            ],
-                          )),
-                      child: Column(
-                        children: [
-                          _itemVolume(),
-                          _itemNote(),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: _listAction())
+                      borderRadius: BorderRadius.circular(50.0),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Color(0xFFEDB371),
+                          Color(0xFFFFD383),
                         ],
-                      ),
-                    )),
+                      )),
+                                          child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // _itemVolume(),
+                      // _itemNote(),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _listAction())
+                    ],
+                                          ),
+                                        ),
                     SizedBox(
                       height: AppSizes.maxHeight*0.025,
                     )

@@ -285,6 +285,17 @@ class AudioFile {
   static final String sound_buy = "audio/sound_buy.mp3";
 }
 
+class VideoFile {
+  static final String reading_1 = "assets/video/reading_1.mp4";
+  static final String reading_2 = "assets/video/reading_1.mp4";
+  static final String listening_1 = "assets/video/listening_1.mp4";
+  static final String listening_2 = "assets/video/listening_2.mp4";
+  static final String speaking_1 = "assets/video/speaking_1.mp4";
+  static final String speaking_2 = "assets/video/speaking_1.mp4";
+  static final String pk_1 = "assets/video/pk_1.mp4";
+  static final String pk_2 = "assets/video/pk_2.mp4";
+}
+
 class ExtendedAssets extends Assets {
   static String getAssetByCode(String code) {
     Map<String, String> codeToAssetMap = {
