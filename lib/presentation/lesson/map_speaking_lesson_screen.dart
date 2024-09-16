@@ -465,7 +465,7 @@ class _MapSpeakingLessonScreenState extends State<MapSpeakingLessonScreen>
                 isListening = !_sttService.isListening;
               });
               String result = '';
-              _sttService.toggleRecording(_ask.question, false, (result) {
+              _sttService.toggleRecording(context, _ask.question, false, (result) {
                 setState(() {
                   result = result;
                   scoreSpeaking += (int.tryParse(result) ?? 0);

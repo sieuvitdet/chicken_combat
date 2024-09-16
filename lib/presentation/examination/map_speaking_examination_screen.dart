@@ -425,7 +425,7 @@ class _MapSpeakingExaminationScreenState
                 isListening = !_sttService.isListening;
               });
               String result = '';
-              _sttService.toggleRecording(_ask.Script, false, (result) {
+              _sttService.toggleRecording(context, _ask.Script, false, (result) {
                 setState(() {
                   result = result;
                   scoreSpeaking += (int.tryParse(result) ?? 0);

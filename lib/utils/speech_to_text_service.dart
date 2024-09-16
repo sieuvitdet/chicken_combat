@@ -1,5 +1,6 @@
 import 'package:chicken_combat/data/open_api/chat_gpt_service.dart';
 import 'package:chicken_combat/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SpeechToTextService {
@@ -21,15 +22,18 @@ class SpeechToTextService {
     return recognizedWordsList.map((word) => word.words).join(' ');
   }
 
-  void toggleRecording(String answer, bool isLesson, Function(String) onResult, Function(String) onQuestion) {
+  void toggleRecording(BuildContext context, String answer, bool isLesson, Function(String) onResult, Function(String) onQuestion) {
     if (isListening) {
       _speech.stop();
       isListening = false;
       print(lastWords);
+      CustomNavigator.showProgressDialog(context);
       _chatService.callChatGPT(answer, lastWords, isLesson).then((value) {
+        CustomNavigator.hideProgressDialog();
         onResult(value);
         onQuestion('Câu trả lời: ${currentWord}\nĐiểm: ${value.toString()}/10');
       }).catchError((e) {
+        CustomNavigator.hideProgressDialog();
         onResult("Error calling ChatGPT: ${e.toString()}");
       });
     } else {
