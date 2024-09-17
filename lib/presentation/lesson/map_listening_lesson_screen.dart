@@ -13,8 +13,7 @@ import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart' hide CarouselController;
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter/material.dart';import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MapListeningLessonScreen extends StatefulWidget {
@@ -40,7 +39,7 @@ class _MapListeningLessonScreenState extends State<MapListeningLessonScreen>
   bool isListening = false;
   final FlutterTts flutterTts = FlutterTts();
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
 
   late ContentModel _content = ContentModel(
       idImage: "", pronounce: "", transcription: "", translate: "");

@@ -37,7 +37,7 @@ class _MapSpeakingExaminationScreenState
   bool isTextOverflow = false;
   int scoreSpeaking = 0;
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
   ScrollController _controller = ScrollController();
 
   final SpeechToTextService _sttService = SpeechToTextService();

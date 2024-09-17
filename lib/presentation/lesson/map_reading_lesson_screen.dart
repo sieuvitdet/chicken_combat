@@ -15,8 +15,7 @@ import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart' hide CarouselController;
-
+import 'package:flutter/material.dart';
 class MapReadingLessonScreen extends StatefulWidget {
   final bool isGetReward;
   final int level;
@@ -32,7 +31,7 @@ class _MapReadingLessonScreenState extends State<MapReadingLessonScreen>
   String text = "";
   var _isKeyboardVisible = false;
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
 
   late AskLessonModel _ask = AskLessonModel(
       Script: "", Content: "", Quiz:[]);

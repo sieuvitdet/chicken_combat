@@ -268,8 +268,6 @@ class Assets {
 class AudioFile {
   static final String sound_background = "audio/sound_background.mp3";
   static final String sound_pk1 = "audio/sound_pk_1.mp3";
-  static final String sound_pk2 = "audio/sound_pk_2.mp3";
-  static final String sound_pk3 = "audio/sound_pk_3.mp3";
   static final String sound_learning = "audio/sound_learning.mp3";
   static final String sound_tap = "audio/sound_tap.mp3";
   static final String sound_map_1 = "audio/sound_map_1.mp3";

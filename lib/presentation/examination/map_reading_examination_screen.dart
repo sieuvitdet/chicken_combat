@@ -5,8 +5,7 @@ import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
-import 'package:flutter/material.dart' hide CarouselController;
-
+import 'package:flutter/material.dart';
 class MapReadingExaminationScreen extends StatefulWidget {
   const MapReadingExaminationScreen({super.key});
 
@@ -29,7 +28,7 @@ class _MapReadingExaminationScreenState extends State<MapReadingExaminationScree
   int page = 1;
   bool isListening = false;
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
 
   @override
   void initState() {

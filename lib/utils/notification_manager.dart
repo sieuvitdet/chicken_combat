@@ -8,19 +8,19 @@ class NotificationManager {
   static Future<void> init() async {
     final InitializationSettings initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('ic_launcher'),
-      iOS: IOSInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-      ),
+      // iOS: IOSInitializationSettings(
+      //   requestAlertPermission: true,
+      //   requestBadgePermission: true,
+      //   requestSoundPermission: true,
+      //   onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+      // ),
     );
 
     // Use _notificationsPlugin instead of notificationsPlugin
-    await _notificationsPlugin.initialize(
-        initializationSettings,
-        onSelectNotification: selectNotification
-    );
+    // await _notificationsPlugin.initialize(
+    //     initializationSettings,
+    //     onSelectNotification: selectNotification
+    // );
     if (Globals.currentUser != null) {
       await scheduleDailyNotification();
     }
@@ -44,19 +44,19 @@ class NotificationManager {
         importance: Importance.defaultImportance,
         priority: Priority.defaultPriority,
     );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics
-    );
+    //var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    // var platformChannelSpecifics = NotificationDetails(
+    //     android: androidPlatformChannelSpecifics,
+    //     iOS: iOSPlatformChannelSpecifics
+    // );
 
-    await _notificationsPlugin.show(
-        0,
-        Title,
-        body,
-        platformChannelSpecifics,
-        payload: 'item x'
-    );
+    // await _notificationsPlugin.show(
+    //     0,
+    //     Title,
+    //     body,
+    //     platformChannelSpecifics,
+    //     payload: 'item x'
+    // );
   }
 
   static Future<void> scheduleDailyNotification() async {

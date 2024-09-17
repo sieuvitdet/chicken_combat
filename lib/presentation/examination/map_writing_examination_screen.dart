@@ -5,8 +5,7 @@ import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/custom_listview_widget.dart';
-import 'package:flutter/material.dart' hide CarouselController;
-
+import 'package:flutter/material.dart';
 class Pagination {
   int? stt;
   String? anwser;
@@ -48,7 +47,7 @@ class _MapWritingExaminationScreenState
   int page = 0;
   bool isTextOverflow = false;
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
   ScrollController _controller = ScrollController();
 
   TextEditingController _anwser1 = TextEditingController();

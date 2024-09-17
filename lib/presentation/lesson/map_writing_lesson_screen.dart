@@ -41,7 +41,7 @@ class _MapWritingLessonScreenState extends State<MapWritingLessonScreen> with Wi
   int page = 0;
   bool isTextOverflow = false;
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
   ScrollController _controller = ScrollController();
 
   TextEditingController _anwser1 = TextEditingController();

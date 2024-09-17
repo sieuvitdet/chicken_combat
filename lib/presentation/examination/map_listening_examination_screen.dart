@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/langkey.dart';
@@ -15,7 +16,7 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart' hide CarouselController;
+import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -43,7 +44,7 @@ class _MapListeningExaminationScreenState
   final FlutterTts flutterTts = FlutterTts();
   bool review = false;
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController? buttonCarouselController = CarouselSliderController();
 
   late AskExaminationModel _ask = AskExaminationModel(
       Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");

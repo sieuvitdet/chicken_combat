@@ -17,8 +17,7 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart' hide CarouselController;
-
+import 'package:flutter/material.dart';
 class MapReadingExaminationAnswerScreen extends StatefulWidget {
   final bool isGetReward;
   final int level;
@@ -47,7 +46,7 @@ class _MapReadingExaminationAnswerScreenState
   List<String> results = [];
   List<int> positions = [];
 
-  CarouselController buttonCarouselController = CarouselController();
+CarouselSliderController buttonCarouselController = CarouselSliderController();
 
   late AskExaminationModel _ask = AskExaminationModel( 
       Question: "", Answer: "", Script: "", A: "", B: "", C: "", D: "");
