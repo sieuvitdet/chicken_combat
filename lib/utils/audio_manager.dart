@@ -8,6 +8,8 @@ class AudioManager with WidgetsBindingObserver {
   static final AudioPlayer _voiceAudioPlayer = AudioPlayer();
   static final AudioPlayer _soundEffectPlayer = AudioPlayer();
 
+  static late bool isMusicPlaying = false;
+
   static final List<String> soundFiles = [
     "audio/sound_map_1.mp3",
     "audio/sound_background_2.mp3",
@@ -29,6 +31,7 @@ class AudioManager with WidgetsBindingObserver {
   }
 
   static Future<void> playBackgroundMusic(String filePath) async {
+    isMusicPlaying = true;
     await _backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
     try {
       await _backgroundAudioPlayer.play(AssetSource(filePath));
@@ -38,6 +41,7 @@ class AudioManager with WidgetsBindingObserver {
   }
 
   Future<void> playRandomBackgroundMusic() async {
+    isMusicPlaying = true;
     Random random = Random();
     int index = random.nextInt(soundFiles.length);
     String filePath = soundFiles[index];
@@ -70,6 +74,7 @@ class AudioManager with WidgetsBindingObserver {
   }
 
   static Future<void> playRandomChickenSing() async {
+    isMusicPlaying = true;
     Random random = Random();
     int index = random.nextInt(soundChickenSingFiles.length);
     String filePath = soundChickenSingFiles[index];
@@ -130,6 +135,7 @@ class AudioManager with WidgetsBindingObserver {
   }
 
   static Future<void> stopBackgroundMusic() async {
+    isMusicPlaying = false;
     await _backgroundAudioPlayer.stop();
   }
 
@@ -138,10 +144,12 @@ class AudioManager with WidgetsBindingObserver {
   }
 
   static Future<void> resumeBackgroundMusic() async {
+    isMusicPlaying = true;
     await _backgroundAudioPlayer.resume();
   }
 
   static Future<void> playSoundEffect(String filePath) async {
+    isMusicPlaying = true;
     await _soundEffectPlayer.play(AssetSource(filePath));
   }
 
@@ -151,10 +159,17 @@ class AudioManager with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached || state == AppLifecycleState.inactive || state == AppLifecycleState.hidden) {
-      stopBackgroundMusic();
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+        pauseBackgroundMusic();
     } else if (state == AppLifecycleState.resumed) {
-      resumeBackgroundMusic();
+      if (isMusicPlaying == true) {
+        playRandomBackgroundMusic();
+      } else {
+        pauseBackgroundMusic();
+      }
     }
   }
 

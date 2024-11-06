@@ -67,7 +67,6 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
   void dispose() {
     _controller.removeListener(_scrollListener);
     _controller.dispose();
-    //AudioManager.playBackgroundMusic(AudioFile.sound_pk1);
     super.dispose();
   }
 
@@ -90,6 +89,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
     } else if (permissionStatus.isPermanentlyDenied) {
       openAppSettings();
     }
+    AudioManager.isMusicPlaying = false;
     AudioManager.stopBackgroundMusic();
   }
 
