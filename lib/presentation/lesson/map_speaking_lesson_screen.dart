@@ -282,7 +282,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
         //           child: Center(
         //             child: StrokeTextWidget(
         //               text: "Previous",
-        //               size: AppSizes.maxWidth < 350 ? 14 : 20,
+        //                size: AppSizes.maxWidth < 350 ? 12 : 16,
         //               colorStroke: Color(0xFFD18A5A),
         //             ),
         //           ),
@@ -342,7 +342,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
         //           child: Center(
         //             child: StrokeTextWidget(
         //               text: page == pages ? "Final" : "Next",
-        //               size: AppSizes.maxWidth < 350 ? 14 : 20,
+        //                size: AppSizes.maxWidth < 350 ? 12 : 16,
         //               colorStroke: Color(0xFFD18A5A),
         //             ),
         //           ),

@@ -340,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           Image(
             fit: BoxFit.fill,
-            image: AssetImage(Assets.gif_background_canhdong),
+            image: AssetImage(Assets.gif_background_warehouse),
             width: AppSizes.maxWidth,
             height: AppSizes.maxHeight,
           ),

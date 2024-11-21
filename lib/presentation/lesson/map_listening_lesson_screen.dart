@@ -157,7 +157,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                   child: Center(
                     child: StrokeTextWidget(
                       text: "Back",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                       size: AppSizes.maxWidth < 350 ? 12 : 16,
                       colorStroke: Color(0xFFD18A5A),
                     ),
                   ),
@@ -184,7 +184,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                   child: Center(
                     child: StrokeTextWidget(
                       text: page == pages ? "Go to test" : "Next",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                       size: AppSizes.maxWidth < 350 ? 12 : 16,
                       colorStroke: Color(0xFFD18A5A),
                     ),
                   ),

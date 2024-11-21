@@ -231,6 +231,8 @@ class Assets {
       "assets/images/gif_chicken_white_candy.gif";
       static final String gif_background_canhdong =
       "assets/images/gif_background_canhdong.gif";
+  static final String gif_background_warehouse =
+      "assets/images/gif_background_warehouse.gif";
 
   static final List<String> imagesGift = [
     Assets.img_chicken,

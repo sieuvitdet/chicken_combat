@@ -410,7 +410,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
                       child: _showQuestion
                           ? Text(
                               ask!.Question,
-                              style: TextStyle(fontSize: 14, color: Colors.white),
+                              style: TextStyle(fontSize: 20, color: Colors.white),
                               textAlign: TextAlign.start,
                             )
                           : CountdownTimer(

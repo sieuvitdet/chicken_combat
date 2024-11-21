@@ -196,7 +196,7 @@ class _DialogRandomGiftWidgetState extends State<DialogRandomGiftWidget> {
       child: Center(
         child: StrokeTextWidget(
           text: AppLocalizations.text(LangKey.agree),
-          size: AppSizes.maxWidth < 350 ? 14 : 20,
+           size: AppSizes.maxWidth < 350 ? 12 : 16,
           colorStroke: Color(0xFFD18A5A),
         ),
       ),

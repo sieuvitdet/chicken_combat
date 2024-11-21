@@ -229,7 +229,7 @@ class _DialogRewardWidgetState extends State<DialogRewardWidget> {
                         Image.asset(Assets.img_redblur_circle),
                         StrokeTextWidget(
                           text: "?",
-                          size: AppSizes.maxWidth < 350 ? 14 : 20,
+                           size: AppSizes.maxWidth < 350 ? 12 : 16,
                           colorStroke: Color(0xFFD18A5A),
                         )
                       ],

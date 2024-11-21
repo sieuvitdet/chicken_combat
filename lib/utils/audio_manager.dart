@@ -48,12 +48,11 @@ class AudioManager with WidgetsBindingObserver {
     final audioPlayer = AudioPlayer();
     final AudioContext audioContext = AudioContext(
       iOS: AudioContextIOS(
-        defaultToSpeaker: true,
         category: AVAudioSessionCategory.ambient,
-        options: [
+        options: Set.from([
           AVAudioSessionOptions.defaultToSpeaker,
           AVAudioSessionOptions.mixWithOthers,
-        ],
+        ]),
       ),
       android: AudioContextAndroid(
         isSpeakerphoneOn: false,
@@ -64,7 +63,7 @@ class AudioManager with WidgetsBindingObserver {
 
       ),
     );
-    AudioPlayer.global.setGlobalAudioContext(audioContext);
+    AudioPlayer.global.setAudioContext(audioContext);
     await _backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
     try {
       await _backgroundAudioPlayer.play(AssetSource(filePath));
@@ -80,12 +79,11 @@ class AudioManager with WidgetsBindingObserver {
     String filePath = soundChickenSingFiles[index];
     final AudioContext audioContext = AudioContext(
       iOS: AudioContextIOS(
-        defaultToSpeaker: true,
         category: AVAudioSessionCategory.ambient,
-        options: [
+        options: Set.from([
           AVAudioSessionOptions.defaultToSpeaker,
           AVAudioSessionOptions.mixWithOthers,
-        ],
+        ]),
       ),
       android: AudioContextAndroid(
         isSpeakerphoneOn: false,
@@ -95,7 +93,7 @@ class AudioManager with WidgetsBindingObserver {
         audioFocus: AndroidAudioFocus.gain,
       ),
     );
-    AudioPlayer.global.setGlobalAudioContext(audioContext);
+    AudioPlayer.global.setAudioContext(audioContext);
     await _voiceAudioPlayer.setReleaseMode(ReleaseMode.release);
     try {
       await _voiceAudioPlayer.play(AssetSource(filePath));

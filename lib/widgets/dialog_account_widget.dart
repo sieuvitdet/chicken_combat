@@ -151,7 +151,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                             child: Center(
                               child: StrokeTextWidget(
                                 text: AppLocalizations.text(LangKey.logout),
-                                size: AppSizes.maxWidth < 350 ? 14 : 20,
+                                 size: AppSizes.maxWidth < 350 ? 12 : 16,
                                 colorStroke: Color(0xFFD18A5A),
                               ),
                             ),
@@ -178,7 +178,7 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                             child: Center(
                               child: StrokeTextWidget(
                                 text: AppLocalizations.text(LangKey.delete_account),
-                                size: AppSizes.maxWidth < 350 ? 14 : 20,
+                                 size: AppSizes.maxWidth < 350 ? 12 : 16,
                                 colorStroke: Color(0xFFD18A5A),
                               ),
                             ),

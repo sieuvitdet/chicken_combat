@@ -237,7 +237,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                   child: Center(
                     child: StrokeTextWidget(
                       text: "Previous",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                       size: AppSizes.maxWidth < 350 ? 12 : 16,
                       colorStroke: Color(0xFFD18A5A),
                     ),
                   ),
@@ -311,7 +311,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                   child: Center(
                     child: StrokeTextWidget(
                       text:  page == pages ? review ? "Exit" : "Final" : "Next",
-                      size: AppSizes.maxWidth < 350 ? 14 : 20,
+                       size: AppSizes.maxWidth < 350 ? 12 : 16,
                       colorStroke: Color(0xFFD18A5A),
                     ),
                   ),
@@ -397,7 +397,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: Text(
         _ask.Question,
-        style: TextStyle(fontSize: 16,color: Colors.white),
+        style: TextStyle(fontSize: 20,color: Colors.white),
       ),
     );
   }
