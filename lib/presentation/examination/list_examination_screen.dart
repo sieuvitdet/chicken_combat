@@ -56,8 +56,8 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
         Image(
           fit: BoxFit.contain,
           image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
-          width: AppSizes.maxWidth * 0.34,
-          height: AppSizes.maxHeight * 0.2,
+          width: AppSizes.maxWidth * 0.2,
+          height: AppSizes.maxHeight * 0.15,
         ),
         ..._listMap()
       ],
@@ -74,7 +74,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
 
   void showVideoDialogIfNeeded(BuildContext context, GestureTapCallback onTap, String video) async {
     bool? doNotShowAgain = Globals.prefs!.getBool(SharedPrefsKey.doNotShowAgainExamination);
-    if (doNotShowAgain == null || !doNotShowAgain) {
+    if (!doNotShowAgain) {
       showDialog(
         context: context,
         barrierDismissible: false,
