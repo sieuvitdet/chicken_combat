@@ -34,17 +34,40 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
       children: [
         BackGroundCloudWidget(),
         Positioned(
-            top: AppSizes.maxHeight * 0.06,
-            left: AppSizes.maxWidth * 0.05,
-            child: IconTheme(
-              data: IconThemeData(size: 24.0), // Set the size here
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
+          top: AppSizes.maxHeight * 0.05,
+          left: AppSizes.maxWidth * 0.03,
+          child: GestureDetector(
+            onTap: () {
+              // Hàm xử lý khi nhấn nút Back
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFFFFD700),
+                    Color(0xFFFFEA9F)], // Gradient từ vàng sang đỏ
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                shape: BoxShape.circle, // Làm nút hình tròn
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: Offset(0, 4),
+                    blurRadius: 8,
+                  ),
+                ],
               ),
-            ))
+              padding: EdgeInsets.all(12), // Kích thước nút
+              child: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.red,
+                size: 24,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -55,8 +78,8 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
       children: [
         Image(
           fit: BoxFit.contain,
-          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
-          width: AppSizes.maxWidth * 0.2,
+          image: AssetImage(ExtendedAssets.getAssetByCode("NOEL")),
+          width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.15,
         ),
         ..._listMap()
@@ -89,7 +112,7 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
 
   Widget _map(int typeId, String type) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: CustomButtomImageColorWidget(
         orangeColor: typeId == 0,
         blueColor: typeId == 1,
@@ -125,44 +148,53 @@ class _ListExaminationScreenState extends State<ListExaminationScreen> {
     return PopScope(
       canPop: true,
       child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
-        body: Responsive(
-          mobile: Center(
-            child: Container(
-              width: AppSizes.maxWidth,
-              height: AppSizes.maxHeight,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildBackground(),
-                  _buildContent(),
-                ],
-              ),
+        //backgroundColor: Color(0xFFFACA44),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFFF6666), Color(0xFFFFD1A9)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-          tablet: Center(
-            child: Container(
-              width: AppSizes.maxWidth,
-              height: AppSizes.maxHeight,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildBackground(),
-                  _buildContent(),
-                ],
+          child: Responsive(
+            mobile: Center(
+              child: Container(
+                width: AppSizes.maxWidth,
+                height: AppSizes.maxHeight,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _buildBackground(),
+                    _buildContent(),
+                  ],
+                ),
               ),
             ),
-          ),
-          desktop: Center(
-            child: Container(
-              width: AppSizes.maxWidth,
-              height: AppSizes.maxHeight,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildBackground(),
-                  _buildContent(),
-                ],
+            tablet: Center(
+              child: Container(
+                width: AppSizes.maxWidth,
+                height: AppSizes.maxHeight,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _buildBackground(),
+                    _buildContent(),
+                  ],
+                ),
+              ),
+            ),
+            desktop: Center(
+              child: Container(
+                width: AppSizes.maxWidth,
+                height: AppSizes.maxHeight,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _buildBackground(),
+                    _buildContent(),
+                  ],
+                ),
               ),
             ),
           ),

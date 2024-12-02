@@ -21,6 +21,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
   void initState() {
     super.initState();
     _audioManager = AudioManager();
+    _audioManager.initVolumeListener();
     _audioManager.playRandomBackgroundMusic();
   }
 

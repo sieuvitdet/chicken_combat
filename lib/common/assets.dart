@@ -37,8 +37,8 @@ class Assets {
   static final String img_bottom_mountain_green =
       "assets/images/img_bottom_mountain_green.png";
   static final String img_bush = "assets/images/img_bush.png";
-  static final String img_cloud_big = "assets/images/img_cloud_big.png";
-  static final String img_cloud_small = "assets/images/img_cloud_small.png";
+  static final String img_cloud_big = "assets/images/img_cloud_noel_big.png";
+  static final String img_cloud_small = "assets/images/img_cloud_noel_small.png";
   static final String img_line_table = "assets/images/img_line_table.png";
   static final String img_pk = "assets/images/img_pk.png";
   static final String img_mountain_sea = "assets/images/img_mountain_sea.png";
@@ -211,6 +211,7 @@ class Assets {
   static final String img_cup_chicken = "assets/images/img_cup_chicken.png";
   static final String img_chicken_zombie_fall =
       "assets/images/img_chicken_zombie_fall.png";
+  static final String img_chicken_noel = "assets/images/img_chicken_noel.png";
 
   //gif
   static final String chicken_flapping_swing_gif =
@@ -233,6 +234,8 @@ class Assets {
       "assets/images/gif_background_canhdong.gif";
   static final String gif_background_warehouse =
       "assets/images/gif_background_warehouse.gif";
+  static final String gif_background_noel = "assets/images/gif_background_noel.gif";
+  static final String gif_background_event_music = "assets/images/gif_background_event_music.gif";
 
   static final List<String> imagesGift = [
     Assets.img_chicken,
@@ -315,6 +318,7 @@ class ExtendedAssets extends Assets {
       "DI03": Assets.img_chicken_lovely,
       "DI04": Assets.img_chicken_brown_circleface_premium,
       "DI05": Assets.img_chicken_zombie,
+      "NOEL": Assets.img_chicken_noel,
     };
 
     return codeToAssetMap[code] ?? Assets.img_chicken;

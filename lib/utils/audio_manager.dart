@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 
 class AudioManager with WidgetsBindingObserver {
   static final AudioPlayer _backgroundAudioPlayer = AudioPlayer();
@@ -10,8 +11,16 @@ class AudioManager with WidgetsBindingObserver {
 
   static late bool isMusicPlaying = false;
 
+  void initVolumeListener() {
+    FlutterVolumeController.addListener((double volume) async {
+      await _backgroundAudioPlayer.setVolume(volume);
+      await _voiceAudioPlayer.setVolume(volume);
+      await _soundEffectPlayer.setVolume(volume);
+    });
+  }
+
   static final List<String> soundFiles = [
-    "audio/sound_map_1.mp3",
+    "audio/sound_background.mp3",
     "audio/sound_background_2.mp3",
     "audio/sound_background_3.mp3"
   ];
@@ -49,10 +58,6 @@ class AudioManager with WidgetsBindingObserver {
     final AudioContext audioContext = AudioContext(
       iOS: AudioContextIOS(
         category: AVAudioSessionCategory.ambient,
-        options: Set.from([
-          AVAudioSessionOptions.defaultToSpeaker,
-          AVAudioSessionOptions.mixWithOthers,
-        ]),
       ),
       android: AudioContextAndroid(
         isSpeakerphoneOn: false,
@@ -80,10 +85,6 @@ class AudioManager with WidgetsBindingObserver {
     final AudioContext audioContext = AudioContext(
       iOS: AudioContextIOS(
         category: AVAudioSessionCategory.ambient,
-        options: Set.from([
-          AVAudioSessionOptions.defaultToSpeaker,
-          AVAudioSessionOptions.mixWithOthers,
-        ]),
       ),
       android: AudioContextAndroid(
         isSpeakerphoneOn: false,
@@ -161,7 +162,7 @@ class AudioManager with WidgetsBindingObserver {
         state == AppLifecycleState.detached ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
-        pauseBackgroundMusic();
+      pauseBackgroundMusic();
     } else if (state == AppLifecycleState.resumed) {
       if (isMusicPlaying == true) {
         playRandomBackgroundMusic();
@@ -173,5 +174,6 @@ class AudioManager with WidgetsBindingObserver {
 
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    FlutterVolumeController.removeListener();
   }
 }

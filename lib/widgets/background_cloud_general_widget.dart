@@ -59,13 +59,18 @@ late AnimationController _controller1;
     );
   }
 
-
-
   Widget _buildBottom() {
     return Container(
       height: AppSizes.maxHeight,
       width: AppSizes.maxWidth,
-      color: Color(0xFFFACA44),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFFF6666), Color(0xFFFFD1A9)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      //color: Color(0xFFFACA44),
     );
   }
 
@@ -125,7 +130,7 @@ late AnimationController _controller1;
                 child: child,
               );
             },
-            child: _mediumCloud(),
+            child: _cloud(),
           ),
         ),
         Positioned(
@@ -168,7 +173,7 @@ late AnimationController _controller1;
                 child: child,
               );
             },
-            child: _smallCloud(),
+            child: _cloud(),
           ),
         ),
       ],

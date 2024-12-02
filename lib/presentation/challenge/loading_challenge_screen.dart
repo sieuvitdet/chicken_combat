@@ -41,6 +41,7 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     super.initState();
     _configAnimation();
     _audioManager = AudioManager();
+    _audioManager.initVolumeListener();
     _audioManager.playRandomBackgroundMusic();
     _initializeData();
   }

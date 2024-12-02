@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen>
     _configAnamation();
     WidgetsBinding.instance.addObserver(this);
     _audioManager = AudioManager();
+    _audioManager.initVolumeListener();
     _audioManager.playRandomBackgroundMusic();
   }
 
@@ -163,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen>
     _controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         setState(() {
-          _isEnablePlay = true;
+          _isEnablePlay = !_isEnablePlay;
         });
       }
     });
@@ -340,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           Image(
             fit: BoxFit.fill,
-            image: AssetImage(Assets.gif_background_warehouse),
+            image: _showMicro ? AssetImage(Assets.gif_background_event_music) : AssetImage(Assets.gif_background_noel),
             width: AppSizes.maxWidth,
             height: AppSizes.maxHeight,
           ),
@@ -353,11 +354,26 @@ class _HomeScreenState extends State<HomeScreen>
                   _controller.forward();
                   _showMicro = true;
                 },
-                child: Image(
-                  fit: BoxFit.contain,
-                  image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
-                  width: AppSizes.maxWidth * 0.15,
-                  height: AppSizes.maxHeight * 0.15,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.yellowAccent.withOpacity(0.3),
+                        spreadRadius: 8, // Độ lan của viền
+                        blurRadius: 24, // Độ mờ
+                        offset: Offset(0, 0), // Tọa độ của bóng (0, 0 để nằm đều xung quanh)
+                      ),
+                    ],
+                  ),
+                  child: Image(
+                    fit: BoxFit.contain,
+                    image: AssetImage(
+                      ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor),
+                    ),
+                    width: AppSizes.maxWidth * 0.15,
+                    height: AppSizes.maxHeight * 0.15,
+                  ),
                 ),
               )),
           if (_showMicro) Positioned(
@@ -370,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen>
                 width: AppSizes.maxWidth * 0.01,
                 height: AppSizes.maxHeight * 0.2,
               )),
-          if (_isEnablePlay)
+          if (_isEnablePlay && _showMicro)
             Positioned(
               bottom: AppSizes.maxHeight * 0.25,
               right: 0,
@@ -408,7 +424,6 @@ class _HomeScreenState extends State<HomeScreen>
             if (!_showMicro) Positioned(
               bottom: AppSizes.maxHeight * 0.25,
               right: AppSizes.maxWidth/5,
-              
               child: ShakeWidget(
                       duration: const Duration(seconds: 10),
                       shakeConstant: ShakeDefaultConstant1(),
@@ -417,8 +432,8 @@ class _HomeScreenState extends State<HomeScreen>
                   alignment: Alignment.center,
                   children: [
                     Image.asset( Assets.img_bubble,
-                      height: AppSizes.maxWidth*0.3,
-                      width: AppSizes.maxWidth*0.3,
+                      height: AppSizes.maxWidth * 0.3,
+                      width: AppSizes.maxWidth * 0.3,
                     ),
                     Center(
                       child: Text(
@@ -428,7 +443,38 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-
+          if (_showMicro)  Positioned(
+                bottom: 24,
+                left: 16,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _controller.reverse();
+                      _showMicro = false;
+                    });
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFFE58900),
+                            Color(0xFFFCD54E)], // Gradient từ vàng sang đỏ
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0, 4),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                    padding: EdgeInsets.all(8), // Kích thước nút
+                    child: Icon(Icons.home, color: Colors.white,
+                      size: 24,)),
+                ))
           // Positioned(
           //   top: 200,
           //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
@@ -495,32 +541,41 @@ class _HomeScreenState extends State<HomeScreen>
       canPop: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Color(0xffFA9C20),
-        body: Responsive(
-          desktop: Center(
-            child: Container(
-              // width: AppSizes.maxWidth,
-              height: AppSizes.maxHeight,
-              child: Column(
-                children: [_info(), _body(), _function()],
-              ),
+        //backgroundColor: Color(0xff8e0c0c),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFFF6666), Color(0xFFFFD1A9)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-          mobile: Center(
-            child: Container(
-              // width: AppSizes.maxWidth,
-              height: AppSizes.maxHeight,
-              child: Column(
-                children: [_info(), _body(), _function()],
+          child: Responsive(
+            desktop: Center(
+              child: Container(
+                // width: AppSizes.maxWidth,
+                height: AppSizes.maxHeight,
+                child: Column(
+                  children: [_info(), _body(), _function()],
+                ),
               ),
             ),
-          ),
-          tablet: Center(
-            child: Container(
-              // width: AppSizes.maxWidth,
-              height: AppSizes.maxHeight,
-              child: Column(
-                children: [_info(), _body(), _function()],
+            mobile: Center(
+              child: Container(
+                // width: AppSizes.maxWidth,
+                height: AppSizes.maxHeight,
+                child: Column(
+                  children: [_info(), _body(), _function()],
+                ),
+              ),
+            ),
+            tablet: Center(
+              child: Container(
+                // width: AppSizes.maxWidth,
+                height: AppSizes.maxHeight,
+                child: Column(
+                  children: [_info(), _body(), _function()],
+                ),
               ),
             ),
           ),

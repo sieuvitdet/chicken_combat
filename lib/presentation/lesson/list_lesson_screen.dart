@@ -35,18 +35,55 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
     return Stack(
       children: [
         BackGroundCloudWidget(),
+        // Positioned(
+        //     top: AppSizes.maxHeight * 0.05,
+        //     left: AppSizes.maxWidth * 0.02,
+        //     child:
+        //     // IconTheme(
+        //     //   data: IconThemeData(size: 24.0), // Set the size here
+        //     //   child: IconButton(
+        //     //     icon: Icon(Icons.arrow_back_ios,color: Colors.black,),
+        //     //     onPressed: () {
+        //     //       Navigator.of(context).pop(true);
+        //     //     },
+        //     //   ),
+        //     // )
+        // )
         Positioned(
-            top: AppSizes.maxHeight * 0.06,
-            left: AppSizes.maxWidth * 0.05,
-            child: IconTheme(
-              data: IconThemeData(size: 24.0), // Set the size here
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
+          top: AppSizes.maxHeight * 0.05,
+          left: AppSizes.maxWidth * 0.03,
+          child: GestureDetector(
+            onTap: () {
+              // Hàm xử lý khi nhấn nút Back
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFFFFD700),
+                    Color(0xFFFFEA9F)], // Gradient từ vàng sang đỏ
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: Offset(0, 4),
+                    blurRadius: 8,
+                  ),
+                ],
               ),
-            ))
+              padding: EdgeInsets.all(12), // Kích thước nút
+              child: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.red,
+                size: 24,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -57,8 +94,8 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
       children: [
         Image(
           fit: BoxFit.contain,
-          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
-          width: AppSizes.maxWidth * 0.2,
+          image: AssetImage(ExtendedAssets.getAssetByCode("NOEL")),
+          width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.15,
         ),
         ..._listMap()
@@ -91,7 +128,7 @@ class _ListLessonScreenState extends State<ListLessonScreen> {
 
   Widget _map(int typeId, String type) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: CustomButtomImageColorWidget(
         orangeColor: typeId == 0,
         blueColor: typeId == 1,

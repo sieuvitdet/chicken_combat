@@ -68,6 +68,7 @@ class _LoadingMeetingChallengeScreenState
           .push(MaterialPageRoute(builder: (context) => Battle1Vs1Screen(room: widget.room,)));
     });
     _audioManager = AudioManager();
+    _audioManager.initVolumeListener();
     _audioManager.playRandomBackgroundMusic();
   }
 

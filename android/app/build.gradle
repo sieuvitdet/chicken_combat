@@ -47,8 +47,8 @@ android {
         applicationId "com.chickbrain.linhtk"
         minSdkVersion 23
         targetSdkVersion 34
-        versionCode 9
-        versionName '1.2.0'
+        versionCode 10
+        versionName '1.2.1'
     }
 
     signingConfigs {

@@ -38,6 +38,7 @@ dependencies:
   flutter_sound: ^9.2.13
   file_picker: ^5.0.0
   video_player: ^2.9.2
+  flutter_volume_controller: ^1.3.3
 
 dev_dependencies:
   flutter_test:

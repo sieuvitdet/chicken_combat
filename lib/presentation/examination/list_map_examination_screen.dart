@@ -102,20 +102,40 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
       children: [
         BackGroundCloudWidget(),
         Positioned(
-            top: AppSizes.maxHeight * 0.06,
-            left: AppSizes.maxWidth * 0.05,
-            child: IconTheme(
-              data: IconThemeData(size: 24.0), // Set the size here
-              child: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.grey,
+          top: AppSizes.maxHeight * 0.05,
+          left: AppSizes.maxWidth * 0.03,
+          child: GestureDetector(
+            onTap: () {
+              // Hàm xử lý khi nhấn nút Back
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFFFFD700),
+                    Color(0xFFFFEA9F)], // Gradient từ vàng sang đỏ
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
+                shape: BoxShape.circle, // Làm nút hình tròn
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: Offset(0, 4),
+                    blurRadius: 8,
+                  ),
+                ],
               ),
-            ))
+              padding: EdgeInsets.all(12), // Kích thước nút
+              child: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.red,
+                size: 24,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -125,10 +145,10 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image(
-          fit: BoxFit.fitHeight,
-          image: AssetImage(ExtendedAssets.getAssetByCode(Globals.currentUser!.useColor)),
+          fit: BoxFit.contain,
+          image: AssetImage(ExtendedAssets.getAssetByCode("NOEL")),
           width: AppSizes.maxWidth * 0.3,
-          height: AppSizes.maxHeight * 0.18,
+          height: AppSizes.maxHeight * 0.15,
         ),
         ..._listMaps()
       ],
@@ -147,7 +167,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
 
   Widget _map(int index, MapModel model, bool isLock) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: CustomButtomImageColorWidget(
         orangeColor: index == 0 && !isLock,
         blueColor: index == 1 && !isLock,
