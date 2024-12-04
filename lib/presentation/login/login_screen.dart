@@ -78,31 +78,43 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login(String _username, String _password) async {
-    final String userName = _username;
-    String key = StringUtils.convertToLowerCase(userName);
-    final String originalString = _password;
-    String encryptedString = GenerateHash.encryptString(originalString, key);
-    print("Encrypted String: $encryptedString");
-    CustomNavigator.showProgressDialog(context);
-    CollectionReference users = firestore.collection(FirebaseEnum.userdata);
-    await users.doc(key).get().then((DocumentSnapshot documentSnapshot) {
+    final String key = StringUtils.convertToLowerCase(_username.trim());
+    final String encryptedPassword = GenerateHash.encryptString(_password, key);
+
+    try {
+      CustomNavigator.showProgressDialog(context);
+      final CollectionReference users = firestore.collection(FirebaseEnum.userdata);
+      final DocumentSnapshot documentSnapshot = await users.doc(key).get();
+
       CustomNavigator.hideProgressDialog();
+
       if (documentSnapshot.exists) {
-        print('Document exists on the database'); 
+        print('Document exists on the database');
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
-        if (user.password == encryptedString) {
-           _bloc.setupLogin(user);
-           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen()));
+
+        if (_isPasswordCorrect(user.password, encryptedPassword)) {
+          _bloc.setupLogin(user);
+          _navigateToHomeScreen();
         } else {
           _bloc.setErrorLogin("Username or password is incorrect.");
         }
       } else {
         _bloc.setErrorLogin("Username does not exist.");
       }
-    }).catchError((error) {
-      _bloc.setErrorLogin("${error}");
-    });
+    } catch (error) {
+      CustomNavigator.hideProgressDialog();
+      _bloc.setErrorLogin("An error occurred: ${error.toString()}");
+    }
+  }
+
+  bool _isPasswordCorrect(String storedPassword, String encryptedPassword) {
+    return storedPassword == encryptedPassword;
+  }
+
+  void _navigateToHomeScreen() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => HomeScreen(),
+    ));
   }
 
    Widget _inputForm() {
@@ -224,49 +236,87 @@ class _LoginScreenState extends State<LoginScreen> {
         height: AppSizes.maxHeight,
         width: AppSizes.maxWidth,
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            Image(
-              fit: BoxFit.contain,
-              image: AssetImage(Assets.chicken_flapping_swing_gif),
-              width: AppSizes.maxWidth * 0.5,
-              height: AppSizes.maxHeight * 0.2,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image(
+                  fit: BoxFit.contain,
+                  image: AssetImage(Assets.chicken_flapping_swing_gif),
+                  width: AppSizes.maxWidth * 0.5,
+                  height: AppSizes.maxHeight * 0.2,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    "ChickBrain",
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
+                _inputForm(),
+                // Align(
+                //   alignment: Alignment.centerLeft,
+                //   child: Padding(
+                //     padding: EdgeInsets.only(bottom: 16, top: 16),
+                //     child: ScalableButton(
+                //       onTap: () {
+                //         print("forget");
+                //       },
+                //       child: Text(
+                //         AppLocalizations.text(LangKey.forget_password),
+                //         style: TextStyle(
+                //             fontSize: 16,
+                //             fontWeight: FontWeight.bold,
+                //             color: Colors.black),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                SizedBox(height: 16),
+                _login(),
+                _comeInNow(),
+                //SizedBox(height: AppSizes.maxHeight*0.05),
+
+              ],
+
             ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: Text(
-                "ChickBrain",
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Center(
+                child: InkWell(
+                  onTap: () async {
+                    List<String>? _result = await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => RegisterScreen(isGuest: false)));
+                    if (_result != null && _result.length > 1) {
+                      login(_result[0],_result[1]);
+                    }
+                  },
+                  child: RichText(
+                      text: TextSpan(
+                          text: "${AppLocalizations.text(LangKey.do_not_have_account)}?",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Itim",
+                              color: Colors.white),
+                          children: [
+                            TextSpan(
+                                text: "  " + AppLocalizations.text(LangKey.register),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFE84C3D)))
+                          ])),
+                ),
               ),
             ),
-            _inputForm(),
-            // Align(
-            //   alignment: Alignment.centerLeft,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(bottom: 16, top: 16),
-            //     child: ScalableButton(
-            //       onTap: () {
-            //         print("forget");
-            //       },
-            //       child: Text(
-            //         AppLocalizations.text(LangKey.forget_password),
-            //         style: TextStyle(
-            //             fontSize: 16,
-            //             fontWeight: FontWeight.bold,
-            //             color: Colors.black),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            SizedBox(height: 16),
-            _login(),
-            _comeInNow(),
-            SizedBox(height: AppSizes.maxHeight*0.05),
           ],
         ),
       ),
@@ -275,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _login() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 4),
       child: CustomButtomImageColorWidget(
           orangeColor: true,
           child: Center(
@@ -289,7 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _comeInNow() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 4),
       child: CustomButtomImageColorWidget(
         orangeColor: true,
         child: Center(
@@ -418,37 +468,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buildBackground(),
                   _body(),
                 ],
-              ),
-            ),
-          ),
-          bottomNavigationBar: Container(
-            height: 80,
-            color: Color(0xFFFACA44),
-            child: Center(
-              child: InkWell(
-                onTap: () async {
-                 List<String>? _result = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => RegisterScreen(isGuest: false)));
-                      if (_result != null && _result.length > 1) {
-                        login(_result[0],_result[1]);
-                      }
-                },
-                child: RichText(
-                    text: TextSpan(
-                        text: "${AppLocalizations.text(LangKey.do_not_have_account)}?",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Itim",
-                            color: Colors.white),
-                        children: [
-                      TextSpan(
-                          text: "  " + AppLocalizations.text(LangKey.register),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFE84C3D)))
-                    ])),
               ),
             ),
           ),

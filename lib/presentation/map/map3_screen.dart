@@ -397,12 +397,58 @@ class _Map3ScreenState extends State<Map3Screen> with TickerProviderStateMixin {
       child: Scaffold(
         // appBar: AppBar(centerTitle: true, title: Text("Đức")),
         backgroundColor: Color(0xffFFF0AB),
-        body: SingleChildScrollView(
-            controller: _scrollController,
-            physics: ClampingScrollPhysics(),
-            child: Stack(
-              children: [_buildBottom(), _buildContent()],
-            )),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+                controller: _scrollController,
+                physics: ClampingScrollPhysics(),
+                child: Stack(
+                  children: [_buildBottom(), _buildContent()],
+                )),
+            Positioned(
+              top: MediaQuery.of(context).padding.top /
+                  2, // Đảm bảo không bị che bởi notch
+              left: 16.0,
+              child: SafeArea(
+                child: Positioned(
+                  top: AppSizes.maxHeight * 0.05,
+                  left: AppSizes.maxWidth * 0.03,
+                  child: GestureDetector(
+                    onTap: () {
+                      // Hàm xử lý khi nhấn nút Back
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFFFFD700),
+                            Color(0xFFFFEA9F)], // Gradient từ vàng sang đỏ
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0, 4),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6), // Kích thước nút
+                      child: Icon(
+                        Icons.arrow_back_outlined,
+                        color: Colors.black,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }}

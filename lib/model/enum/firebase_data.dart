@@ -17,6 +17,9 @@ class FirebaseEnum {
   static String lesson_reading = '/lesson/reading';
   static String lesson_speaking = '/lesson/speaking';
 
+  //event
+  static String event_question = '/event';
+
   static String level1 = '/level1';
   static String level2 = '/level2';
   static String level3 = '/level3';

@@ -53,7 +53,7 @@ class CustomDialogWithTitleButtonWidget extends StatelessWidget {
                       children: [
                         StrokeTextWidget(
                           text: title,
-                          size: AppSizes.maxWidth < 350 ? 16 : 24,
+                          size: AppSizes.maxWidth < 350 ? 14 : 22,
                         ),
                         Spacer(),
                         Padding(

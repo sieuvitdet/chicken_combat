@@ -47,6 +47,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   }
 
   _initData() {
+    _listItemColorShop = [];
+    _listItemSkinShop = [];
+    _listItemPremiumShop = [];
+
     for (var store in Globals.listStore) {
       if (store.key == StoreModelEnum.color) {
         _listItemColorShop.add(store);

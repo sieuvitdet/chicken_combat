@@ -385,7 +385,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                     child: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.grey,
+                        color: Colors.black,
                       ),
                       onPressed: () {
                         AudioManager.resumeBackgroundMusic();

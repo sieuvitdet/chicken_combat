@@ -118,6 +118,7 @@ class _VideoDialogState extends State<VideoDialog> {
                 redColor: true,
                 onTap: _isCloseButtonEnabled
                     ? () {
+                  CustomNavigator.pop(context);
                   widget.onTap!();
                   Globals.prefs?.setBool(widget.keyPrefs, _doNotShowAgain);
                 }

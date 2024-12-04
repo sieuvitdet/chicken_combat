@@ -64,8 +64,6 @@ CarouselSliderController? buttonCarouselController = CarouselSliderController();
       if (_asks.length > 0) {
         _ask = _asks[0];
         answers = [_ask.A, _ask.B, _ask.C, _ask.D];
-        // splitText(_ask.Question);
-
         for (int i = 0; i < _asks.length; i++) {
           print(_asks[i].Answer);
           positions.add(-1);
@@ -521,7 +519,7 @@ CarouselSliderController? buttonCarouselController = CarouselSliderController();
                     child: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.grey,
+                        color: Colors.black,
                       ),
                       onPressed: () {
                         AudioManager.resumeBackgroundMusic();

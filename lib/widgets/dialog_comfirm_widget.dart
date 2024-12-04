@@ -50,7 +50,7 @@ class DialogConfirmWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         StrokeTextWidget(
-                            text: title ?? AppLocalizations.text(LangKey.confirm_purchase), size: AppSizes.maxWidth < 350 ? 16 : 24,),
+                            text: title ?? AppLocalizations.text(LangKey.confirm_purchase), size: AppSizes.maxWidth < 350 ? 14 : 22,),
                           Spacer(),
                         Padding(
                           padding: EdgeInsets.only(top: 16),

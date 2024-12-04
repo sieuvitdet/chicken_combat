@@ -93,7 +93,7 @@ class Assets {
   static final String img_diamond_border_white =
       "assets/images/img_diamond_border_white.png";
   static final String img_hot_item = "assets/images/img_hot_item.png";
-  static final String img_roof_shop = "assets/images/img_roof_shop.png";
+  static final String img_roof_shop = "assets/images/img_roof_shop_noel.png";
   static final String img_tab_button_unselected_shop =
       "assets/images/img_tab_button_unselected_shop.png";
   static final String img_text_shop = "assets/images/img_text_shop.png";
@@ -212,6 +212,14 @@ class Assets {
   static final String img_chicken_zombie_fall =
       "assets/images/img_chicken_zombie_fall.png";
   static final String img_chicken_noel = "assets/images/img_chicken_noel.png";
+  static final String img_chicken_noel_1 = "assets/images/img_chicken_noel_1.png";
+  static final String img_chicken_noel_2 = "assets/images/img_chicken_noel_2.png";
+  static final String img_floating_button = "assets/images/img_floating_button_event.png";
+  static final String img_event_question_1 = "assets/images/img_event_noel_1.png";
+  static final String img_event_question_2 = "assets/images/img_event_noel_2.png";
+  static final String img_event_question_3 = "assets/images/img_event_noel_3.png";
+  static final String img_event_question_4 = "assets/images/img_event_noel_4.png";
+  static final String img_event_question_5 = "assets/images/img_event_noel_5.png";
 
   //gif
   static final String chicken_flapping_swing_gif =
@@ -319,6 +327,13 @@ class ExtendedAssets extends Assets {
       "DI04": Assets.img_chicken_brown_circleface_premium,
       "DI05": Assets.img_chicken_zombie,
       "NOEL": Assets.img_chicken_noel,
+      "NOEL_1": Assets.img_chicken_noel_1,
+      "NOEL_2": Assets.img_chicken_noel_2,
+      "EVENT_QUESTION_NOEL_1": Assets.img_event_question_1,
+      "EVENT_QUESTION_NOEL_2": Assets.img_event_question_2,
+      "EVENT_QUESTION_NOEL_3": Assets.img_event_question_3,
+      "EVENT_QUESTION_NOEL_4": Assets.img_event_question_4,
+      "EVENT_QUESTION_NOEL_5": Assets.img_event_question_5,
     };
 
     return codeToAssetMap[code] ?? Assets.img_chicken;
@@ -342,6 +357,13 @@ class ExtendedAssets extends Assets {
       Assets.img_chicken_lovely: "DI03",
       Assets.img_chicken_brown_circleface_premium: "DI04",
       Assets.img_chicken_zombie: "DI05",
+      Assets.img_chicken_noel_1: "NOEL_1",
+      Assets.img_chicken_noel_2: "NOEL_2",
+      Assets.img_event_question_1: "EVENT_QUESTION_NOEL_1",
+      Assets.img_event_question_2: "EVENT_QUESTION_NOEL_2",
+      Assets.img_event_question_3: "EVENT_QUESTION_NOEL_3",
+      Assets.img_event_question_4: "EVENT_QUESTION_NOEL_4",
+      Assets.img_event_question_5: "EVENT_QUESTION_NOEL_5",
     };
     return assetToCodeMap[asset] ?? "CO01";
   }
@@ -425,6 +447,11 @@ class ExtendedAssets extends Assets {
       "family_9": "assets/images/family_9.jpg",
       "family_10": "assets/images/family_10.jpg",
 
+      "EVENT_QUESTION_NOEL_1": Assets.img_event_question_1,
+      "EVENT_QUESTION_NOEL_2": Assets.img_event_question_2,
+      "EVENT_QUESTION_NOEL_3": Assets.img_event_question_3,
+      "EVENT_QUESTION_NOEL_4": Assets.img_event_question_4,
+      "EVENT_QUESTION_NOEL_5": Assets.img_event_question_5,
     };
 
     return codeToAssetMap[code] ?? Assets.TOPIC01_0001;

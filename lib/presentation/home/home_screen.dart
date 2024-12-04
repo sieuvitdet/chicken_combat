@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:chicken_combat/common/assets.dart';
 import 'package:chicken_combat/common/langkey.dart';
 import 'package:chicken_combat/common/localization/app_localization.dart';
@@ -19,11 +18,12 @@ import 'package:chicken_combat/utils/video_dialog.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
-import 'package:chicken_combat/widgets/dialog_shield_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
+
+import '../event/event_information_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _userModel = Globals.currentUser;
     _initializeData();
-    _configAnamation();
+    _configAnimation();
     WidgetsBinding.instance.addObserver(this);
     _audioManager = AudioManager();
     _audioManager.initVolumeListener();
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen>
     await AudioManager.pauseVoiceMusic();
   }
 
-  Future<void> _resummeChickenSing() async {
+  Future<void> _resumeChickenSing() async {
     await AudioManager.stopBackgroundMusic();
     await AudioManager.resumeVoiceMusic();
   }
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  void _configAnamation() {
+  void _configAnimation() {
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen>
   _triggerVoice() {
     if (_isPlay) {
       if (_isEnableResume) {
-        _resummeChickenSing();
+        _resumeChickenSing();
       } else {
         _isEnableResume = true;
         _playChickenSing();
@@ -214,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen>
               await _pauseChickenSing();
             }
             showVideoDialogIfNeeded(context, () async {
-              CustomNavigator.pop(context);
               bool result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListChallengeScreen()));
               if (result) {
                 _triggerVoice();
@@ -229,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   void showVideoDialogIfNeeded(BuildContext context, GestureTapCallback onTap, String video) async {
     bool? doNotShowAgain = Globals.prefs!.getBool(SharedPrefsKey.doNotShowAgainExamination);
-    if (doNotShowAgain == null || !doNotShowAgain) {
+    if (!doNotShowAgain) {
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -395,12 +394,10 @@ class _HomeScreenState extends State<HomeScreen>
                 onTap: () {
                   setState(() {
                     if (_isPlay) {
-                      // đang phát nhạc gà
                       _pauseChickenSing();
                     } else {
-                      // đang tắt nhạc gà
                       if (_isEnableResume) {
-                        _resummeChickenSing();
+                        _resumeChickenSing();
                       } else {
                         _isEnableResume = true;
                         _playChickenSing();
@@ -451,6 +448,7 @@ class _HomeScreenState extends State<HomeScreen>
                     setState(() {
                       _controller.reverse();
                       _showMicro = false;
+                      _isPlay = !_isPlay;
                     });
                   },
                   child: Container(
@@ -474,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen>
                     padding: EdgeInsets.all(8), // Kích thước nút
                     child: Icon(Icons.home, color: Colors.white,
                       size: 24,)),
-                ))
+                )),
           // Positioned(
           //   top: 200,
           //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
@@ -535,17 +533,60 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  Widget _buildEvent() {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1.0, end: 1.2),
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+      builder: (context, scale, child) {
+        return Transform.scale(
+          scale: scale,
+          child: child,
+        );
+      },
+      onEnd: () {
+        Future.delayed(Duration(milliseconds: 500), () {
+          (context as Element).markNeedsBuild();
+        });
+      },
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInformationScreen()));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.yellowAccent.withOpacity(0.3),
+                spreadRadius: 8, // Độ lan của viền
+                blurRadius: 24, // Độ mờ
+                offset: Offset(0, 0), // Tọa độ của bóng (0, 0 để nằm đều xung quanh)
+              ),
+            ],
+          ),
+          child: Image.asset(
+            Assets.img_floating_button,
+            width: 80,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        //backgroundColor: Color(0xff8e0c0c),
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFFF6666), Color(0xFFFFD1A9)],
+              colors: [
+                Color(0xFFFF6666),
+                Color(0xFFFFD1A9)
+              ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -580,6 +621,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
         ),
+        floatingActionButton: _buildEvent(),
       ),
     );
   }
