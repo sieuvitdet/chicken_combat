@@ -17,7 +17,7 @@ import flutter_volume_controller
 import path_provider_foundation
 import shared_preferences_foundation
 import speech_to_text_macos
-import sqflite
+import sqflite_darwin
 import video_player_avfoundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
