@@ -22,6 +22,7 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../event/event_information_screen.dart';
 
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isEnableResume = false;
   bool _showMicro = false;
   late AudioManager _audioManager;
+  bool _isFabVisible = true;
 
   @override
   void initState() {
@@ -48,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen>
     _userModel = Globals.currentUser;
     _initializeData();
     _configAnimation();
+    _loadFabVisibility();
     WidgetsBinding.instance.addObserver(this);
     _audioManager = AudioManager();
     _audioManager.initVolumeListener();
@@ -59,6 +62,13 @@ class _HomeScreenState extends State<HomeScreen>
     _audioManager.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  Future<void> _loadFabVisibility() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isFabVisible = prefs.getBool('isFabVisible') ?? true; // Mặc định là hiện.
+    });
   }
 
   @override
@@ -473,6 +483,9 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Icon(Icons.home, color: Colors.white,
                       size: 24,)),
                 )),
+          Positioned(
+              top: 16, right: 16,
+              child: _isFabVisible ? _buildEvent() : Container(),)
           // Positioned(
           //   top: 200,
           //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
@@ -535,8 +548,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildEvent() {
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 1.0, end: 1.2),
-      duration: Duration(seconds: 1),
+      tween: Tween(begin: 1.0, end: 1.3),
+      duration: Duration(seconds: 3),
       curve: Curves.easeInOut,
       builder: (context, scale, child) {
         return Transform.scale(
@@ -550,8 +563,15 @@ class _HomeScreenState extends State<HomeScreen>
         });
       },
       child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInformationScreen()));
+        onTap: () async {
+          bool isSuccess = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInformationScreen()));
+          if (isSuccess) {
+            Future.delayed(Duration(milliseconds: 500), () {
+              _isFabVisible = false;
+              setState(() {
+              });
+            });
+          }
         },
         child: Container(
           decoration: BoxDecoration(
@@ -621,7 +641,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
         ),
-        floatingActionButton: _buildEvent(),
+        //floatingActionButton: _isFabVisible ? _buildEvent() : null,
       ),
     );
   }

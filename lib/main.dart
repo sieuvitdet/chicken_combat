@@ -22,7 +22,7 @@ void main() async {
 
 Future<void> configureLocalTimeZone() async {
   tz.initializeTimeZones();
-  var locationName = 'Asia/Ho_Chi_Minh'; // Đặt múi giờ phù hợp tại đây
+  var locationName = 'Asia/Ho_Chi_Minh';
   tz.setLocalLocation(tz.getLocation(locationName));
 }
 
@@ -82,7 +82,6 @@ class _DragItemState extends State<DragItem> {
           initialDraggableOffset:
               Offset(12, MediaQuery.of(context).size.height * 11 / 14),
               onTapAction: () {
-                print("ec");
               },
               onTapClose: () {
                 setState(() {
@@ -90,7 +89,6 @@ class _DragItemState extends State<DragItem> {
                 });
               },
         ) : Container(),
-
         body: BackgroundCloudMap2Widget(heightContent: 1000),
     );
   }

@@ -14,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/assets.dart';
 import '../../utils/utils.dart';
@@ -140,6 +141,11 @@ class _EventChallengeScreenState extends State<EventChallengeScreen>
     return score;
   }
 
+  Future<void> _saveFabVisibility() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isFabVisible', false);
+  }
+
   Widget _buildContent() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -200,7 +206,8 @@ class _EventChallengeScreenState extends State<EventChallengeScreen>
                                     context, DialogConfirmWidget(
                                   title: "Chúc mừng bạn đã hoàn thành thử thách, hãy kiểm tra cửa hàng để nhận quà!",
                                   agree: () {
-                                    Navigator.of(context)..pop()..pop()..pop();
+                                    _saveFabVisibility();
+                                    Navigator.of(context)..pop(true)..pop(true)..pop(true);
                                   },
                                 ));
                               } else {
