@@ -37,8 +37,8 @@ class _LoadingReadyChallengeScreenState
       });
     });
     _audioManager = AudioManager();
-    _audioManager.initVolumeListener();
-    _audioManager.playRandomBackgroundMusic();
+    AudioManager.initVolumeListener();
+    AudioManager.playRandomBackgroundMusic();
   }
 
   @override

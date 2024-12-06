@@ -60,7 +60,7 @@ class _Map2ScreenState extends State<Map2Screen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
-    AudioManager.playBackgroundMusic(AudioFile.sound_map_1);
+    // AudioManager.playBackgroundMusic(AudioFile.sound_map_1);
   }
 
   void _configUI() {
@@ -579,7 +579,7 @@ class _Map2ScreenState extends State<Map2Screen>
                   child: GestureDetector(
                     onTap: () {
                       // Hàm xử lý khi nhấn nút Back
-                      Navigator.pop(context);
+                      Navigator.of(context).pop(true);
                     },
                     child: Container(
                       decoration: BoxDecoration(

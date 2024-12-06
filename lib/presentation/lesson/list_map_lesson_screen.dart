@@ -28,20 +28,22 @@ class ListMapLessonScreen extends StatefulWidget {
   State<ListMapLessonScreen> createState() => _ListMapLessonScreenState();
 }
 
-class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
+class _ListMapLessonScreenState extends State<ListMapLessonScreen> with WidgetsBindingObserver, SingleTickerProviderStateMixin{
   List<MapModel> _listMap = [];
   List<UserMapModel> itemMaps = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   int locationMap1 = 0;
   int locationMap2 = 0;
-
+  late AudioManager _audioManager;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     itemMaps = widget.items;
     _listMap = Globals.mapsModel;
     _listMap = List.generate(_listMap.length, (index) => _listMap[index]);
     getUserInfo();
+    _audioManager = AudioManager();
   }
 
   @override
@@ -202,16 +204,25 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> {
           }
           switch (index) {
             case 0:
-              Navigator.of(context).push(MaterialPageRoute(
+              var result = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Map1Screen(
                         type: widget.type,
                         isLesson: widget.isLesson,
                         location: locationMap1,
                       )));
+              if (result) {
+                AudioManager.playRandomBackgroundMusic();
+                getUserInfo();
+              }
+              break;
             case 1:
-              Navigator.of(context).push(MaterialPageRoute(
+              var result = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Map2Screen(
                       type: widget.type, isLesson: widget.isLesson,location: locationMap2)));
+              if (result) {
+                AudioManager.playRandomBackgroundMusic();
+                getUserInfo();
+              }
               break;
             case 2:
               Navigator.of(context).push(MaterialPageRoute(

@@ -38,12 +38,11 @@ class _RoomWait2v2ScreenState extends State<RoomWait2v2Screen> with TickerProvid
     super.initState();
     setupData();
     _audioManager = AudioManager();
-    _audioManager.initVolumeListener();
-    _audioManager.playRandomBackgroundMusic();
+    AudioManager.initVolumeListener();
+    AudioManager.playRandomBackgroundMusic();
   }
   @override
   void dispose() {
-    _audioManager.dispose();
     super.dispose();
   }
 

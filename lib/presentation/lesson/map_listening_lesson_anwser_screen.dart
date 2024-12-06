@@ -480,7 +480,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
           canPop: true,
           child: Scaffold(
               appBar: AppBar(
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Color(0xFFFF6666),
                   leading: Container(),
                   // leading: IconTheme(
                   //   data: IconThemeData(size: 24.0), // Set the size here

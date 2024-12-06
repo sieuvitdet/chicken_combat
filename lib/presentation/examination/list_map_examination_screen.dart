@@ -7,6 +7,7 @@ import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/map/map1_screen.dart';
 import 'package:chicken_combat/presentation/map/map2_screen.dart';
 import 'package:chicken_combat/presentation/map/map3_screen.dart';
+import 'package:chicken_combat/utils/audio_manager.dart';
 import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
@@ -30,20 +31,24 @@ class ListMapExaminationScreen extends StatefulWidget {
       _ListMapExaminationScreenState();
 }
 
-class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
+class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   List<MapModel> _listMap = [];
   List<UserMapModel> itemMaps = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   int locationMap1 = 0;
   int locationMap2 = 0;
+  late AudioManager _audioManager;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     itemMaps = widget.items;
     _listMap = Globals.mapsModel;
     _listMap = List.generate(_listMap.length, (index) => _listMap[index]);
     getUserInfo();
+    AudioManager.initVolumeListener();
+    AudioManager.playRandomBackgroundMusic();
   }
 
   @override
@@ -208,6 +213,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
                         location: locationMap1,
                       )));
               if (result) {
+                AudioManager.playRandomBackgroundMusic();
                 getUserInfo();
               }
             case 1:
@@ -217,6 +223,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> {
                       isLesson: widget.isLesson,
                       location: locationMap2)));
               if (result) {
+                AudioManager.playRandomBackgroundMusic();
                 getUserInfo();
                 
               }

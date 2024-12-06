@@ -174,16 +174,48 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
         child:
             Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconTheme(
-                  data: IconThemeData(size: 24.0), // Set the size here
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios,color: Colors.grey,),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                  backgroundColor: Color(0xFFFF6666),
+                  leading: Positioned(
+                    top: MediaQuery.of(context).padding.top / 2,
+                    left: 16.0,
+                    child: SafeArea(
+                      child: Positioned(
+                        top: AppSizes.maxHeight * 0.05,
+                        left: AppSizes.maxWidth * 0.03,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all( 8),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFFFFD700),
+                                  Color(0xFFFFEA9F)], // Gradient từ vàng sang đỏ
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(0, 4),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Kích thước nút
+                            child: Icon(
+                              Icons.arrow_back_outlined,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
                 actions: [
                   Padding(
                     padding: EdgeInsets.only(right: 16),

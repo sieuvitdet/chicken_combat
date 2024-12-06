@@ -65,7 +65,9 @@ late AnimationController _controller1;
       width: AppSizes.maxWidth,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFFF6666), Color(0xFFFFD1A9)],
+          colors: [
+            Color(0xFFFF6666),
+            Color(0xFFFFD1A9)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

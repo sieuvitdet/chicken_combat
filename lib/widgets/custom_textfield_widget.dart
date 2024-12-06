@@ -103,164 +103,168 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        label != null
-            ? Container(
-                margin: EdgeInsets.only(bottom: 4),
-                child: RichText(
-                    text: TextSpan(
-                        text: label,
-                        style: styleLabel ??
-                            TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF707885),
-                                fontWeight: FontWeight.w500),
-                        children: [
-                      require ?? false
-                          ? TextSpan(
-                              text: "*", style: TextStyle(color: Colors.red))
-                          : TextSpan()
-                    ])),
-              )
-            : Container(),
-        Container(
-          margin: EdgeInsets.only(
-              top: horizontalMargin ?? 0,
-              left: verticalMargin ?? 0,
-              right: verticalMargin ?? 0),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(radius ?? 8.0)),
-              color: backgroundColor ??
-                  ((error != "")
-                      ? Colors.white
-                      : (enableBorder ?? false
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            label != null
+                ? Container(
+                    margin: EdgeInsets.only(bottom: 4),
+                    child: RichText(
+                        text: TextSpan(
+                            text: label,
+                            style: styleLabel ??
+                                TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF707885),
+                                    fontWeight: FontWeight.w500),
+                            children: [
+                          require ?? false
+                              ? TextSpan(
+                                  text: "*", style: TextStyle(color: Colors.red))
+                              : TextSpan()
+                        ])),
+                  )
+                : Container(),
+            Container(
+              margin: EdgeInsets.only(
+                  top: horizontalMargin ?? 0,
+                  left: verticalMargin ?? 0,
+                  right: verticalMargin ?? 0),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(radius ?? 8.0)),
+                  color: backgroundColor ??
+                      ((error != "")
                           ? Colors.white
-                          : Color(0xFFF6F6F6))),
-              border: border ??
-                  Border.all(
-                      width: 1.0,
-                      color: (error != "")
-                          ? Colors.red
                           : (enableBorder ?? false
-                              ? Colors.amber
-                              : Color(0xFFF5F5F5)),
-                      style: BorderStyle.solid)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (prefixIcon != null)
-                InkWell(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding ?? 8,
-                    ),
-                    child: Image.asset(
-                      prefixIcon ?? Assets.img_eye_close,
-                      fit: BoxFit.contain,
-                      width: AppSizes.maxWidth * 0.058,
-                    ),
-                  ),
-                  onTap: onPrefixIconTap as void Function()?,
-                )
-              else if (prefixChild != null)
-                prefixChild!,
-              Flexible(
-                child: TextField(
-                  key: key,
-                  focusNode: focusNode ?? FocusNode(),
-                  controller: controller ?? TextEditingController(),
-                  selectionControls: selectionControls,
-                  keyboardType: isPhone ?? false
-                      ? TextInputType.number
-                      : (obscureText ?? false
-                          ? TextInputType.visiblePassword
-                          : (keyboardType ?? TextInputType.text)),
-                  textInputAction: textInputAction ?? TextInputAction.done,
-                  decoration: InputDecoration(
-                    contentPadding: (prefixIcon == null && prefixChild == null)
-                        ? EdgeInsets.only(
-                            left: horizontalPadding ?? 16,
-                            top: verticalPadding ?? 10.0,
-                            bottom: verticalPadding ?? 10.0)
-                        : EdgeInsets.symmetric(
-                            vertical: verticalPadding ?? 10.0,
-                          ),
-                    hintText: hintText,
-                    hintStyle: hintStyle ??
-                        TextStyle(
-                            fontSize: 16,
-                            color: AppColors.greyTextField,
-                            fontWeight: FontWeight.w400),
-                    labelText: labelText,
-                    labelStyle: hintStyle ?? AppTextStyles.style15GreyTextW400,
-                    isDense: true,
-                    border: InputBorder.none,
-                    counterText: "",
-                  ),
-                  style: style ??
-                      TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal),
-                  obscureText: obscureText ?? false,
-                  onSubmitted: onSubmitted,
-                  inputFormatters: isPhone ?? false
-                      ? [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(limitInput),
-                        ]
-                      : [
-                          if (inputFormatters != null) ...inputFormatters!,
-                          // FilteringTextInputFormatter.allow(
-                          //     RegExp(r'[0-9a-zA-Z!@#$%^&*]'))
-                        ],
-                  onChanged: onChanged,
-                  autofocus: autofocus ?? false,
-                  maxLines: maxLines ?? 1,
-                  textAlign: textAlign ?? TextAlign.start,
-                  maxLength: maxLength,
-                  readOnly: readOnly ?? false,
-                  onTap: onTap as void Function()?,
-                  textCapitalization:
-                      textCapitalization ?? TextCapitalization.none,
-                ),
-              ),
-              if (suffixIcon != null || suffixChild != null)
-                suffixChild ??
+                              ? Colors.white
+                              : Color(0xFFF6F6F6))),
+                  border: border ??
+                      Border.all(
+                          width: 1.0,
+                          color: (error != "")
+                              ? Colors.red
+                              : (enableBorder ?? false
+                                  ? Colors.amber
+                                  : Color(0xFFF5F5F5)),
+                          style: BorderStyle.solid)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (prefixIcon != null)
                     InkWell(
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: horizontalPadding ?? 8,
                         ),
                         child: Image.asset(
-                          suffixIcon ?? Assets.img_eye_close,
-                          width: suffixSize ?? AppSizes.maxWidth * 0.05,
-                          color: suffixIconColor ?? Colors.amber,
+                          prefixIcon ?? Assets.img_eye_close,
+                          fit: BoxFit.contain,
+                          width: AppSizes.maxWidth * 0.058,
                         ),
                       ),
-                      onTap: onSuffixIconTap as void Function()?,
+                      onTap: onPrefixIconTap as void Function()?,
                     )
-            ],
-          ),
-        ),
-        if (error != "")
-          error != "."
-              ? Container(
-                  margin: EdgeInsets.only(bottom: 16, top: 4, right: 8),
-                  child: Text(
-                    error ?? "",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
+                  else if (prefixChild != null)
+                    prefixChild!,
+                  Flexible(
+                    child: TextField(
+                      key: key,
+                      focusNode: focusNode ?? FocusNode(),
+                      controller: controller ?? TextEditingController(),
+                      selectionControls: selectionControls,
+                      keyboardType: isPhone ?? false
+                          ? TextInputType.number
+                          : (obscureText ?? false
+                              ? TextInputType.visiblePassword
+                              : (keyboardType ?? TextInputType.text)),
+                      textInputAction: textInputAction ?? TextInputAction.done,
+                      decoration: InputDecoration(
+                        contentPadding: (prefixIcon == null && prefixChild == null)
+                            ? EdgeInsets.only(
+                                left: horizontalPadding ?? 16,
+                                top: verticalPadding ?? 10.0,
+                                bottom: verticalPadding ?? 10.0)
+                            : EdgeInsets.symmetric(
+                                vertical: verticalPadding ?? 10.0,
+                              ),
+                        hintText: hintText,
+                        hintStyle: hintStyle ??
+                            TextStyle(
+                                fontSize: 16,
+                                color: AppColors.greyTextField,
+                                fontWeight: FontWeight.w400),
+                        labelText: labelText,
+                        labelStyle: hintStyle ?? AppTextStyles.style15GreyTextW400,
+                        isDense: true,
+                        border: InputBorder.none,
+                        counterText: "",
+                      ),
+                      style: style ??
+                          TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal),
+                      obscureText: obscureText ?? false,
+                      onSubmitted: onSubmitted,
+                      inputFormatters: isPhone ?? false
+                          ? [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(limitInput),
+                            ]
+                          : [
+                              if (inputFormatters != null) ...inputFormatters!,
+                              // FilteringTextInputFormatter.allow(
+                              //     RegExp(r'[0-9a-zA-Z!@#$%^&*]'))
+                            ],
+                      onChanged: onChanged,
+                      autofocus: autofocus ?? false,
+                      maxLines: maxLines ?? 1,
+                      textAlign: textAlign ?? TextAlign.start,
+                      maxLength: maxLength,
+                      readOnly: readOnly ?? false,
+                      onTap: onTap as void Function()?,
+                      textCapitalization:
+                          textCapitalization ?? TextCapitalization.none,
+                    ),
                   ),
-                )
-              : Container()
+                  if (suffixIcon != null || suffixChild != null)
+                    suffixChild ??
+                        InkWell(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: horizontalPadding ?? 8,
+                            ),
+                            child: Image.asset(
+                              suffixIcon ?? Assets.img_eye_close,
+                              width: suffixSize ?? AppSizes.maxWidth * 0.05,
+                              color: suffixIconColor ?? Colors.amber,
+                            ),
+                          ),
+                          onTap: onSuffixIconTap as void Function()?,
+                        )
+                ],
+              ),
+            ),
+            if (error != "")
+              error != "."
+                  ? Container(
+                      margin: EdgeInsets.only(bottom: 16, top: 4, right: 8),
+                      child: Text(
+                        error ?? "",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  : Container()
+          ],
+        ),
       ],
     );
   }

@@ -51,7 +51,6 @@ class _Map1ScreenState extends State<Map1Screen>
   @override
   void initState() {
     super.initState();
-
     _configUI();
     _configChickenDance();
     _configMapShake();
@@ -59,16 +58,6 @@ class _Map1ScreenState extends State<Map1Screen>
       _scrollToBottom();
     });
     WidgetsBinding.instance.addObserver(this);
-    AudioManager.playBackgroundMusic(AudioFile.sound_map_1);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      AudioManager.pauseBackgroundMusic();
-    } else if (state == AppLifecycleState.resumed) {
-      AudioManager.resumeBackgroundMusic();
-    }
   }
 
   Future<void> updateUsersReady(
@@ -206,7 +195,6 @@ class _Map1ScreenState extends State<Map1Screen>
 
   @override
   void dispose() {
-    AudioManager.stopBackgroundMusic();
     _scrollController.dispose();
     _controller1.dispose();
     _controller.dispose();
@@ -376,7 +364,7 @@ class _Map1ScreenState extends State<Map1Screen>
                 }
               }
 
-              AudioManager.playBackgroundMusic(AudioFile.sound_map_1);
+              AudioManager.playRandomBackgroundMusic();
               if (result != null && result == true && (i + 1) == location) {
                 print(Globals
                     .currentUser!.checkingMapModel.readingCourses.length);
@@ -603,8 +591,8 @@ class _Map1ScreenState extends State<Map1Screen>
                     left: AppSizes.maxWidth * 0.03,
                     child: GestureDetector(
                       onTap: () {
-                        // Hàm xử lý khi nhấn nút Back
-                        Navigator.pop(context);
+                        AudioManager.stopBackgroundMusic();
+                        Navigator.of(context).pop(true);
                       },
                       child: Container(
                         decoration: BoxDecoration(

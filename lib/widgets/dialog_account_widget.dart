@@ -8,6 +8,7 @@ import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/login/login_screen.dart';
 import 'package:chicken_combat/presentation/ranking/ranking_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/string_utils.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -19,6 +20,7 @@ import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DialogAccountWidget extends StatefulWidget {
   const DialogAccountWidget({super.key});
@@ -72,6 +74,11 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
         .update({'username': newUserName})
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> _saveFabVisibility() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isFabVisible', true);
   }
 
   @override
@@ -135,12 +142,11 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
                                   DialogConfirmWidget(
                                     title: AppLocalizations.text(LangKey.confirm_logout),
                                     agree: () async {
+                                      Globals.prefs!.setBool(SharedPrefsKey.is_login, false);
                                       Navigator.of(context).pop();
-                                      Navigator.of(context, rootNavigator: true)
-                                          .popUntil((route) => route.isFirst);
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushReplacement(
-                                              CustomRoute(page: LoginScreen()));
+                                      Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
+                                      Navigator.of(context, rootNavigator: true).pushReplacement(CustomRoute(page: LoginScreen()));
+                                      _saveFabVisibility();
                                     },
                                     cancel: () {
                                       Navigator.of(context).pop();
@@ -324,12 +330,6 @@ class _DialogAccountWidgetState extends State<DialogAccountWidget> {
             textInputAction: TextInputAction.done,
             maxLines: 1,
           ),
-          // child: Container(
-          //     alignment: Alignment.centerLeft,
-          //     child: Text(
-          //       "${_userModel?.username ?? ""}",
-          //       style: TextStyle(color: Colors.white),
-          //     )),
         ))
       ],
     );

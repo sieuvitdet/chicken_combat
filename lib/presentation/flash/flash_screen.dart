@@ -42,18 +42,14 @@ class _FlashScreenState extends State<FlashScreen>
     _configAnamation();
     if (Globals.prefs!.getBool(SharedPrefsKey.is_login)) {
       CollectionReference users = firestore.collection(FirebaseEnum.userdata);
-      users
-          .doc(Globals.prefs!.getString(SharedPrefsKey.id_user))
-          .get()
-          .then((DocumentSnapshot documentSnapshot) {
+      users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).get().then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             await Future.delayed(Duration(seconds: 3));
             print('Document exists on the database');
             UserModel user = UserModel.fromSnapshot(documentSnapshot);
             Globals.currentUser = user;
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HomeScreen()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen()));
           });
         }
       });
@@ -63,8 +59,7 @@ class _FlashScreenState extends State<FlashScreen>
       Globals.prefs!.setBool(SharedPrefsKey.doNotShowAgainPK, false);
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await Future.delayed(Duration(seconds: 3));
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
       });
     }
   }

@@ -37,8 +37,8 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
     super.initState();
     setupData();
     _audioManager = AudioManager();
-    _audioManager.initVolumeListener();
-    _audioManager.playRandomBackgroundMusic();
+    AudioManager.initVolumeListener();
+    AudioManager.playRandomBackgroundMusic();
   }
 
 

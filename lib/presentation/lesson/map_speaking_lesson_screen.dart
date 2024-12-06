@@ -10,13 +10,12 @@ import 'package:chicken_combat/utils/speech_to_text_service.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
-import 'package:chicken_combat/widgets/dialog_comfirm_widget.dart';
 import 'package:chicken_combat/widgets/dialog_congratulation_widget.dart';
-import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MapSpeakingLessonScreen extends StatefulWidget {
   final bool isGetReward;
@@ -54,6 +53,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
     _sttService.init();
     _checkMicrophonePermission();
     WidgetsBinding.instance.addObserver(this);
+    AudioManager.stopBackgroundMusic();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _speakings = await _loadAsks();
       if (_speakings.length > 0) {
@@ -262,100 +262,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
         _body(),
         _record(),
         Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 16),
-        //   child: Row(
-        //     children: [
-        //       Flexible(
-        //         child: CustomButtomImageColorWidget(
-        //           onTap: () {
-        //             if (page == 1) {
-        //               return;
-        //             }
-        //             page -= 1;
-        //             _ask = _speakings[0].quiz[page - 1];
-        //             setState(() {});
-        //           },
-        //           smallButton: true,
-        //           smallOrangeColor: page > 1,
-        //           smallGrayColor: page == 1,
-        //           child: Center(
-        //             child: StrokeTextWidget(
-        //               text: "Previous",
-        //                size: AppSizes.maxWidth < 350 ? 12 : 16,
-        //               colorStroke: Color(0xFFD18A5A),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //       SizedBox(
-        //         width: 16,
-        //       ),
-        //       Flexible(
-        //         child: CustomButtomImageColorWidget(
-        //           onTap: () {
-        //             if (page == pages) {
-        //               GlobalSetting.shared.showPopupWithContext(
-        //                   context,
-        //                   DialogConfirmWidget(
-        //                     title:
-        //                         AppLocalizations.text(LangKey.confirm_submit),
-        //                     agree: () async {
-        //                       // Navigator.of(context).pop();
-        //                       int score = _checkScore();
-        //                       int gold = _getGold(score);
-        //                       int diamond = _getDiamond(score);
-        //                       if (score > 5) {
-        //                         Globals.financeUser?.gold += gold;
-        //                         Globals.financeUser?.diamond += diamond;
-        //                         _updateGold(
-        //                             Globals.currentUser?.financeId ?? "",
-        //                             Globals.financeUser?.gold ?? 0);
-        //                         _updateDiamond(
-        //                             Globals.currentUser?.financeId ?? "",
-        //                             Globals.financeUser?.diamond ?? 0);
-        //                       }
-
-        //                       GlobalSetting.shared.showPopupCongratulation(
-        //                           context, 1, score, gold, diamond,
-        //                           ontapContinue: () {
-        //                         // Navigator.of(context)..pop()..pop(false);
-        //                       }, ontapExit: () {
-        //                         Navigator.of(context)
-        //                           ..pop()
-        //                           ..pop()
-        //                           ..pop(score > 5);
-        //                       });
-        //                     },
-        //                     cancel: () {
-        //                       Navigator.of(context).pop();
-        //                     },
-        //                   ));
-        //               return;
-        //             }
-        //             page += 1;
-        //             _ask = _speakings[0].quiz[page - 1];
-        //             setState(() {});
-        //           },
-        //           smallButton: true,
-        //           smallOrangeColor: true,
-        //           child: Center(
-        //             child: StrokeTextWidget(
-        //               text: page == pages ? "Final" : "Next",
-        //                size: AppSizes.maxWidth < 350 ? 12 : 16,
-        //               colorStroke: Color(0xFFD18A5A),
-        //             ),
-        //           ),
-        //         ),
-        //       )
-        //     ],
-        //   ),
-        // ),
         Container(height: AppSizes.maxHeight * 0.03)
-        // Visibility(visible: !_isKeyboardVisible, child: _buildButton()),
-        // Container(
-        //   height: AppSizes.bottomHeight,
-        // )
       ],
     );
   }
@@ -548,18 +455,48 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
             appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconTheme(
-                  data: IconThemeData(size: 24.0), // Set the size here
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.grey,
+                backgroundColor: Color(0xFFFF6666),
+                leading: Positioned(
+                  top: MediaQuery.of(context).padding.top / 2,
+                  left: 16.0,
+                  child: SafeArea(
+                    child: Positioned(
+                      top: AppSizes.maxHeight * 0.05,
+                      left: AppSizes.maxWidth * 0.03,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFFFFD700),
+                                Color(0xFFFFEA9F)
+                              ], // Gradient từ vàng sang đỏ
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(0, 4),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4), // Kích thước nút
+                          child: Icon(
+                            Icons.arrow_back_outlined,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      AudioManager.resumeBackgroundMusic();
-                      Navigator.of(context).pop();
-                    },
                   ),
                 ),
                 actions: [

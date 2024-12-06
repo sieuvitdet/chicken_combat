@@ -51,13 +51,10 @@ class _LoadingMeetingChallengeScreenState
 
   void initState() {
     super.initState();
-    _configAnamation();
+    _configAnimation();
     _configChickenFisrt();
     _configChickenSecond();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   _configChickenFisrt();
-    // _configChickenSecond();
-
       _controllerChicken1.forward();
       _controllerChicken2.forward();
       await Future.delayed(Duration(seconds: 3));
@@ -67,12 +64,11 @@ class _LoadingMeetingChallengeScreenState
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Battle1Vs1Screen(room: widget.room,)));
     });
-    _audioManager = AudioManager();
-    _audioManager.initVolumeListener();
-    _audioManager.playRandomBackgroundMusic();
+    AudioManager.initVolumeListener();
+    AudioManager.playRandomBackgroundMusic();
   }
 
-  void _configAnamation() {
+  void _configAnimation() {
     _controller1 = AnimationController(
       vsync: this,
       duration: Duration(seconds: 6),

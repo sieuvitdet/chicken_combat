@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isEnablePlay = false;
   bool _isEnableResume = false;
   bool _showMicro = false;
-  late AudioManager _audioManager;
   bool _isFabVisible = true;
 
   @override
@@ -52,14 +51,12 @@ class _HomeScreenState extends State<HomeScreen>
     _configAnimation();
     _loadFabVisibility();
     WidgetsBinding.instance.addObserver(this);
-    _audioManager = AudioManager();
-    _audioManager.initVolumeListener();
-    _audioManager.playRandomBackgroundMusic();
+    AudioManager.initVolumeListener();
+    AudioManager.playRandomBackgroundMusic();
   }
 
   @override
   void dispose() {
-    _audioManager.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -229,7 +226,6 @@ class _HomeScreenState extends State<HomeScreen>
                 _triggerVoice();
               }
             }, 'assets/video/pk_2.mp4');
-
           })
         ],
       ),
@@ -458,7 +454,10 @@ class _HomeScreenState extends State<HomeScreen>
                     setState(() {
                       _controller.reverse();
                       _showMicro = false;
+                      _pauseChickenSing();
+                      AudioManager.playRandomBackgroundMusic();
                       _isPlay = !_isPlay;
+                      _isEnablePlay = false;
                     });
                   },
                   child: Container(

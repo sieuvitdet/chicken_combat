@@ -430,8 +430,8 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
             appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: SizedBox.shrink(),
+                backgroundColor: Color(0xFFFF6666),
+                leading: Container(),
                 actions: [
                   Padding(
                     padding: EdgeInsets.only(right: 16),

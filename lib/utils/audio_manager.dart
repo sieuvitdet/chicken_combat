@@ -11,7 +11,7 @@ class AudioManager with WidgetsBindingObserver {
 
   static late bool isMusicPlaying = false;
 
-  void initVolumeListener() {
+  static void initVolumeListener() {
     FlutterVolumeController.addListener((double volume) async {
       await _backgroundAudioPlayer.setVolume(volume);
       await _voiceAudioPlayer.setVolume(volume);
@@ -49,7 +49,7 @@ class AudioManager with WidgetsBindingObserver {
     }
   }
 
-  Future<void> playRandomBackgroundMusic() async {
+  static Future<void> playRandomBackgroundMusic() async {
     isMusicPlaying = true;
     Random random = Random();
     int index = random.nextInt(soundFiles.length);

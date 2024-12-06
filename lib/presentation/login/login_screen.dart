@@ -80,18 +80,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void login(String _username, String _password) async {
     final String key = StringUtils.convertToLowerCase(_username.trim());
     final String encryptedPassword = GenerateHash.encryptString(_password, key);
-
     try {
-      CustomNavigator.showProgressDialog(context);
       final CollectionReference users = firestore.collection(FirebaseEnum.userdata);
       final DocumentSnapshot documentSnapshot = await users.doc(key).get();
-
       CustomNavigator.hideProgressDialog();
-
       if (documentSnapshot.exists) {
         print('Document exists on the database');
         UserModel user = UserModel.fromSnapshot(documentSnapshot);
-
         if (_isPasswordCorrect(user.password, encryptedPassword)) {
           _bloc.setupLogin(user);
           _navigateToHomeScreen();
@@ -259,29 +254,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 _inputForm(),
-                // Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: Padding(
-                //     padding: EdgeInsets.only(bottom: 16, top: 16),
-                //     child: ScalableButton(
-                //       onTap: () {
-                //         print("forget");
-                //       },
-                //       child: Text(
-                //         AppLocalizations.text(LangKey.forget_password),
-                //         style: TextStyle(
-                //             fontSize: 16,
-                //             fontWeight: FontWeight.bold,
-                //             color: Colors.black),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 SizedBox(height: 16),
                 _login(),
                 _comeInNow(),
-                //SizedBox(height: AppSizes.maxHeight*0.05),
-
               ],
 
             ),
@@ -389,7 +364,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _addFinanceDocument(String _userName, String _score) async {
-    CustomNavigator.showProgressDialog(context);
     CollectionReference finance =
     FirebaseFirestore.instance.collection(FirebaseEnum.finance);
     DocumentReference newDocRef = await finance.add({'gold': 0, 'diamond': 0, 'userId': _userName});

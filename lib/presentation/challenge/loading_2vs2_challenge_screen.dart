@@ -43,7 +43,7 @@ class _Loading2V2ChallegenScreenState extends State<Loading2V2ChallegenScreen>
     super.initState();
     _configAnimation();
     _audioManager = AudioManager();
-    _audioManager.playRandomBackgroundMusic();
+    AudioManager.playRandomBackgroundMusic();
     _initializeData();
   }
 
