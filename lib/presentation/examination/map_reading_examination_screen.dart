@@ -237,7 +237,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                 ],
                 title: Text("Level 1",
                     style: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.w500))),
-              backgroundColor: Color(0xFFFACA44), body: Responsive(mobile: _buildContent(), tablet: _buildContent(), desktop: _buildContent())),
+              backgroundColor: Color(0xFFFF6666), body: Responsive(mobile: _buildContent(), tablet: _buildContent(), desktop: _buildContent())),
       ),
     );
   }

@@ -261,7 +261,16 @@ class _LoadingChallegenScreenState extends State<LoadingChallegenScreen>
     return Container(
       height: AppSizes.maxHeight,
       width: AppSizes.maxWidth,
-      color: Color(0xFFFACA44),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFFFF6666),
+            Color(0xFFFFD1A9)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      //color: Color(0xFFFACA44),
     );
   }
 

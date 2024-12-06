@@ -572,7 +572,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                         color: Colors.black,
                         fontSize: 28,
                         fontWeight: FontWeight.w500))),
-            backgroundColor: Color(0xFFFACA44),
+            backgroundColor: Color(0xFFFF6666),
             body: Responsive(
                 mobile: Stack(
                   children: [_buildBackground(), _buildContent()],

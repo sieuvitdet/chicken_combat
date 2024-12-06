@@ -898,7 +898,7 @@ class _Battle1Vs1ScreenState extends State<Battle1Vs1Screen>
     return PopScope(
       canPop:false,
       child: Scaffold(
-        backgroundColor: Colors.amber,
+        backgroundColor: Color(0xFFFF6666),
         body: Responsive(mobile: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

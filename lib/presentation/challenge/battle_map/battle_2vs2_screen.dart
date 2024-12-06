@@ -1067,7 +1067,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
             } else {
               updateUserRoomById(widget.room!);
             }
-            AudioManager.stopBackgroundMusic();
+            AudioManager.pauseBackgroundMusic();
             Navigator.of(context)
               ..pop()
               ..pop()
@@ -1090,7 +1090,7 @@ class _Battle2Vs2ScreenState extends State<Battle2Vs2Screen>
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: Colors.amber,
+        backgroundColor: Color(0xFFFF6666),
         body: Responsive(mobile: Column(
           children: [
             _header(),

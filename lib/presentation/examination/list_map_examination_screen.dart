@@ -245,7 +245,7 @@ class _ListMapExaminationScreenState extends State<ListMapExaminationScreen> wit
     return PopScope(
       canPop: true,
       child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
+        backgroundColor: Color(0xFFFF6666),
         body: Responsive(
           mobile: Stack(
             fit: StackFit.expand,

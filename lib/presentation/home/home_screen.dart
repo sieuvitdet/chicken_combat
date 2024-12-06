@@ -440,7 +440,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Center(
                       child: Text(
-                        "Chạm vào tôi"),
+                        "Cùng nghe\nnhạc nào",),
                     )
                   ],
                 ),
