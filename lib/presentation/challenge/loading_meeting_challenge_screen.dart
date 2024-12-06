@@ -266,7 +266,7 @@ class _LoadingMeetingChallengeScreenState
     return PopScope(
       canPop:false,
       child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
+        backgroundColor: Color(0xFFFF6666),
         body: Responsive(mobile: Container(
           child: Stack(
             fit: StackFit.loose,

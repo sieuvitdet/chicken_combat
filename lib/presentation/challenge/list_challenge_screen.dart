@@ -107,7 +107,7 @@ class _ListChallengeScreenState extends State<ListChallengeScreen> {
       // },
       canPop: false,
       child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
+        backgroundColor: Color(0xFFFF6666),
         body: Responsive(mobile: Stack(
           fit: StackFit.expand,
           children: [

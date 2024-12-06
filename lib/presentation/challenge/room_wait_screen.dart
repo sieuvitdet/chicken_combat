@@ -328,7 +328,7 @@ class _RoomWaitScreenState extends State<RoomWaitScreen>
   Widget build(BuildContext context) {
     return PopScope(
       child: Scaffold(
-        backgroundColor: Color(0xFFFACA44),
+        backgroundColor: Color(0xFFFF6666),
         body: Responsive(
             mobile: Container(
               child: Stack(

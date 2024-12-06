@@ -200,9 +200,9 @@ class _HomeScreenState extends State<HomeScreen>
             if (_isPlay) {
               await _pauseChickenSing();
             }
-            bool result = await Navigator.of(context).push(MaterialPageRoute(
+            bool? result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListLessonScreen(courseMapModel: _userModel!.courseMapModel,)));
-            if (result) {
+            if (result != null && result) {
               _triggerVoice();
             }
           }),
@@ -210,9 +210,9 @@ class _HomeScreenState extends State<HomeScreen>
             if (_isPlay) {
               await _pauseChickenSing();
             }
-            bool result = await Navigator.of(context).push(MaterialPageRoute(
+            bool? result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ListExaminationScreen(mapModel: _userModel!.checkingMapModel)));
-            if (result) {
+            if (result != null && result) {
               _triggerVoice();
             }
           }),
