@@ -37,8 +37,8 @@ class Assets {
   static final String img_bottom_mountain_green =
       "assets/images/img_bottom_mountain_green.png";
   static final String img_bush = "assets/images/img_bush.png";
-  static final String img_cloud_big = "assets/images/img_cloud_noel_big.png";
-  static final String img_cloud_small = "assets/images/img_cloud_noel_small.png";
+  static final String img_cloud_big = "assets/images/img_cloud_tet_big.png";
+  static final String img_cloud_small = "assets/images/img_cloud_tet_small.png";
   static final String img_line_table = "assets/images/img_line_table.png";
   static final String img_pk = "assets/images/img_pk.png";
   static final String img_mountain_sea = "assets/images/img_mountain_sea.png";
@@ -243,6 +243,7 @@ class Assets {
   static final String gif_background_warehouse =
       "assets/images/gif_background_warehouse.gif";
   static final String gif_background_noel = "assets/images/gif_background_noel.gif";
+  static final String gif_background_tet = "assets/images/gif_background_tet.gif";
   static final String gif_background_event_music = "assets/images/gif_background_event_music.gif";
 
   static final List<String> imagesGift = [
