@@ -220,6 +220,7 @@ class Assets {
   static final String img_event_question_3 = "assets/images/img_event_noel_3.png";
   static final String img_event_question_4 = "assets/images/img_event_noel_4.png";
   static final String img_event_question_5 = "assets/images/img_event_noel_5.png";
+  static final String img_chicken_tet = "assets/images/img_chicken_tet.png";
 
   //gif
   static final String chicken_flapping_swing_gif =
@@ -335,6 +336,8 @@ class ExtendedAssets extends Assets {
       "EVENT_QUESTION_NOEL_3": Assets.img_event_question_3,
       "EVENT_QUESTION_NOEL_4": Assets.img_event_question_4,
       "EVENT_QUESTION_NOEL_5": Assets.img_event_question_5,
+      "TET": Assets.img_chicken_tet,
+
     };
 
     return codeToAssetMap[code] ?? Assets.img_chicken;
