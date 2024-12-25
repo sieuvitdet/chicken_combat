@@ -8,6 +8,7 @@ import 'package:chicken_combat/common/themes.dart';
 import 'package:chicken_combat/model/course/ask_examination_model.dart';
 import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
@@ -217,6 +218,19 @@ CarouselSliderController? buttonCarouselController = CarouselSliderController();
     }
     super.didChangeMetrics();
   }
+  Future<void> updateCountEvent() async {
+    CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        var data = documentSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('countEvent')) {
+          var countEvent = data['countEvent'];
+          print('countEvent: $countEvent');
+          users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).update({'countEvent': int.parse(countEvent) + 1});
+        }
+      }
+    });
+  }
 
   Widget _buildContent() {
     return Column(
@@ -287,6 +301,7 @@ CarouselSliderController? buttonCarouselController = CarouselSliderController();
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.diamond ?? 0);
                               }
+                              updateCountEvent();
 
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,

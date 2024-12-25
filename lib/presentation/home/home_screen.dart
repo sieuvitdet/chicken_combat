@@ -8,6 +8,7 @@ import 'package:chicken_combat/model/maps/map_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
+import 'package:chicken_combat/presentation/event/event_flash_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
@@ -20,6 +21,7 @@ import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
 import 'package:chicken_combat/widgets/dialog_account_widget.dart';
 import 'package:chicken_combat/widgets/stroke_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -346,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           Image(
             fit: BoxFit.fill,
-            image: _showMicro ? AssetImage(Assets.gif_background_event_music) : AssetImage(Assets.gif_background_noel),
+            image: _showMicro ? AssetImage(Assets.gif_background_event_music) : AssetImage(Assets.gif_background_tet),
             width: AppSizes.maxWidth,
             height: AppSizes.maxHeight,
           ),
@@ -482,9 +484,9 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Icon(Icons.home, color: Colors.white,
                       size: 24,)),
                 )),
-          Positioned(
-              top: 16, right: 16,
-              child: _isFabVisible ? _buildEvent() : Container(),)
+          // Positioned(
+          //     top: 64, right: 16,
+          //     child: _isFabVisible ? _buildEvent() : Container(),)
           // Positioned(
           //   top: 200,
           //   right: 80,child: ThoughtBubble(text: "Chọt em đi"))
@@ -547,7 +549,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildEvent() {
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 1.0, end: 1.3),
+      tween: Tween(begin: 1.0, end: 1.5),
       duration: Duration(seconds: 3),
       curve: Curves.easeInOut,
       builder: (context, scale, child) {
@@ -563,31 +565,11 @@ class _HomeScreenState extends State<HomeScreen>
       },
       child: GestureDetector(
         onTap: () async {
-          bool isSuccess = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInformationScreen()));
-          if (isSuccess) {
-            Future.delayed(Duration(milliseconds: 500), () {
-              _isFabVisible = false;
-              setState(() {
-              });
-            });
-          }
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventFlashScreen()));
         },
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.yellowAccent.withOpacity(0.3),
-                spreadRadius: 8, // Độ lan của viền
-                blurRadius: 24, // Độ mờ
-                offset: Offset(0, 0), // Tọa độ của bóng (0, 0 để nằm đều xung quanh)
-              ),
-            ],
-          ),
-          child: Image.asset(
-            Assets.img_floating_button,
-            width: 80,
-          ),
+        child: Image.asset(
+          Assets.img_floating_button,
+          width: 80,
         ),
       ),
     );
@@ -597,50 +579,55 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFFFF6666),
-                Color(0xFFFFD1A9)
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+      child: FloatingDraggableWidget(
+        floatingWidget: _buildEvent(),
+        autoAlign: true,
+        mainScreenWidget: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFFFF6666),
+                  Color(0xFFFFD1A9)
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Responsive(
+              desktop: Center(
+                child: Container(
+                  // width: AppSizes.maxWidth,
+                  height: AppSizes.maxHeight,
+                  child: Column(
+                    children: [_info(), _body(), _function()],
+                  ),
+                ),
+              ),
+              mobile: Center(
+                child: Container(
+                  // width: AppSizes.maxWidth,
+                  height: AppSizes.maxHeight,
+                  child: Column(
+                    children: [_info(), _body(), _function()],
+                  ),
+                ),
+              ),
+              tablet: Center(
+                child: Container(
+                  // width: AppSizes.maxWidth,
+                  height: AppSizes.maxHeight,
+                  child: Column(
+                    children: [_info(), _body(), _function()],
+                  ),
+                ),
+              ),
             ),
           ),
-          child: Responsive(
-            desktop: Center(
-              child: Container(
-                // width: AppSizes.maxWidth,
-                height: AppSizes.maxHeight,
-                child: Column(
-                  children: [_info(), _body(), _function()],
-                ),
-              ),
-            ),
-            mobile: Center(
-              child: Container(
-                // width: AppSizes.maxWidth,
-                height: AppSizes.maxHeight,
-                child: Column(
-                  children: [_info(), _body(), _function()],
-                ),
-              ),
-            ),
-            tablet: Center(
-              child: Container(
-                // width: AppSizes.maxWidth,
-                height: AppSizes.maxHeight,
-                child: Column(
-                  children: [_info(), _body(), _function()],
-                ),
-              ),
-            ),
-          ),
-        ),
-        //floatingActionButton: _isFabVisible ? _buildEvent() : null,
+          //floatingActionButton: _isFabVisible ? _buildEvent() : null,
+        ), floatingWidgetHeight: 90,
+        floatingWidgetWidth: 90,
       ),
     );
   }

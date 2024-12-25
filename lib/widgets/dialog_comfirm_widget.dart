@@ -10,8 +10,9 @@ class DialogConfirmWidget extends StatelessWidget {
   final Function? agree;
   final Function? cancel;
   final String? title;
+  final bool isShowCancel;
 
-  DialogConfirmWidget({this.agree, this.cancel,this.title});
+  DialogConfirmWidget({this.agree, this.cancel,this.title, this.isShowCancel = true});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,7 @@ class DialogConfirmWidget extends StatelessWidget {
                           padding: EdgeInsets.only(top: 16),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [_cancel(),_confirm()]),
+                              children: [isShowCancel ? _cancel() : Container(),_confirm()]),
                         )
                       ],
                     ),

@@ -10,9 +10,11 @@ import 'package:chicken_combat/model/enum/firebase_data.dart';
 import 'package:chicken_combat/presentation/home/home_screen.dart';
 import 'package:chicken_combat/presentation/lesson/map_reading_lesson_anwser_screen.dart';
 import 'package:chicken_combat/utils/audio_manager.dart';
+import 'package:chicken_combat/utils/shared_pref_key.dart';
 import 'package:chicken_combat/utils/utils.dart';
 import 'package:chicken_combat/widgets/background_cloud_general_widget.dart';
 import 'package:chicken_combat/widgets/custom_button_image_color_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +108,20 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
       });
     }
     super.didChangeMetrics();
+  }
+
+  Future<void> updateCountEvent() async {
+    CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        var data = documentSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('countEvent')) {
+          var countEvent = data['countEvent'];
+          print('countEvent: $countEvent');
+          users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).update({'countEvent': int.parse(countEvent) + 1});
+        }
+      }
+    });
   }
 
   Widget _buildContent() {

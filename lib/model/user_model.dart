@@ -22,6 +22,7 @@ class UserModel {
    List<String> bags;
    CourseMapsModel courseMapModel;
    CourseMapsModel checkingMapModel;
+   int countEvent;
 
   UserModel({
     required this.id,
@@ -37,6 +38,7 @@ class UserModel {
     required this.bag,
     required this.courseMaps,
     required this.checkingMaps,
+    this.countEvent = 0,
   }) :  bags = StringUtils.convertDynamicListToStringList(bag),
         courseMapModel = CourseMapsModel.fromUserMapModelList(UserMapModel.convertDynamicListToUserMapModelList(courseMaps)),
         checkingMapModel = CourseMapsModel.fromUserMapModelList(UserMapModel.convertDynamicListToUserMapModelList(checkingMaps));
@@ -57,6 +59,7 @@ class UserModel {
       bag: data?['bag'] ?? [],
       courseMaps: data?['courseMaps'] ?? [],
       checkingMaps: data?['checkingMaps'] ?? [],
+      countEvent: data?['countEvent'] ?? 0,
     );
   }
 }

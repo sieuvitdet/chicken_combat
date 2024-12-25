@@ -18,6 +18,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
+import '../../utils/shared_pref_key.dart';
 class MapReadingExaminationAnswerScreen extends StatefulWidget {
   final bool isGetReward;
   final int level;
@@ -209,6 +211,20 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
     super.didChangeMetrics();
   }
 
+  Future<void> updateCountEvent() async {
+    CollectionReference users = FirebaseFirestore.instance.collection(FirebaseEnum.userdata);
+    users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        var data = documentSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('countEvent')) {
+          var countEvent = data['countEvent'];
+          print('countEvent: $countEvent');
+          users.doc(Globals.prefs!.getString(SharedPrefsKey.id_user)).update({'countEvent': int.parse(countEvent) + 1});
+        }
+      }
+    });
+  }
+
   Widget _buildContent() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -278,7 +294,7 @@ CarouselSliderController buttonCarouselController = CarouselSliderController();
                                     Globals.currentUser?.financeId ?? "",
                                     Globals.financeUser?.diamond ?? 0);
                               }
-
+                              updateCountEvent();
                               GlobalSetting.shared.showPopupCongratulation(
                                   context, 1, score, gold, diamond,numberQuestion:_asks.length,
                                   showContinue: false,

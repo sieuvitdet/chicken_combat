@@ -37,8 +37,8 @@ class Assets {
   static final String img_bottom_mountain_green =
       "assets/images/img_bottom_mountain_green.png";
   static final String img_bush = "assets/images/img_bush.png";
-  static final String img_cloud_big = "assets/images/img_cloud_noel_big.png";
-  static final String img_cloud_small = "assets/images/img_cloud_noel_small.png";
+  static final String img_cloud_big = "assets/images/img_cloud_tet_big.png";
+  static final String img_cloud_small = "assets/images/img_cloud_tet_small.png";
   static final String img_line_table = "assets/images/img_line_table.png";
   static final String img_pk = "assets/images/img_pk.png";
   static final String img_mountain_sea = "assets/images/img_mountain_sea.png";
@@ -220,6 +220,11 @@ class Assets {
   static final String img_event_question_3 = "assets/images/img_event_noel_3.png";
   static final String img_event_question_4 = "assets/images/img_event_noel_4.png";
   static final String img_event_question_5 = "assets/images/img_event_noel_5.png";
+  static final String img_chicken_tet = "assets/images/img_chicken_tet.png";
+  static final String img_chicken_tet_2 = "assets/images/img_chicken_tet_2.png";
+  static final String img_background_event_tet = "assets/images/img_background_event_tet.png";
+  static final String img_background_event_tet_not_content = "assets/images/img_background_event_tet_not_content.png";
+  static final String img_background_lucky_wheel = "assets/images/img_background_lucky_wheel.png";
 
   //gif
   static final String chicken_flapping_swing_gif =
@@ -243,6 +248,7 @@ class Assets {
   static final String gif_background_warehouse =
       "assets/images/gif_background_warehouse.gif";
   static final String gif_background_noel = "assets/images/gif_background_noel.gif";
+  static final String gif_background_tet = "assets/images/gif_background_tet.gif";
   static final String gif_background_event_music = "assets/images/gif_background_event_music.gif";
 
   static final List<String> imagesGift = [
@@ -334,6 +340,9 @@ class ExtendedAssets extends Assets {
       "EVENT_QUESTION_NOEL_3": Assets.img_event_question_3,
       "EVENT_QUESTION_NOEL_4": Assets.img_event_question_4,
       "EVENT_QUESTION_NOEL_5": Assets.img_event_question_5,
+      "TET": Assets.img_chicken_tet,
+      "TET_2": Assets.img_chicken_tet_2,
+
     };
 
     return codeToAssetMap[code] ?? Assets.img_chicken;
@@ -359,6 +368,8 @@ class ExtendedAssets extends Assets {
       Assets.img_chicken_zombie: "DI05",
       Assets.img_chicken_noel_1: "NOEL_1",
       Assets.img_chicken_noel_2: "NOEL_2",
+      Assets.img_chicken_tet: "TET",
+      Assets.img_chicken_tet_2: "TET_2",
       Assets.img_event_question_1: "EVENT_QUESTION_NOEL_1",
       Assets.img_event_question_2: "EVENT_QUESTION_NOEL_2",
       Assets.img_event_question_3: "EVENT_QUESTION_NOEL_3",

@@ -146,7 +146,7 @@ class _ListMapLessonScreenState extends State<ListMapLessonScreen> with WidgetsB
       children: [
         Image(
           fit: BoxFit.contain,
-          image: AssetImage(ExtendedAssets.getAssetByCode("NOEL")),
+          image: AssetImage(ExtendedAssets.getAssetByCode("TET")),
           width: AppSizes.maxWidth * 0.3,
           height: AppSizes.maxHeight * 0.15,
         ),
