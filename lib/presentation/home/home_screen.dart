@@ -8,6 +8,7 @@ import 'package:chicken_combat/model/maps/map_model.dart';
 import 'package:chicken_combat/model/store_model.dart';
 import 'package:chicken_combat/model/user_model.dart';
 import 'package:chicken_combat/presentation/challenge/list_challenge_screen.dart';
+import 'package:chicken_combat/presentation/event/event_flash_screen.dart';
 import 'package:chicken_combat/presentation/examination/list_examination_screen.dart';
 import 'package:chicken_combat/presentation/lesson/list_lesson_screen.dart';
 import 'package:chicken_combat/presentation/shopping/shopping_screen.dart';
@@ -564,14 +565,7 @@ class _HomeScreenState extends State<HomeScreen>
       },
       child: GestureDetector(
         onTap: () async {
-          bool isSuccess = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventInformationScreen()));
-          if (isSuccess) {
-            Future.delayed(Duration(milliseconds: 500), () {
-              _isFabVisible = false;
-              setState(() {
-              });
-            });
-          }
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventFlashScreen()));
         },
         child: Image.asset(
           Assets.img_floating_button,
