@@ -32,7 +32,6 @@ class AudioManager with WidgetsBindingObserver {
     "audio/sound_chicken_sing_4.mp3",
     "audio/sound_chicken_sing_5.mp3",
     "audio/sound_chicken_sing_6.mp3",
-    "audio/sound_chicken_sing_7.mp3",
   ];
 
   AudioManager() {
