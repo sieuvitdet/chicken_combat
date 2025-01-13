@@ -18,13 +18,20 @@ class ChatGPTService {
           .collection(ChatGPTEnum.openapi_collection)
           .doc(ChatGPTEnum.openapi_document)
           .get();
+
       if (snapshot.exists) {
-        _apiKey = snapshot.get('apikey');
-        _isApiKeyReady = true;
+        var apiKey = snapshot.get('apikey');
+        if (apiKey is String && apiKey.isNotEmpty) {
+          _apiKey = apiKey;
+          _isApiKeyReady = true;
+        } else {
+          throw Exception("API Key is not properly set or is empty.");
+        }
       } else {
-        throw Exception("API Key does not exist in the document or is not properly set.");
+        throw Exception("API Key document does not exist.");
       }
     } catch (e) {
+      print("Error loading API Key: $e");
       throw Exception("Failed to load API Key: $e");
     }
   }
@@ -33,12 +40,32 @@ class ChatGPTService {
     if (!_isApiKeyReady) {
       throw Exception("API Key is not loaded yet");
     }
+
     final url = Uri.parse(_baseUrl);
-    ///Ý 1 là chấm bằng điểm ý 2 là chấm bằng pass hoặc fail
-    final prompt = """Imagine you are an elementary school teacher, rate the following topic and answer. Answers must be appropriate to the context of the topic question. Because the answer may have a few words wrong because the text recognition and reading may not be correct. So please grade openly if there are spelling mistakes.\nBelow are the topics and multiple children's answers separated by / , select the closest answer . For scoring, answer only in numbers and rate on a 10-point scale. The answer syntax is "x" where x is your score. Please answer x.\nTopic: $topic\nAnswer: $answer""";
-    final promptLesson = "Imagine you are an elementary school teacher, rate the following topic and answer. Question: $topic\nAnswer: $answer\nHere is the question and the child's answer."
-    "For grading, answers are only pass or fail. The answer syntax is \"x\" where x is the result. Please answer x";
-    print(prompt);
+
+    // Prompt cho đánh giá bằng điểm số từ 0 đến 10
+    final prompt = """
+Imagine you are an elementary school teacher. Evaluate the following topic and multiple children's answers. 
+Answers should be appropriate to the context, but spelling mistakes are acceptable due to potential text recognition errors. 
+Select the closest answer. For grading, use a 10-point scale. Provide your score as "x", where x is your rating.
+Topic: $topic
+Answer: $answer
+""";
+
+    // Prompt cho đánh giá pass hoặc fail
+    final promptLesson = """
+Imagine you are an elementary school teacher. Your task is to evaluate the following topic and answer provided by a student. 
+Question: $topic
+Answer: $answer
+Grade the answer with "pass" or "fail" based on its accuracy. Respond with "x", where x is your result.
+""";
+
+    // Chọn prompt phù hợp
+    final selectedPrompt = isLesson ? promptLesson : prompt;
+
+    print(selectedPrompt);
+
+    // Gửi yêu cầu tới API
     final response = await http.post(
       url,
       headers: {
@@ -48,15 +75,17 @@ class ChatGPTService {
       body: jsonEncode({
         'model': 'gpt-4',
         'messages': [
-          {'role': 'user', 'content': isLesson ? promptLesson : prompt}
+          {'role': 'user', 'content': selectedPrompt}
         ]
       }),
     );
+
     print(" ===> Response: $response");
 
+    // Kiểm tra trạng thái phản hồi
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['choices'][0]['message']['content'];
+      return data['choices'][0]['message']['content'].trim();
     } else {
       throw Exception('Failed to load data with status code: ${response.statusCode}');
     }
