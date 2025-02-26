@@ -59,7 +59,6 @@ Question: $topic
 Answer: $answer
 Grade the answer with "pass" or "fail" based on its accuracy. Respond with "x", where x is your result.
 """;
-
     // Chọn prompt phù hợp
     final selectedPrompt = isLesson ? promptLesson : prompt;
 
@@ -73,7 +72,7 @@ Grade the answer with "pass" or "fail" based on its accuracy. Respond with "x", 
         'Authorization': 'Bearer $_apiKey'
       },
       body: jsonEncode({
-        'model': 'gpt-4',
+        'model': 'gpt-4o-mini',
         'messages': [
           {'role': 'user', 'content': selectedPrompt}
         ]
